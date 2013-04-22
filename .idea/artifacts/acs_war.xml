@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="acs:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="acs-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="acs:war exploded" />
+    </root>
+  </artifact>
+</component>
