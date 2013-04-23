@@ -4,16 +4,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-    <display-name>TR069 ACS</display-name>
+    <display-name>ACS</display-name>
     <servlet>
-        <description>TR069 Servlet</description>
-        <display-name>TR069 Servlet</display-name>
-        <servlet-name>TR069Servlet</servlet-name>
-        <servlet-class>org.slstudio.acs.engine.TR069Servlet</servlet-class>
+        <description>ACS Servlet</description>
+        <display-name>ACS Servlet</display-name>
+        <servlet-name>ACSServlet</servlet-name>
+        <servlet-class>org.slstudio.acs.ACSServlet</servlet-class>
     </servlet>
-
+    <listener>
+        <listener-class>org.slstudio.acs.ACSListener</listener-class>
+    </listener>
     <servlet-mapping>
-        <servlet-name>TR069Servlet</servlet-name>
-        <url-pattern>/tr069</url-pattern>
+        <servlet-name>ACSServlet</servlet-name>
+        <url-pattern>/acs</url-pattern>
     </servlet-mapping>
 </web-app>
