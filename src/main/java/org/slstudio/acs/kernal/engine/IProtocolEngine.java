@@ -3,6 +3,8 @@ package org.slstudio.acs.kernal.engine;
 import org.slstudio.acs.kernal.context.ISessionContext;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 
+import java.io.IOException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: chandler
@@ -12,5 +14,5 @@ import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
  */
 public interface IProtocolEngine {
     public void init();
-    public void service(IProtocolEndPoint endPoint, ISessionContext sc);
+    public void service(IProtocolEndPoint endPoint, ISessionContext sc) throws IOException;
 }

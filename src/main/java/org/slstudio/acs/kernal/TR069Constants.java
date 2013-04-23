@@ -18,4 +18,5 @@ public class TR069Constants {
 
     public static final int ERROR_CODE_SUCCESS = 0;
     public static final int ERROR_CODE_UNKNOWNERROR = -1;
+    public static final int ERROR_CODE_UNSUPPORTPROTOCOL = -2;
 }

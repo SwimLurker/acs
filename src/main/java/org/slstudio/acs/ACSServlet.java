@@ -45,4 +45,9 @@ public class ACSServlet  extends HttpServlet {
         ISessionContext context = TR069SessionContextFactory.getInstance().create(endPoint);
         engine.service(endPoint, context);
     }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
+    }
 }

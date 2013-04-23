@@ -29,10 +29,12 @@ public class ACSServer {
     }
 
     public boolean start() {
-        return true;
+        bRunning = true;
+        return bRunning;
     }
 
     public boolean stop() {
+        bRunning = false;
         return true;
     }
 }

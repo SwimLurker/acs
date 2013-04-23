@@ -3,7 +3,8 @@ package org.slstudio.acs.kernal.context;
 import org.slstudio.acs.kernal.TR069Constants;
 
 import java.io.InputStream;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,10 +13,12 @@ import java.util.Hashtable;
  * Time: ÉÏÎç12:01
  */
 public class TR069SessionContext implements ITR069SessionContext {
-    private Hashtable properties = new Hashtable();
+    private Map properties = new HashMap();
 
     public int getLastErrorCode(){
-        return ((Integer)getProperty(TR069Constants.CONTEXT_KEY_ERRORCODE)).intValue();
+        Object errorCode = getProperty(TR069Constants.CONTEXT_KEY_ERRORCODE);
+        if(errorCode == null) return TR069Constants.ERROR_CODE_SUCCESS;
+        return ((Integer)errorCode).intValue();
     }
 
     public void setErrorCode(int errorCode){
