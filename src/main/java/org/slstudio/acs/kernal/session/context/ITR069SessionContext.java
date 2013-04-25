@@ -1,4 +1,4 @@
-package org.slstudio.acs.kernal.context;
+package org.slstudio.acs.kernal.session.context;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,4 +10,6 @@ package org.slstudio.acs.kernal.context;
 public interface ITR069SessionContext extends ISessionContext {
     public String getClientIP();
     public void setClientIP(String clientIP);
+    public int getClientPort();
+    public void setClientPort(int port);
 }

@@ -1,4 +1,7 @@
-package org.slstudio.acs.kernal.context;
+package org.slstudio.acs.kernal.session.context;
+
+import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
+import org.slstudio.acs.kernal.exception.SessionException;
 
 import java.io.InputStream;
 
@@ -18,6 +21,12 @@ public interface ISessionContext {
     public void setResponse(String response);
     public String getSessionID();
     public void setSessionID(String sessionID);
+    public String getClientID();
+    public void setClientID(String clientID);
     public Object getProperty(String key);
     public void setProperty(String key, Object value);
+    public long getTimestamp();
+    public void setTimestamp(long timestamp);
+    public IProtocolEndPoint getEndPoint();
+    public void initSessionContext(IProtocolEndPoint endPoint) throws SessionException;
 }

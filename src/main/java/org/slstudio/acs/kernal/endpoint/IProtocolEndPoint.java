@@ -1,6 +1,7 @@
 package org.slstudio.acs.kernal.endpoint;
 
-import org.slstudio.acs.kernal.context.ISessionContext;
+import org.slstudio.acs.kernal.exception.EndPointException;
+import org.slstudio.acs.kernal.session.context.ISessionContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +14,7 @@ import java.io.InputStream;
  * To change this template use File | Settings | File Templates.
  */
 public interface IProtocolEndPoint {
-    public Object getProperty(String name);
+    public String getProperty(String name);
     public InputStream getInputStream() throws IOException;
-    public void writeResponse(ISessionContext context) throws IOException;
+    public void writeResponse(ISessionContext context) throws EndPointException;
 }

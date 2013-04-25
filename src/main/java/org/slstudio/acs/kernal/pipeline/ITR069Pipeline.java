@@ -1,6 +1,6 @@
 package org.slstudio.acs.kernal.pipeline;
 
-import org.slstudio.acs.kernal.context.ISessionContext;
+import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.kernal.exception.TR069Exception;
 
 /**

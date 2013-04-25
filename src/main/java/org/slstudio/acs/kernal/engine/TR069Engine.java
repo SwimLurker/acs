@@ -1,15 +1,14 @@
 package org.slstudio.acs.kernal.engine;
 
+import org.slstudio.acs.exception.ACSException;
 import org.slstudio.acs.kernal.TR069Constants;
-import org.slstudio.acs.kernal.context.ISessionContext;
-import org.slstudio.acs.kernal.context.ITR069SessionContext;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.TR069Exception;
 import org.slstudio.acs.kernal.pipeline.ITR069Pipeline;
 import org.slstudio.acs.kernal.pipeline.TestPipeline;
+import org.slstudio.acs.kernal.session.context.ISessionContext;
+import org.slstudio.acs.kernal.session.context.ITR069SessionContext;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +26,9 @@ public class TR069Engine implements IProtocolEngine {
         pipelines.add(new TestPipeline());
     }
 
-    public void service(IProtocolEndPoint endPoint, ISessionContext context) throws IOException {
+    public void service(IProtocolEndPoint endPoint, ISessionContext context) throws ACSException {
         if(context instanceof ITR069SessionContext){
             ITR069SessionContext trContext = (ITR069SessionContext)context;
-            InputStream is = endPoint.getInputStream();
-            trContext.setInputStream(is);
             try{
                 for(ITR069Pipeline pipeline: pipelines){
                     pipeline.process(trContext);

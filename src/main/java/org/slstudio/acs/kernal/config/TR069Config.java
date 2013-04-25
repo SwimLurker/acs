@@ -10,4 +10,8 @@ public class TR069Config {
     public static boolean isUseSessionCookie() {
         return true;
     }
+
+    public static boolean isSupportSameIPForDifferentSession() {
+        return true;
+    }
 }
