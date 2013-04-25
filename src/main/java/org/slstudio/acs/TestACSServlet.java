@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -43,7 +44,19 @@ public class TestACSServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try{
-            IProtocolEndPoint endPoint= new FileEndPoint("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint","test.properties");
+            File inputDir = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\input\\");
+            if((!inputDir.exists())||(!inputDir.isDirectory())){
+                throw new ACSException("File store input dir not found");
+            }
+            File propertiesFile = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\test.properties");
+            if((!propertiesFile.exists())||(propertiesFile.isDirectory())){
+                throw new ACSException("File store properties file not found");
+            }
+            File outputDir = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\output\\");
+            if((!outputDir.exists())||(!outputDir.isDirectory())){
+                outputDir.mkdirs();
+            }
+            IProtocolEndPoint endPoint= new FileEndPoint(inputDir,outputDir,propertiesFile);
             ISessionContext context = SessionContextLocatorFactory.getInstance().getLocator().retrieve(endPoint);
             engine.service(endPoint, context);
         }catch(ACSException exp){

@@ -23,13 +23,15 @@ public class FileEndPoint implements IProtocolEndPoint {
 
     private static final Log log = LogFactory.getLog(FileEndPoint.class);
 
-    private String rootPath = null;
-    private String propertiesFileName = null;
+    private File inputDir = null;
+    private File outputDir = null;
+    private File propertiesFile = null;
     private Properties properties = new Properties();
 
-    public FileEndPoint(String rootPath, String propertiesFileName){
-        this.rootPath = rootPath;
-        this.propertiesFileName = propertiesFileName;
+    public FileEndPoint(File inputDir, File outputDir, File propertiesFile){
+        this.inputDir = inputDir;
+        this.outputDir = outputDir;
+        this.propertiesFile = propertiesFile;
         init();
     }
 
@@ -51,28 +53,18 @@ public class FileEndPoint implements IProtocolEndPoint {
         if(fileString != null && (!fileString.equals(""))){
             String[] requestFiles = fileString.split(",");
             if(requestFiles.length>0){
-                if(requestFiles.length>=currentIndex){
+                if(requestFiles.length>currentIndex){
                     requestFileName = requestFiles[currentIndex];
                 }else{
                     requestFileName = requestFiles[0];
                 }
             }
         }
-        String requestFileFullName = rootPath;
-        if(!requestFileFullName.endsWith(File.separator)){
-            requestFileFullName += File.separator;
-        }
-        requestFileFullName += requestFileName;
-
-        return new FileInputStream(requestFileFullName);
+        return new FileInputStream(new File(inputDir,requestFileName));
     }
 
     public void writeResponse(ISessionContext context) throws EndPointException {
-        String fileName = rootPath;
-        if(!fileName.endsWith(File.separator)){
-            fileName += File.separator;
-        }
-        fileName += context.getSessionID();
+        String fileName = context.getSessionID();
         if(context.getLastErrorCode() != TR069Constants.ERROR_CODE_SUCCESS){
             fileName += "_error_";
             fileName += Integer.toString(context.getLastErrorCode());
@@ -87,13 +79,8 @@ public class FileEndPoint implements IProtocolEndPoint {
     }
 
     private void loadProperties(){
-        String fileName = rootPath;
-        if(!fileName.endsWith(File.separator)){
-            fileName += File.separator;
-        }
-        fileName += propertiesFileName;
         try{
-            InputStream in = new BufferedInputStream(new FileInputStream(fileName));
+            InputStream in = new BufferedInputStream(new FileInputStream(propertiesFile));
             properties.load(in);
         }catch(Exception exp){
             exp.printStackTrace();
@@ -109,21 +96,15 @@ public class FileEndPoint implements IProtocolEndPoint {
         }
         currentIndex = currentIndex + 1;
         properties.setProperty(KEY_CURRENTREQUESTFILEINDEX,Integer.toString(currentIndex));
-
-        String fileName = rootPath;
-        if(!fileName.endsWith(File.separator)){
-            fileName += File.separator;
-        }
-        fileName += propertiesFileName;
         try {
-            properties.store(new FileWriter(fileName),null);
+            properties.store(new FileWriter(propertiesFile),null);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
     private void writeFile(String fileName, String fileContent) throws IOException{
-        FileWriter fw = new FileWriter(fileName);
+        FileWriter fw = new FileWriter(new File(outputDir,fileName));
         if(fileContent!=null){
             fw.write(fileContent);
         }
