@@ -1,8 +1,5 @@
 package org.slstudio.acs.tr069.xml;
 
-
-import com.sun.xml.internal.fastinfoset.stax.events.AttributeBase;
-import com.sun.xml.internal.fastinfoset.stax.events.NamespaceBase;
 import com.wutka.dtd.*;
 
 import javax.xml.XMLConstants;
