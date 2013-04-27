@@ -1,7 +1,7 @@
-package org.slstudio.acs.kernal.pipeline;
+package org.slstudio.acs.tr069.pipeline;
 
-import org.slstudio.acs.kernal.exception.TR069Exception;
-import org.slstudio.acs.kernal.session.context.ISessionContext;
+import org.slstudio.acs.tr069.exception.TR069Exception;
+import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
 import java.io.InputStream;
 
@@ -11,8 +11,10 @@ import java.io.InputStream;
  * Date: 13-4-24
  * Time: ÉÏÎç1:06
  */
-public class TestPipeline implements ITR069Pipeline {
-    public void process(ISessionContext context) throws TR069Exception {
+public class TestPipeline extends TR069Pipeline {
+    @Override
+    protected void process(ITR069MessageContext context) throws TR069Exception {
+        System.out.println(context.getSessionContext());
         InputStream is = context.getInputStream();
         StringBuffer inputString=new StringBuffer();
         try{

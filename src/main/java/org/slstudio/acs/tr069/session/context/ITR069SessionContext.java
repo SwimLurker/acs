@@ -1,4 +1,6 @@
-package org.slstudio.acs.kernal.session.context;
+package org.slstudio.acs.tr069.session.context;
+
+import org.slstudio.acs.kernal.session.context.ISessionContext;
 
 /**
  * Created with IntelliJ IDEA.

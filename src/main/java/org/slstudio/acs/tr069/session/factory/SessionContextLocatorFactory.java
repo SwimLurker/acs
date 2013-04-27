@@ -1,4 +1,4 @@
-package org.slstudio.acs.kernal.session.factory;
+package org.slstudio.acs.tr069.session.factory;
 
 import org.slstudio.acs.kernal.session.contextlocator.DefaultSessionContextLocator;
 import org.slstudio.acs.kernal.session.contextlocator.ISessionContextLocator;

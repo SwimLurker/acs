@@ -1,13 +1,13 @@
 package org.slstudio.acs.kernal.session.contextlocator;
 
-import org.slstudio.acs.kernal.TR069Constants;
+import org.slstudio.acs.kernal.ACSConstants;
+import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.SessionException;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.kernal.session.factory.ISessionContextFactory;
-import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
+import org.slstudio.acs.kernal.session.factory.SessionManagerFactory;
 import org.slstudio.acs.kernal.session.idmanager.ISessionIDManager;
 import org.slstudio.acs.kernal.session.sessionmanager.ISessionManager;
-import org.slstudio.acs.kernal.session.factory.SessionManagerFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,7 +35,7 @@ public class DefaultSessionContextLocator implements ISessionContextLocator {
         ISessionManager sessionManager = SessionManagerFactory.getInstance().getSessionManager();
         ISessionIDManager idManager = sessionManager.getSessionIDManager();
 
-        String clientID = endPoint.getProperty(TR069Constants.CONTEXT_KEY_CLIENTID);
+        String clientID = endPoint.getProperty(ACSConstants.SESSIONCONTEXT_KEY_CLIENTID);
         if(clientID != null){
             String sessionID = idManager.getSessionID(clientID);
             if(sessionID != null){

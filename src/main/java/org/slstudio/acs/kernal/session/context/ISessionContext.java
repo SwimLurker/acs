@@ -1,9 +1,10 @@
 package org.slstudio.acs.kernal.session.context;
 
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
+import org.slstudio.acs.kernal.exception.MessageException;
 import org.slstudio.acs.kernal.exception.SessionException;
 
-import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,12 +14,6 @@ import java.io.InputStream;
  * To change this template use File | Settings | File Templates.
  */
 public interface ISessionContext {
-    public int getLastErrorCode();
-    public void setErrorCode(int errorCode);
-    public InputStream getInputStream();
-    public void setInputStream(InputStream is);
-    public String getResponse();
-    public void setResponse(String response);
     public String getSessionID();
     public void setSessionID(String sessionID);
     public String getClientID();
@@ -27,6 +22,10 @@ public interface ISessionContext {
     public void setProperty(String key, Object value);
     public long getTimestamp();
     public void setTimestamp(long timestamp);
-    public IProtocolEndPoint getEndPoint();
+    public IMessageContext newMessageContext(IProtocolEndPoint endPoint) throws MessageException;
+    public IMessageContext getCurrentMessageContext();
+    public List<IMessageContext> getMessageContextList();
     public void initSessionContext(IProtocolEndPoint endPoint) throws SessionException;
+
+
 }

@@ -1,7 +1,7 @@
 package org.slstudio.acs.kernal.endpoint;
 
 import org.slstudio.acs.kernal.exception.EndPointException;
-import org.slstudio.acs.kernal.session.context.ISessionContext;
+import org.slstudio.acs.kernal.session.context.IMessageContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +15,7 @@ import java.io.InputStream;
  */
 public interface IProtocolEndPoint {
     public String getProperty(String name);
+    public void saveProperty(String name, String value);
     public InputStream getInputStream() throws IOException;
-    public void writeResponse(ISessionContext context) throws EndPointException;
+    public void writeResponse(IMessageContext context) throws EndPointException;
 }

@@ -1,5 +1,7 @@
 package org.slstudio.acs.kernal.config;
 
+import org.slstudio.acs.tr069.config.TR069Config;
+
 /**
  * Created with IntelliJ IDEA.
  * User: chandler

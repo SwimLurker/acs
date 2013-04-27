@@ -1,8 +1,9 @@
-package org.slstudio.acs.kernal.session.factory;
+package org.slstudio.acs.tr069.session.factory;
 
 import org.slstudio.acs.kernal.session.context.ISessionContext;
-import org.slstudio.acs.kernal.session.context.ITR069SessionContext;
-import org.slstudio.acs.kernal.session.context.TR069SessionContext;
+import org.slstudio.acs.kernal.session.factory.ISessionContextFactory;
+import org.slstudio.acs.tr069.session.context.ITR069SessionContext;
+import org.slstudio.acs.tr069.session.context.TR069SessionContext;
 
 /**
  * Created with IntelliJ IDEA.

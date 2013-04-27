@@ -1,4 +1,4 @@
-package org.slstudio.acs.kernal.config;
+package org.slstudio.acs.tr069.config;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,4 +1,4 @@
-package org.slstudio.acs.kernal.endpoint.http.strategy;
+package org.slstudio.acs.tr069.endpoint.http.strategy;
 
 import javax.servlet.http.HttpServletRequest;
 

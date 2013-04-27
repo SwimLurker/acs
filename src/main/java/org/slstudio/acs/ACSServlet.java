@@ -4,13 +4,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.exception.ACSException;
 import org.slstudio.acs.kernal.config.ConfigurationManager;
-import org.slstudio.acs.kernal.config.TR069Config;
-import org.slstudio.acs.kernal.endpoint.http.HttpEndPoint;
+import org.slstudio.acs.tr069.config.TR069Config;
+import org.slstudio.acs.tr069.endpoint.http.HttpEndPoint;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
-import org.slstudio.acs.kernal.engine.TR069Engine;
+import org.slstudio.acs.tr069.engine.TR069Engine;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
-import org.slstudio.acs.kernal.session.factory.SessionContextLocatorFactory;
+import org.slstudio.acs.tr069.session.factory.SessionContextLocatorFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -45,6 +45,7 @@ public class ACSServlet  extends HttpServlet {
         try{
             IProtocolEndPoint endPoint= new HttpEndPoint(req, resp);
             ISessionContext context = SessionContextLocatorFactory.getInstance().getLocator().retrieve(endPoint);
+            System.out.println(context);
             engine.service(endPoint, context);
         }catch(ACSException exp){
             exp.printStackTrace();
