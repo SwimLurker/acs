@@ -13,7 +13,7 @@ import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
  * Date: 13-4-24
  * Time: ионГ12:52
  */
-public abstract class TR069Pipeline implements IProtocolPipeline {
+public abstract class AbstractTR069Pipeline implements IProtocolPipeline {
 
     public final void processMessage(IMessageContext context) throws ACSException {
         if(context instanceof ITR069MessageContext){

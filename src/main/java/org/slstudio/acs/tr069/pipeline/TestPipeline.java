@@ -11,7 +11,7 @@ import java.io.InputStream;
  * Date: 13-4-24
  * Time: ионГ1:06
  */
-public class TestPipeline extends TR069Pipeline {
+public class TestPipeline extends AbstractTR069Pipeline {
     @Override
     protected void process(ITR069MessageContext context) throws TR069Exception {
         System.out.println(context.getSessionContext());
