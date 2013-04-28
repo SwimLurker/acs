@@ -1,6 +1,6 @@
 package org.slstudio.acs.kernal.session.factory;
 
-import org.slstudio.acs.kernal.session.idgenerator.DefaultSessionIDGenerator;
+import org.slstudio.acs.tr069.session.idgenerator.DefaultSessionIDGenerator;
 import org.slstudio.acs.kernal.session.idgenerator.ISessionIDGenerator;
 
 /**

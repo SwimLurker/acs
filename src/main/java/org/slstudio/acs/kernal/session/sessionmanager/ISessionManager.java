@@ -1,6 +1,5 @@
 package org.slstudio.acs.kernal.session.sessionmanager;
 
-import org.slstudio.acs.kernal.session.idmanager.ISessionIDManager;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
 
 /**
@@ -20,6 +19,4 @@ public interface ISessionManager {
     public boolean updateSessionContext(ISessionContext context);
 
     public void reset();
-
-    public ISessionIDManager getSessionIDManager();
 }

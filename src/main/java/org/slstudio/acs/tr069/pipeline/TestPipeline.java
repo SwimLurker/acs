@@ -1,6 +1,6 @@
 package org.slstudio.acs.tr069.pipeline;
 
-import org.slstudio.acs.tr069.exception.TR069Exception;
+import org.slstudio.acs.kernal.exception.PipelineException;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
 import java.io.InputStream;
@@ -13,7 +13,7 @@ import java.io.InputStream;
  */
 public class TestPipeline extends AbstractTR069Pipeline {
     @Override
-    protected void process(ITR069MessageContext context) throws TR069Exception {
+    protected void process(ITR069MessageContext context) throws PipelineException {
         System.out.println(context.getSessionContext());
         InputStream is = context.getInputStream();
         StringBuffer inputString=new StringBuffer();
@@ -23,7 +23,7 @@ public class TestPipeline extends AbstractTR069Pipeline {
                 inputString.append((char)ch);
             }
         }catch (Exception exp){
-            throw new TR069Exception("Read data from inputstream error", exp);
+            throw new PipelineException("Read data from inputstream error", exp);
         }
         context.setResponse(inputString.toString());
     }

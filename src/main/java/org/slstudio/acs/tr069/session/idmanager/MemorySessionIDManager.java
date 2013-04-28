@@ -1,7 +1,8 @@
-package org.slstudio.acs.kernal.session.idmanager;
+package org.slstudio.acs.tr069.session.idmanager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slstudio.acs.kernal.session.idmanager.ISessionIDManager;
 
 import java.util.Collections;
 import java.util.HashMap;

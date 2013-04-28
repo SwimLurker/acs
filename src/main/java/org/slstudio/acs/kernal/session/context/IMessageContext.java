@@ -1,7 +1,7 @@
 package org.slstudio.acs.kernal.session.context;
 
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
-import org.slstudio.acs.kernal.exception.MessageException;
+import org.slstudio.acs.kernal.exception.ContextException;
 
 import java.io.InputStream;
 
@@ -22,5 +22,5 @@ public interface IMessageContext {
     public IProtocolEndPoint getEndPoint();
     public Object getProperty(String key);
     public void setProperty(String key, Object value);
-    public void initMessageContext(IProtocolEndPoint endPoint) throws MessageException;
+    public void initMessageContext(IProtocolEndPoint endPoint) throws ContextException;
 }

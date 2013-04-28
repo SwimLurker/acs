@@ -3,8 +3,8 @@ package org.slstudio.acs.tr069.pipeline;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slstudio.acs.kernal.exception.PipelineException;
 import org.slstudio.acs.tr069.exception.ParseMessageException;
-import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.tr069.soap.SOAPEnvelopeParser;
 import org.slstudio.acs.tr069.soap.SOAPMessage;
@@ -26,7 +26,7 @@ public class ParseMessagePipeline extends AbstractTR069Pipeline {
     private static final Log log = LogFactory.getLog(ParseMessagePipeline.class);
 
     @Override
-    protected void process(ITR069MessageContext context) throws TR069Exception {
+    protected void process(ITR069MessageContext context) throws PipelineException {
         InputStream is=(InputStream)context.getInputStream();
         if(is==null){
             throw new ParseMessageException("Message inputstream can't be null");

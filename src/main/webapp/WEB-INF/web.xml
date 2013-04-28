@@ -12,20 +12,30 @@
         <servlet-class>org.slstudio.acs.ACSServlet</servlet-class>
     </servlet>
     <servlet>
-        <description>Test ACS Servlet</description>
-        <display-name>Test ACS Servlet</display-name>
-        <servlet-name>TestACSServlet</servlet-name>
-        <servlet-class>org.slstudio.acs.TestACSServlet</servlet-class>
+        <description>File ACS Servlet</description>
+        <display-name>File ACS Servlet</display-name>
+        <servlet-name>FileACSServlet</servlet-name>
+        <servlet-class>org.slstudio.acs.FileACSServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <description>Test Servlet</description>
+        <display-name>Test Servlet</display-name>
+        <servlet-name>TestServlet</servlet-name>
+        <servlet-class>org.slstudio.acs.TestServlet</servlet-class>
     </servlet>
     <listener>
         <listener-class>org.slstudio.acs.ACSListener</listener-class>
     </listener>
     <servlet-mapping>
         <servlet-name>ACSServlet</servlet-name>
-        <url-pattern>/acs</url-pattern>
+        <url-pattern>/acs/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>TestACSServlet</servlet-name>
-        <url-pattern>/testacs</url-pattern>
+        <servlet-name>FileACSServlet</servlet-name>
+        <url-pattern>/fileacs/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestServlet</servlet-name>
+        <url-pattern>/test</url-pattern>
     </servlet-mapping>
 </web-app>

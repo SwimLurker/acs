@@ -4,12 +4,12 @@ import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.endpoint.http.AbstractHttpEndPoint;
 import org.slstudio.acs.kernal.session.context.IMessageContext;
-import org.slstudio.acs.tr069.TR069Constants;
 import org.slstudio.acs.tr069.config.TR069Config;
+import org.slstudio.acs.tr069.constant.TR069Constants;
+import org.slstudio.acs.tr069.endpoint.http.strategy.DefaultClientIPGetStrategy;
 import org.slstudio.acs.tr069.endpoint.http.strategy.DefaultClientPortGetStrategy;
 import org.slstudio.acs.tr069.endpoint.http.strategy.IClientIPGetStrategy;
 import org.slstudio.acs.tr069.endpoint.http.strategy.IClientPortGetStrategy;
-import org.slstudio.acs.tr069.endpoint.http.strategy.NoProxyClientIPGetStrategy;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public class HttpEndPoint extends AbstractHttpEndPoint implements IProtocolEndPo
 
     public HttpEndPoint(HttpServletRequest req, HttpServletResponse res){
         super(req,res);
-        clientIPGetStrategy = new NoProxyClientIPGetStrategy(req);
+        clientIPGetStrategy = new DefaultClientIPGetStrategy(req);
         clientPortGetStrategy = new DefaultClientPortGetStrategy(req);
     }
 

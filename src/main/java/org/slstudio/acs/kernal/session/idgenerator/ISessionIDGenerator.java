@@ -1,6 +1,6 @@
 package org.slstudio.acs.kernal.session.idgenerator;
 
-import org.slstudio.acs.kernal.exception.SessionException;
+import org.slstudio.acs.kernal.exception.ContextException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,5 +9,5 @@ import org.slstudio.acs.kernal.exception.SessionException;
  * Time: ионГ1:01
  */
 public interface ISessionIDGenerator {
-    public String generateSessionID() throws SessionException;
+    public String generateSessionID() throws ContextException;
 }

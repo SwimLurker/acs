@@ -2,7 +2,6 @@ package org.slstudio.acs.kernal.engine;
 
 import org.slstudio.acs.exception.ACSException;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
-import org.slstudio.acs.kernal.session.context.ISessionContext;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,5 +12,6 @@ import org.slstudio.acs.kernal.session.context.ISessionContext;
  */
 public interface IProtocolEngine {
     public void init();
-    public void service(IProtocolEndPoint endPoint, ISessionContext sc) throws ACSException;
+    public String getEngineID();
+    public void service(IProtocolEndPoint endPoint) throws ACSException;
 }

@@ -2,7 +2,7 @@ package org.slstudio.acs.kernal.session.context;
 
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
-import org.slstudio.acs.kernal.exception.MessageException;
+import org.slstudio.acs.kernal.exception.ContextException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,19 +74,19 @@ public abstract class AbstractMessageContext implements IMessageContext{
         properties.put(key, value);
     }
 
-    public void initMessageContext(IProtocolEndPoint endPoint) throws MessageException {
+    public void initMessageContext(IProtocolEndPoint endPoint) throws ContextException {
         setEndPoint(endPoint);
         properties.clear();
         try{
             InputStream is = endPoint.getInputStream();
             setInputStream(is);
         }catch(IOException exp){
-            throw new MessageException("retrieve inputstream from endpoint error", exp);
+            throw new ContextException("retrieve inputstream from endpoint error", exp);
         }
         setErrorCode(ACSConstants.ERROR_CODE_SUCCESS);
         setResponse(null);
         init(endPoint);
     }
 
-    protected abstract void init(IProtocolEndPoint endPoint) throws MessageException;
+    protected abstract void init(IProtocolEndPoint endPoint) throws ContextException;
 }

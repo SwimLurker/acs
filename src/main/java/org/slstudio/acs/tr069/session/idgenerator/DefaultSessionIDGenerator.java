@@ -1,6 +1,7 @@
-package org.slstudio.acs.kernal.session.idgenerator;
+package org.slstudio.acs.tr069.session.idgenerator;
 
-import org.slstudio.acs.kernal.exception.SessionException;
+import org.slstudio.acs.kernal.exception.ContextException;
+import org.slstudio.acs.kernal.session.idgenerator.ISessionIDGenerator;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -20,7 +21,7 @@ public class DefaultSessionIDGenerator implements ISessionIDGenerator {
     private static long incrementingValue = 0;
     private static Random myRand = null;
 
-    public synchronized String generateSessionID() throws SessionException {
+    public synchronized String generateSessionID() throws ContextException {
         if (baseUUID == null) {
             baseUUID = getInitialUUID();
         }
@@ -30,7 +31,7 @@ public class DefaultSessionIDGenerator implements ISessionIDGenerator {
         return baseUUID + new Date().getTime() + incrementingValue;
     }
 
-    protected String getInitialUUID() throws SessionException{
+    protected String getInitialUUID() throws ContextException{
         if (myRand == null) {
             myRand = new Random();
         }
@@ -49,7 +50,7 @@ public class DefaultSessionIDGenerator implements ISessionIDGenerator {
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            throw new SessionException("ID generator algorithm not found", e);
+            throw new ContextException("ID generator algorithm not found", e);
         }
         md5.update(sb.toString().getBytes());
         byte[] array = md5.digest();

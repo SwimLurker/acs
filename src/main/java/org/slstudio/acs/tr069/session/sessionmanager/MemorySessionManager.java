@@ -1,10 +1,10 @@
-package org.slstudio.acs.kernal.session.sessionmanager;
+package org.slstudio.acs.tr069.session.sessionmanager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slstudio.acs.kernal.session.idmanager.ISessionIDManager;
-import org.slstudio.acs.kernal.session.idmanager.MemorySessionIDManager;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
+import org.slstudio.acs.kernal.session.idmanager.ISessionIDManager;
+import org.slstudio.acs.kernal.session.sessionmanager.ISessionManager;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,9 +20,17 @@ public class MemorySessionManager implements ISessionManager {
     private static final Log log = LogFactory.getLog(MemorySessionManager.class);
 
     private Map contextMap = Collections.synchronizedMap(new HashMap());
-    private ISessionIDManager idManager = null;
+    private ISessionIDManager sessionIDManager = null;
 
     public MemorySessionManager(){
+    }
+
+    public ISessionIDManager getSessionIDManager() {
+        return sessionIDManager;
+    }
+
+    public void setSessionIDManager(ISessionIDManager sessionIDManager) {
+        this.sessionIDManager = sessionIDManager;
     }
 
     public ISessionContext getSessionContext(String sessionID) {
@@ -72,10 +80,10 @@ public class MemorySessionManager implements ISessionManager {
         getSessionIDManager().reset();
     }
 
-    public ISessionIDManager getSessionIDManager() {
-        if(idManager == null){
-            idManager = new MemorySessionIDManager();
-        }
-        return idManager;
-    }
+//    public ISessionIDManager getSessionIDManager() {
+//        if(idManager == null){
+//            idManager = new MemorySessionIDManager();
+//        }
+//        return idManager;
+//    }
 }

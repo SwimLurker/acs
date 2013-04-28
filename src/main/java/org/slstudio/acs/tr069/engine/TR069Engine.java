@@ -1,7 +1,10 @@
 package org.slstudio.acs.tr069.engine;
 
 import org.slstudio.acs.kernal.engine.AbstractProtocolEngine;
-import org.slstudio.acs.tr069.pipeline.TestPipeline;
+import org.slstudio.acs.tr069.pipeline.CheckSessionPipeline;
+import org.slstudio.acs.tr069.pipeline.InitializePipeline;
+import org.slstudio.acs.tr069.pipeline.ParseMessagePipeline;
+import org.slstudio.acs.tr069.pipeline.ValidateMessagePipeline;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +16,9 @@ public class TR069Engine extends AbstractProtocolEngine {
 
     @Override
     protected void inintPipelines() {
-        pipelines.add(new TestPipeline());
+        pipelines.add(new InitializePipeline());
+        pipelines.add(new ParseMessagePipeline());
+        pipelines.add(new ValidateMessagePipeline());
+        pipelines.add(new CheckSessionPipeline());
     }
 }

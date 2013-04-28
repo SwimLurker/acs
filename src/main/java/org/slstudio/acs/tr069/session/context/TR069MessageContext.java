@@ -1,10 +1,10 @@
 package org.slstudio.acs.tr069.session.context;
 
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
-import org.slstudio.acs.kernal.exception.MessageException;
+import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.context.AbstractMessageContext;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
-import org.slstudio.acs.tr069.TR069Constants;
+import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.soap.SOAPMessage;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class TR069MessageContext extends AbstractMessageContext implements ITR06
     }
 
     @Override
-    public void init(IProtocolEndPoint endPoint) throws MessageException {
+    public void init(IProtocolEndPoint endPoint) throws ContextException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -36,6 +36,14 @@ public class TR069MessageContext extends AbstractMessageContext implements ITR06
 
     public void setSoapMessageList(List<SOAPMessage> messageList) {
         setProperty(TR069Constants.MESSAGECONTEXT_KEY_SOAPMESSAGELIST,messageList);
+    }
+
+    public String getResponseString() {
+        return (String)getProperty(TR069Constants.MESSAGECONTEXT_KEY_TR069RESPONSE);
+    }
+
+    public void setResponseString(String responseString) {
+        setProperty(TR069Constants.MESSAGECONTEXT_KEY_TR069RESPONSE, responseString);
     }
 
     public ITR069SessionContext getTR069SessionContext() {

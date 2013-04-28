@@ -2,6 +2,8 @@ package org.slstudio.acs.tr069.session.context;
 
 import org.slstudio.acs.kernal.session.context.ISessionContext;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: chandler
@@ -14,4 +16,8 @@ public interface ITR069SessionContext extends ISessionContext {
     public void setClientIP(String clientIP);
     public int getClientPort();
     public void setClientPort(int port);
+    public boolean hasCheckSession();
+    public void setHasCheckSession(boolean checked);
+    public ITR069MessageContext getCurrentTR069MessageContext();
+    public List<ITR069MessageContext> getTR069MessageContextList();
 }

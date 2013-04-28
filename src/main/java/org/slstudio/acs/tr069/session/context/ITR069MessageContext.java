@@ -14,5 +14,7 @@ import java.util.List;
 public interface ITR069MessageContext extends IMessageContext {
     public List<SOAPMessage> getSoapMessageList();
     public void setSoapMessageList(List<SOAPMessage> messageList);
+    public String getResponseString();
+    public void setResponseString(String responseString);
     public ITR069SessionContext getTR069SessionContext();
 }

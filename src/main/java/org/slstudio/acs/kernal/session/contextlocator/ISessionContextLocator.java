@@ -1,8 +1,8 @@
 package org.slstudio.acs.kernal.session.contextlocator;
 
-import org.slstudio.acs.kernal.exception.SessionException;
-import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
+import org.slstudio.acs.kernal.exception.ContextException;
+import org.slstudio.acs.kernal.session.context.ISessionContext;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,5 +11,5 @@ import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
  * Time: ÏÂÎç11:42
  */
 public interface ISessionContextLocator {
-    public ISessionContext retrieve(IProtocolEndPoint endPoint) throws SessionException;
+    public ISessionContext retrieve(IProtocolEndPoint endPoint) throws ContextException;
 }

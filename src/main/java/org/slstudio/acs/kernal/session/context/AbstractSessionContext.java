@@ -2,8 +2,7 @@ package org.slstudio.acs.kernal.session.context;
 
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
-import org.slstudio.acs.kernal.exception.MessageException;
-import org.slstudio.acs.kernal.exception.SessionException;
+import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.factory.IMessageContextFactory;
 import org.slstudio.acs.kernal.session.factory.SessionIDGeneratorFactory;
 
@@ -70,7 +69,7 @@ public abstract class AbstractSessionContext implements ISessionContext {
         properties.put(key, value);
     }
 
-    public IMessageContext newMessageContext(IProtocolEndPoint endPoint) throws MessageException{
+    public IMessageContext newMessageContext(IProtocolEndPoint endPoint) throws ContextException {
         IMessageContext messageContext = messageContextFactory.create(this);
         messageContext.initMessageContext(endPoint);
         messageContextList.add(messageContext);
@@ -81,11 +80,11 @@ public abstract class AbstractSessionContext implements ISessionContext {
         return messageContextList.get(messageContextList.size()-1);
     }
 
-    public List<IMessageContext> getMessageContextList(){
+    public List<? extends IMessageContext> getMessageContextList(){
         return messageContextList;
     }
 
-    public void initSessionContext(IProtocolEndPoint endPoint) throws SessionException {
+    public void initSessionContext(IProtocolEndPoint endPoint) throws ContextException {
         properties.clear();
         String newSessionID = SessionIDGeneratorFactory.getInstance().getSessionIDGenerator().generateSessionID();
         setSessionID(newSessionID);
@@ -98,6 +97,6 @@ public abstract class AbstractSessionContext implements ISessionContext {
         }
     }
 
-    protected abstract void init(IProtocolEndPoint endPoint) throws SessionException;
+    protected abstract void init(IProtocolEndPoint endPoint) throws ContextException;
 
 }

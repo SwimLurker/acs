@@ -16,6 +16,11 @@ public class DefaultClientPortGetStrategy implements IClientPortGetStrategy {
         this.request = req;
     }
     public String getClientPort() {
-        return request.getHeader(HTTP_HEADER_CLIENTPORT);
+        int port = request.getRemotePort();
+        if(port <= 0){
+            return request.getHeader(HTTP_HEADER_CLIENTPORT);
+        }else{
+            return Integer.toString(port);
+        }
     }
 }

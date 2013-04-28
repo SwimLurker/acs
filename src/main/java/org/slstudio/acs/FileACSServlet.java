@@ -4,13 +4,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.exception.ACSException;
 import org.slstudio.acs.kernal.config.ConfigurationManager;
-import org.slstudio.acs.tr069.config.TR069Config;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
-import org.slstudio.acs.tr069.endpoint.file.FileEndPoint;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
-import org.slstudio.acs.tr069.engine.TR069Engine;
-import org.slstudio.acs.kernal.session.context.ISessionContext;
-import org.slstudio.acs.tr069.session.factory.SessionContextLocatorFactory;
+import org.slstudio.acs.tr069.config.TR069Config;
+import org.slstudio.acs.tr069.endpoint.file.FileEndPoint;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,8 +24,8 @@ import java.io.IOException;
  * Date: 13-4-25
  * Time: ÉÏÎç11:30
  */
-public class TestACSServlet extends HttpServlet {
-    private static final Log log = LogFactory.getLog(org.slstudio.acs.TestACSServlet.class);
+public class FileACSServlet extends HttpServlet {
+    private static final Log log = LogFactory.getLog(FileACSServlet.class);
     private IProtocolEngine engine = null;
 
     @Override
@@ -37,12 +36,15 @@ public class TestACSServlet extends HttpServlet {
         }
         TR069Config config = ConfigurationManager.getTR069Config();
 
-        engine = new TR069Engine();
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+        engine = (IProtocolEngine)ctx.getBean("tr069Engine");
         engine.init();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(req.getSession().getServletContext().getRealPath(""));
+
         try{
             File inputDir = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\input\\");
             if((!inputDir.exists())||(!inputDir.isDirectory())){
@@ -57,8 +59,7 @@ public class TestACSServlet extends HttpServlet {
                 outputDir.mkdirs();
             }
             IProtocolEndPoint endPoint= new FileEndPoint(inputDir,outputDir,propertiesFile);
-            ISessionContext context = SessionContextLocatorFactory.getInstance().getLocator().retrieve(endPoint);
-            engine.service(endPoint, context);
+            engine.service(endPoint);
         }catch(ACSException exp){
             exp.printStackTrace();
             throw new IOException(exp.getMessage(), exp);

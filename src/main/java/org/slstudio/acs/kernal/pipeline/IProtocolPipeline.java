@@ -1,6 +1,6 @@
 package org.slstudio.acs.kernal.pipeline;
 
-import org.slstudio.acs.exception.ACSException;
+import org.slstudio.acs.kernal.exception.PipelineException;
 import org.slstudio.acs.kernal.session.context.IMessageContext;
 
 /**
@@ -10,5 +10,5 @@ import org.slstudio.acs.kernal.session.context.IMessageContext;
  * Time: обнГ1:17
  */
 public interface IProtocolPipeline {
-    void processMessage(IMessageContext context) throws ACSException;
+    void processMessage(IMessageContext context) throws PipelineException;
 }

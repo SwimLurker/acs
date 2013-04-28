@@ -1,8 +1,7 @@
 package org.slstudio.acs.kernal.session.context;
 
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
-import org.slstudio.acs.kernal.exception.MessageException;
-import org.slstudio.acs.kernal.exception.SessionException;
+import org.slstudio.acs.kernal.exception.ContextException;
 
 import java.util.List;
 
@@ -22,10 +21,10 @@ public interface ISessionContext {
     public void setProperty(String key, Object value);
     public long getTimestamp();
     public void setTimestamp(long timestamp);
-    public IMessageContext newMessageContext(IProtocolEndPoint endPoint) throws MessageException;
+    public IMessageContext newMessageContext(IProtocolEndPoint endPoint) throws ContextException;
     public IMessageContext getCurrentMessageContext();
-    public List<IMessageContext> getMessageContextList();
-    public void initSessionContext(IProtocolEndPoint endPoint) throws SessionException;
+    public List<? extends IMessageContext> getMessageContextList();
+    public void initSessionContext(IProtocolEndPoint endPoint) throws ContextException;
 
 
 }
