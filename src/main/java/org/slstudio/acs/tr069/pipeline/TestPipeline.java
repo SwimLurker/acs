@@ -14,7 +14,6 @@ import java.io.InputStream;
 public class TestPipeline extends AbstractTR069Pipeline {
     @Override
     protected void process(ITR069MessageContext context) throws PipelineException {
-        System.out.println(context.getSessionContext());
         InputStream is = context.getInputStream();
         StringBuffer inputString=new StringBuffer();
         try{
@@ -25,6 +24,7 @@ public class TestPipeline extends AbstractTR069Pipeline {
         }catch (Exception exp){
             throw new PipelineException("Read data from inputstream error", exp);
         }
-        context.setResponse(inputString.toString());
+        String clientIP = context.getTR069SessionContext().getClientIP();
+        context.setResponse(inputString.toString()+"\r\nClientIP="+clientIP);
     }
 }

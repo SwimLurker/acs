@@ -43,8 +43,6 @@ public class FileACSServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(req.getSession().getServletContext().getRealPath(""));
-
         try{
             File inputDir = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\input\\");
             if((!inputDir.exists())||(!inputDir.isDirectory())){

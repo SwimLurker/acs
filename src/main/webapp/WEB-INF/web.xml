@@ -18,6 +18,12 @@
         <servlet-class>org.slstudio.acs.FileACSServlet</servlet-class>
     </servlet>
     <servlet>
+        <description>Debug ACS Servlet</description>
+        <display-name>Debug ACS Servlet</display-name>
+        <servlet-name>DebugACSServlet</servlet-name>
+        <servlet-class>org.slstudio.acs.DebugACSServlet</servlet-class>
+    </servlet>
+    <servlet>
         <description>Test Servlet</description>
         <display-name>Test Servlet</display-name>
         <servlet-name>TestServlet</servlet-name>
@@ -33,6 +39,10 @@
     <servlet-mapping>
         <servlet-name>FileACSServlet</servlet-name>
         <url-pattern>/fileacs/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DebugACSServlet</servlet-name>
+        <url-pattern>/debug/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TestServlet</servlet-name>
