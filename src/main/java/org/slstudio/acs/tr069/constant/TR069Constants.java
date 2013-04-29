@@ -8,13 +8,12 @@ package org.slstudio.acs.tr069.constant;
  */
 public class TR069Constants {
     //session context key for TR069
-    public static final String SESSIONCONTEXT_KEY_CLIENTIP = "Context_Key_ClientIP";
-    public static final String SESSIONCONTEXT_KEY_CLIENTPORT = "Context_Key_ClientPort";
-    public static final String SESSIONCONTEXT_KEY_HASCHECKSESSION = "Context_Key_HasCheckInform";
+    public static final String SESSIONCONTEXT_KEY_CLIENTIP = "SessionContext_Key_ClientIP";
+    public static final String SESSIONCONTEXT_KEY_CLIENTPORT = "SessionContext_Key_ClientPort";
+    public static final String SESSIONCONTEXT_KEY_HASCHECKSESSION = "SessionContext_Key_HasCheckInform";
 
     //message context key for TR069
     public static final String MESSAGECONTEXT_KEY_SOAPMESSAGELIST = "Message_Key_SoapMessageList";
-    public static final String MESSAGECONTEXT_KEY_TR069RESPONSE="Message_Key_TR069Message";
 
     public static final String COOKIE_SESSION_ID = "TR069_SessionID" ;
 

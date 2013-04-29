@@ -38,14 +38,6 @@ public class TR069MessageContext extends AbstractMessageContext implements ITR06
         setProperty(TR069Constants.MESSAGECONTEXT_KEY_SOAPMESSAGELIST,messageList);
     }
 
-    public String getResponseString() {
-        return (String)getProperty(TR069Constants.MESSAGECONTEXT_KEY_TR069RESPONSE);
-    }
-
-    public void setResponseString(String responseString) {
-        setProperty(TR069Constants.MESSAGECONTEXT_KEY_TR069RESPONSE, responseString);
-    }
-
     public ITR069SessionContext getTR069SessionContext() {
         return (ITR069SessionContext)getSessionContext();
     }

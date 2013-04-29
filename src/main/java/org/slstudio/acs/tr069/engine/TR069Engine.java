@@ -1,5 +1,7 @@
 package org.slstudio.acs.tr069.engine;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.kernal.engine.AbstractProtocolEngine;
 import org.slstudio.acs.tr069.pipeline.CheckSessionPipeline;
 import org.slstudio.acs.tr069.pipeline.InitializePipeline;
@@ -13,6 +15,7 @@ import org.slstudio.acs.tr069.pipeline.ValidateMessagePipeline;
  * Time: ионГ12:23
  */
 public class TR069Engine extends AbstractProtocolEngine {
+    private static final Log log = LogFactory.getLog(TR069Engine.class);
 
     @Override
     protected void inintPipelines() {

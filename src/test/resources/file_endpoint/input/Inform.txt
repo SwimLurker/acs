@@ -1,2 +1,10 @@
-<Inform>
-</Inform>
+<soap:Envelope
+xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
+<soap:Body>
+<cwmp:Inform>
+<argument>value</argument>
+</cwmp:Inform>
+</soap:Body>
+</soap:Envelope>

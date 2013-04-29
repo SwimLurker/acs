@@ -1,5 +1,7 @@
 package org.slstudio.acs.kernal.engine;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.exception.ACSException;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.ContextException;
@@ -20,6 +22,8 @@ import java.util.List;
  * Time: ÏÂÎç1:16
  */
 public abstract class AbstractProtocolEngine implements IProtocolEngine {
+    private static final Log log = LogFactory.getLog(AbstractProtocolEngine.class);
+
     private String engineID = null;
     protected List<IProtocolPipeline> pipelines = null;
     private ISessionContextLocator contextLocator = null;
@@ -47,7 +51,11 @@ public abstract class AbstractProtocolEngine implements IProtocolEngine {
 
     public final void service(IProtocolEndPoint endPoint) throws ACSException {
         IMessageContext messageContext = prepareMessageContext(endPoint);
-        doService(messageContext);
+        try{
+            doService(messageContext);
+        }catch(PipelineException exp){
+            log.error(exp);
+        }
         writeResponse(endPoint, messageContext);
     }
 
