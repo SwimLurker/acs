@@ -41,6 +41,16 @@
             <artifactId>axiom-impl</artifactId>
             <version>1.2.14</version>
         </dependency>
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>5.2.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -74,6 +84,33 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.activemq.tooling</groupId>
+                <artifactId>maven-activemq-plugin</artifactId>
+                <version>5.2.0</version>
+                <configuration>
+                    <configUri>xbean:file:src/main/resources/activemq.xml</configUri>
+                    <fork>false</fork>
+                    <systemProperties>
+                        <property>
+                            <name>javax.net.ssl.keyStorePassword</name>
+                            <value>password</value>
+                        </property>
+                        <property>
+                            <name>org.apache.activemq.default.directory.prefix</name>
+                            <value>./target/</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                        <version>2.5.6</version>
+                    </dependency>
+
+                </dependencies>
             </plugin>
         </plugins>
     </build>
