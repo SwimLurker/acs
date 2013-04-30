@@ -12,6 +12,14 @@ public class TR069Config {
     }
 
     public static boolean isSupportSameIPForDifferentSession() {
-        return true;
+        return false;
+    }
+
+    public static int getMaxReceiveEnvelopeCount() {
+        return 1;
+    }
+
+    public static int getMaxSendEnvelopeCount() {
+        return 1;
     }
 }

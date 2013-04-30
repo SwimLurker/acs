@@ -15,4 +15,10 @@ public interface ITR069MessageContext extends IMessageContext {
     public List<SOAPMessage> getSoapMessageList();
     public void setSoapMessageList(List<SOAPMessage> messageList);
     public ITR069SessionContext getTR069SessionContext();
+    public int getMaxReceiveEnvelopeCount();
+    public void setMaxReceiveEnvelopeCount(int maxReceiveEnvelopeCount);
+    public int getMaxSendEnvelopeCount();
+    public void setMaxSendEnvelopeCount(int maxSendEnvelopeCount);
+    public int getCanSendEnvelopeCount();
+    public void setCanSendEnvelopeCount(int canSendEnvelopeCount);
 }

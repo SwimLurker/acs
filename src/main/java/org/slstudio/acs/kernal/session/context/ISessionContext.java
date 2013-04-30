@@ -15,6 +15,8 @@ import java.util.List;
 public interface ISessionContext {
     public String getSessionID();
     public void setSessionID(String sessionID);
+    public int getStatus();
+    public void setStatus(int status);
     public String getClientID();
     public void setClientID(String clientID);
     public Object getProperty(String key);

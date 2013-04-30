@@ -72,23 +72,20 @@ public class HttpEndPoint extends AbstractHttpEndPoint implements IProtocolEndPo
 
     @Override
     protected void beforeWriteResponse(IMessageContext context) {
-        //set http status
+        //set http status and content type
         if(context.getLastErrorCode() == ACSConstants.ERROR_CODE_SUCCESS){
             if(context.getResponse() == null) {
                 setHttpStatus(HttpServletResponse.SC_NO_CONTENT);
+                setContentType(null);
             }else{
                 setHttpStatus(HttpServletResponse.SC_OK);
+                setContentType("text/xml");
             }
         }else{
             setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-        //set content type
-        String responseString = context.getResponse();
-        if(responseString == null) {
             setContentType(null);
-        }else{
-            setContentType("text/xml");
         }
+
         //set session id
         String sessionID = null;
         if(context.getSessionContext()!=null){

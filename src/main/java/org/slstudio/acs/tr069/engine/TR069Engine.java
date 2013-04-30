@@ -3,10 +3,8 @@ package org.slstudio.acs.tr069.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.kernal.engine.AbstractProtocolEngine;
-import org.slstudio.acs.tr069.pipeline.CheckSessionPipeline;
-import org.slstudio.acs.tr069.pipeline.InitializePipeline;
-import org.slstudio.acs.tr069.pipeline.ParseMessagePipeline;
-import org.slstudio.acs.tr069.pipeline.ValidateMessagePipeline;
+import org.slstudio.acs.tr069.dispatcher.DefaultTR069MethodDispatcher;
+import org.slstudio.acs.tr069.pipeline.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,5 +21,8 @@ public class TR069Engine extends AbstractProtocolEngine {
         pipelines.add(new ParseMessagePipeline());
         pipelines.add(new ValidateMessagePipeline());
         pipelines.add(new CheckSessionPipeline());
+        pipelines.add(new DispatchMethodPipeline(new DefaultTR069MethodDispatcher()));
+        pipelines.add(new FinalizePipeline());
     }
+
 }

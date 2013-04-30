@@ -2,7 +2,8 @@ package org.slstudio.acs.tr069.soap;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,13 +15,13 @@ public class SOAPMessage implements java.io.Serializable{
     //TODO:maybe we should refact response to a vector of SOAPEnvelope,now we use a vector of String
 
     private SOAPEnvelope envelope=null;
-    private Vector responses=null;
+    private List<String> responses=null;
     private boolean isDealed=false;
 
 
     public SOAPMessage(SOAPEnvelope envelope) {
         this.envelope = envelope;
-        this.responses = new Vector();
+        this.responses = new ArrayList<String>();
         this.isDealed = false;
     }
 
@@ -32,14 +33,14 @@ public class SOAPMessage implements java.io.Serializable{
         this.envelope = envelope;
     }
 
-    public Vector getResponses() {
+    public List<String> getResponses() {
         return responses;
     }
 
     public void addResponse(String responseString) {
         this.responses.add(responseString);
     }
-    public void setResponses(Vector responses){
+    public void setResponses(List<String> responses){
         this.responses=responses;
     }
 

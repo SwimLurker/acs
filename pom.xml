@@ -46,8 +46,22 @@
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.26</version>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>7.6.10.v20130312</version>
+                <configuration>
+                    <stopKey>stop</stopKey>
+                    <stopPort>5599</stopPort>
+                    <webAppConfig>
+                        <contextPath>/</contextPath>
+                        <descriptor>src/main/webapp/WEB-INF/web.xml</descriptor>
+                        <defaultsDescriptor>src/main/resources/webdefault.xml</defaultsDescriptor>
+                    </webAppConfig>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>8080</port>
+                        </connector>
+                    </connectors>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

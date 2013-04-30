@@ -61,8 +61,42 @@ public class DefaultSessionContextLocator implements ISessionContextLocator {
         return context;
     }
 
+    public void release(IProtocolEndPoint endPoint, ISessionContext context) throws ContextException {
+        //remove session context
+        String sessionID = null;
+        if(context != null){
+            sessionID = context.getSessionID();
+        }
+        if(sessionID == null){
+            String clientID = endPoint.getProperty(ACSConstants.SESSIONCONTEXT_KEY_CLIENTID);
+            if(clientID != null){
+                sessionID = sessionIDManager.getSessionID(clientID);
+            }
+        }
+        if(sessionID != null){
+            sessionManager.removeSessionContext(sessionID);
+        }
+
+        String clientID = null;
+        if(context != null){
+            clientID = context.getClientID();
+        }
+        if(clientID == null) {
+            clientID = endPoint.getProperty(ACSConstants.SESSIONCONTEXT_KEY_CLIENTID);
+        }
+        if(clientID != null){
+            sessionIDManager.removeSessionID(clientID);
+        }
+    }
+
     private synchronized void addSessionRelation(ISessionContext context){
-        sessionIDManager.addSessionID(context.getClientID(), context.getSessionID());
-        sessionManager.addSessionContext(context);
+        if(context != null){
+            if(context.getClientID() != null && context.getSessionID() != null){
+                sessionIDManager.addSessionID(context.getClientID(), context.getSessionID());
+            }
+            if(context.getSessionID() != null){
+                sessionManager.addSessionContext(context);
+            }
+        }
     }
 }

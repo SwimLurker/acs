@@ -2,6 +2,9 @@
 xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
 soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
 xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
+<soap:Header>
+<cwmp:ID>1000</cwmp:ID>
+</soap:Header>
 <soap:Body>
 <cwmp:Inform>
 <argument>value</argument>

@@ -3,6 +3,7 @@ package org.slstudio.acs.tr069.pipeline;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.exception.PipelineException;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.exception.CheckSessionException;
@@ -34,81 +35,94 @@ public class CheckSessionPipeline extends AbstractTR069Pipeline {
         if(sessionContext == null){
             throw new CheckSessionException("Session context can't be null");
         }
-        if(!sessionContext.hasCheckSession()){
+
+        //if session has not been checked, then check it
+        if(sessionContext.getStatus() == ACSConstants.SESSION_STATUS_CREATED){
             if(messages.size()==0){
                 //empty envelope
-                log.error("Not Inform request or Inform request has no envelope");
-                dealMessages(messages, context);
-                //throw new CheckSessionException("Not Inform request or Inform request has no envelope");
+                throw new CheckSessionException("Empty envelope when check inform");
             }else if(messages.size()!=1){
                 //multiple envelopes,then deal each messages and save result to TR069_RESPONSE_KEY
-                log.error("Not Inform request or Inform request has multiple envelope");
-                dealMessages(messages, context);
-                //throw new CheckSessionException("Not Inform request or Inform request has multiple envelope");
+                log.error("Inform request has multiple envelope");
+                String responseString = dealAllMessagesWithFault(messages);
+                if(responseString != null){
+                    context.setResponse(responseString);
+                }
             }else {
-                if(checkInformSOAPMessage((SOAPMessage) messages.get(0), context)){
-                    sessionContext.setHasCheckSession(true);
+                //message size is ok, then check if it is inform
+                if(isInform(messages.get(0))){
+                    sessionContext.setStatus(ACSConstants.SESSION_STATUS_CHECKED);
+                }else{
+                    String faultResponse = dealMessageWithFault(messages.get(0));
+                    context.setResponse(faultResponse);
                 }
             }
         }
     }
 
-    private boolean checkInformSOAPMessage(SOAPMessage message, ITR069MessageContext context) throws CheckSessionException{
-        SOAPEnvelope envelope=message.getEnvelope();
-        if(envelope==null){
+
+    //handle all messages with fault
+    private String dealAllMessagesWithFault(List<SOAPMessage> messages)
+            throws CheckSessionException{
+        boolean bHasResponse = false;
+        StringBuilder result = new StringBuilder();
+        for(SOAPMessage message: messages){
+            //first handle messages one by one
+            String faultResponse = dealMessageWithFault(message);
+            //then collect response
+            if(faultResponse != null){
+                result.append(faultResponse);
+                bHasResponse = true;
+            }
+        }
+        return bHasResponse?result.toString():null;
+    }
+
+    //check if the message is an inform request
+    private boolean isInform(SOAPMessage message) throws CheckSessionException{
+        SOAPEnvelope envelope = message.getEnvelope();
+        if(envelope == null){
             throw new CheckSessionException("Not Inform request envelope is null");
         }
-        String commandName= SOAPUtil.getCommandName(envelope);
-        if(commandName==null){
+        String commandName = SOAPUtil.getCommandName(envelope);
+        if(commandName == null){
             throw new CheckSessionException("Not Inform request,command name is null");
         }
-        if(!TR069Constants.INFORM_MESSAGE.equals(commandName)){
-            if(SOAPUtil.isRequest(commandName)){
-                String response = dealMessage(message, context);
-                context.setResponse(response);
-                return false;
-            }else{
-                throw new CheckSessionException("Not Inform request,is response");
-            }
-        }else{
-            //inform request
-            log.debug("Handle Inform request");
-            return true;
+        String cwmpID = SOAPUtil.getIDFromHeader(envelope);
+        if(cwmpID == null){
+            throw new CheckSessionException("Not Inform request,command id is null");
         }
+        return TR069Constants.INFORM_MESSAGE.equals(commandName);
     }
 
-    private void dealMessages(List<SOAPMessage> messages, ITR069MessageContext context) {
-        StringBuffer result=new StringBuffer();
-        for(int i=0;i<messages.size();i++){
-            SOAPMessage message=(SOAPMessage)messages.get(i);
-            String response = dealMessage(message,context);
-            if(response != null){
-               result.append(response);
-            }
+    // handle message with fault
+    // for request, set response with fault; for response, just set it has been dealed
+    // if some message is invalid ,ex: command name is null or command id is null, just throw exception
+    private String dealMessageWithFault(SOAPMessage message) throws CheckSessionException{
+        SOAPEnvelope envelope = message.getEnvelope();
+        if(envelope == null){
+            throw new CheckSessionException("Some soap envelope is null in the messages when check session");
         }
-        context.setResponse(result.toString());
-    }
+        String commandName = SOAPUtil.getCommandName(envelope);
+        if(commandName == null){
+            throw new CheckSessionException("Some message command name is null in the messages when check session");
+        }
+        String commandID = SOAPUtil.getIDFromHeader(envelope);
+        if(commandID == null){
+            throw new CheckSessionException("Some message command id is null in the messages when check session");
+        }
 
-    private String dealMessage(SOAPMessage message, ITR069MessageContext context){
-        SOAPEnvelope envelope=message.getEnvelope();
-        if(envelope!=null){
-            String commandName= SOAPUtil.getCommandName(envelope);
-            if(SOAPUtil.isRequest(commandName)){
-                message.setDealed(true);
-                String id=SOAPUtil.getIDFromHeader(envelope);
-                String fault=new TR069Fault(false,
-                        TR069Constants.SERVER_FAULT_NEED_INFORM,
-                        FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_NEED_INFORM),
-                        id).toFault();
-                message.addResponse(fault);
-                return fault;
-            }else{
-                message.setDealed(true);
-            }
+        message.setDealed(true);
+        if(SOAPUtil.isRequest(commandName)){
+            String fault=new TR069Fault(false,
+                    TR069Constants.SERVER_FAULT_NEED_INFORM,
+                    FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_NEED_INFORM),
+                    commandID).toFault();
+            message.addResponse(fault);
+            return fault;
         }else{
-            message.setDealed(true);
+            return null;
         }
-        return null;
     }
 
 }

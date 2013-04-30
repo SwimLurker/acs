@@ -45,22 +45,6 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
         setProperty(TR069Constants.SESSIONCONTEXT_KEY_CLIENTPORT, new Integer(port));
     }
 
-    public boolean hasCheckSession() {
-        boolean hasCheck = false;
-        Object checkObj = getProperty(TR069Constants.SESSIONCONTEXT_KEY_HASCHECKSESSION);
-        if(checkObj != null){
-            try{
-                hasCheck = ((Boolean)checkObj).booleanValue();
-            }catch (Exception exp){
-            }
-        }
-        return hasCheck;
-    }
-
-    public void setHasCheckSession(boolean checked) {
-        setProperty(TR069Constants.SESSIONCONTEXT_KEY_HASCHECKSESSION, new Boolean(checked));
-    }
-
     public ITR069MessageContext getCurrentTR069MessageContext() {
         return (ITR069MessageContext)getCurrentMessageContext();
     }

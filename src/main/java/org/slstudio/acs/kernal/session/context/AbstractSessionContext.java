@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public abstract class AbstractSessionContext implements ISessionContext {
     private String sessionID = null;
+    private int status = ACSConstants.SESSION_STATUS_CREATED;
     private String clientID = null;
     private long timestamp = 0l;
     private Map properties = new HashMap();
@@ -43,6 +44,14 @@ public abstract class AbstractSessionContext implements ISessionContext {
 
     public void setSessionID(String sessionID){
         this.sessionID = sessionID;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getClientID(){

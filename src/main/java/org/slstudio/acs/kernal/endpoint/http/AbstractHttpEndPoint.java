@@ -1,5 +1,7 @@
 package org.slstudio.acs.kernal.endpoint.http;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.EndPointException;
@@ -19,6 +21,8 @@ import java.io.PrintWriter;
  * Time: ÉÏÎç10:19
  */
 public abstract class AbstractHttpEndPoint implements IProtocolEndPoint {
+    private static final Log log = LogFactory.getLog(AbstractHttpEndPoint.class);
+
     private HttpServletRequest request = null;
     private HttpServletResponse response = null;
     private int httpStatus = HttpServletResponse.SC_OK;
@@ -115,6 +119,10 @@ public abstract class AbstractHttpEndPoint implements IProtocolEndPoint {
         }else{
             response.setContentLength(responseText.length());
         }
+        log.debug("http status:"+httpStatus);
+        log.debug("content type:"+contentType);
+        log.debug("response:"+responseText);
+
         PrintWriter pw= null;
         try {
             pw = response.getWriter();

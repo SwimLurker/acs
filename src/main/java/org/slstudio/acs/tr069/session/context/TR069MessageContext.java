@@ -4,6 +4,7 @@ import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.context.AbstractMessageContext;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
+import org.slstudio.acs.tr069.config.TR069Config;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.soap.SOAPMessage;
 
@@ -17,13 +18,41 @@ import java.util.List;
  */
 public class TR069MessageContext extends AbstractMessageContext implements ITR069MessageContext {
 
+    private int maxReceivedEnvelopeCount = 1;
+    private int maxSendEnvelopeCount = 1;
+    private int canSendEnvelopeCount = -1;
+
+    public int getMaxReceiveEnvelopeCount() {
+        return maxReceivedEnvelopeCount;
+    }
+
+    public void setMaxReceiveEnvelopeCount(int maxReceiveEnvelopeCount) {
+        this.maxReceivedEnvelopeCount = maxReceiveEnvelopeCount;
+    }
+
+    public int getMaxSendEnvelopeCount() {
+        return maxSendEnvelopeCount;
+    }
+
+    public void setMaxSendEnvelopeCount(int maxSendEnvelopeCount) {
+        this.maxSendEnvelopeCount = maxSendEnvelopeCount;
+    }
+
+    public int getCanSendEnvelopeCount(){
+        return canSendEnvelopeCount;
+    }
+    public void setCanSendEnvelopeCount(int canSendEnvelopeCount){
+        this.canSendEnvelopeCount = canSendEnvelopeCount;
+    }
+
     public TR069MessageContext(ISessionContext sessionContext) {
         super(sessionContext);
     }
 
     @Override
     public void init(IProtocolEndPoint endPoint) throws ContextException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        setMaxReceiveEnvelopeCount(TR069Config.getMaxReceiveEnvelopeCount());
+        setMaxSendEnvelopeCount(TR069Config.getMaxSendEnvelopeCount());
     }
 
     public List<SOAPMessage> getSoapMessageList() {

@@ -15,4 +15,11 @@ public class ACSConstants {
     public static final int ERROR_CODE_SUCCESS = 0;
     public static final int ERROR_CODE_UNKNOWNERROR = -1;
     public static final int ERROR_CODE_UNSUPPORTPROTOCOL = -2;
+    public static final int ERROR_CODE_PIPELINEHANDLE = -3;
+
+    public static final int SESSION_STATUS_CREATED = 0;
+    public static final int SESSION_STATUS_CHECKED = 1;
+    public static final int SESSION_STATUS_TIMEOUT = 2;
+    public static final int SESSION_STATUS_CLOSED = 3;
+
 }

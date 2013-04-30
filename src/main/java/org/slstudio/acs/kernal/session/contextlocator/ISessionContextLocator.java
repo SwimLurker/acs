@@ -12,4 +12,6 @@ import org.slstudio.acs.kernal.session.context.ISessionContext;
  */
 public interface ISessionContextLocator {
     public ISessionContext retrieve(IProtocolEndPoint endPoint) throws ContextException;
+    public void release(IProtocolEndPoint endPoint, ISessionContext context) throws ContextException;
+
 }
