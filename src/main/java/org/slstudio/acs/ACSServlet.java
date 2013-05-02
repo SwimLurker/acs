@@ -9,9 +9,8 @@ import org.slstudio.acs.kernal.engine.IEngineSelector;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
 import org.slstudio.acs.tr069.config.TR069Config;
 import org.slstudio.acs.tr069.endpoint.http.HttpEndPoint;
-import org.slstudio.acs.tr069.engine.*;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.slstudio.acs.tr069.engine.DefaultEngineSelector;
+import org.slstudio.acs.util.BeanLocator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,14 +38,13 @@ public class ACSServlet  extends HttpServlet {
             throw new ServletException("ACS Server is not running");
         }
         TR069Config config = ConfigurationManager.getTR069Config();
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-        engineList.add((IProtocolEngine)ctx.getBean("tr069Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069AM1Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069AM2Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069AM3Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069AM4Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069TestEngine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM1Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM2Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM3Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM4Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069TestEngine"));
         for(IProtocolEngine engine: engineList){
             engine.init();
         }

@@ -8,8 +8,7 @@ import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
 import org.slstudio.acs.tr069.config.TR069Config;
 import org.slstudio.acs.tr069.endpoint.file.FileEndPoint;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.slstudio.acs.util.BeanLocator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -36,8 +35,8 @@ public class FileACSServlet extends HttpServlet {
         }
         TR069Config config = ConfigurationManager.getTR069Config();
 
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-        engine = (IProtocolEngine)ctx.getBean("tr069Engine");
+
+        engine = (IProtocolEngine) BeanLocator.getBean("tr069Engine");
         engine.init();
     }
 

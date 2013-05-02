@@ -1,9 +1,11 @@
 package org.slstudio.acs.tr069.session.context;
 
+import org.slstudio.acs.hms.device.DeviceID;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.context.AbstractSessionContext;
 import org.slstudio.acs.tr069.constant.TR069Constants;
+import org.slstudio.acs.tr069.databinding.request.InformRequest;
 import org.slstudio.acs.tr069.session.factory.TR069MessageContextFactory;
 
 import java.util.List;
@@ -33,7 +35,7 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
         Object portObj = getProperty(TR069Constants.SESSIONCONTEXT_KEY_CLIENTPORT);
         if(portObj != null){
             try{
-                port = ((Integer)portObj).intValue();
+                port = (Integer) portObj;
             }catch (Exception exp){
                 port = -1;
             }
@@ -43,6 +45,22 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
 
     public void setClientPort(int port){
         setProperty(TR069Constants.SESSIONCONTEXT_KEY_CLIENTPORT, new Integer(port));
+    }
+
+    public InformRequest getInformRequest() {
+        return (InformRequest)getProperty(TR069Constants.SESSIONCONTEXT_KEY_INFORMREQUEST);
+    }
+
+    public void setInformRequest(InformRequest informRequest) {
+        setProperty(TR069Constants.SESSIONCONTEXT_KEY_INFORMREQUEST, informRequest);
+    }
+
+    public DeviceID getDeviceID() {
+        return (DeviceID)getProperty(TR069Constants.SESSIONCONTEXT_KEY_DEVICEID);
+    }
+
+    public void setDeviceID(DeviceID deviceID) {
+        setProperty(TR069Constants.SESSIONCONTEXT_KEY_DEVICEID, deviceID);
     }
 
     public ITR069MessageContext getCurrentTR069MessageContext() {

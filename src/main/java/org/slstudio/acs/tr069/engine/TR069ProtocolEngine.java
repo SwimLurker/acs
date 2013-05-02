@@ -1,10 +1,11 @@
-package org.slstudio.acs.kernal.engine;
+package org.slstudio.acs.tr069.engine;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.exception.ACSException;
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
+import org.slstudio.acs.kernal.engine.IProtocolEngine;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.exception.EndPointException;
 import org.slstudio.acs.kernal.exception.PipelineException;
@@ -13,7 +14,6 @@ import org.slstudio.acs.kernal.session.context.IMessageContext;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.kernal.session.contextlocator.ISessionContextLocator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,12 +22,15 @@ import java.util.List;
  * Date: 13-4-27
  * Time: ÏÂÎç1:16
  */
-public abstract class AbstractProtocolEngine implements IProtocolEngine {
-    private static final Log log = LogFactory.getLog(AbstractProtocolEngine.class);
+public class TR069ProtocolEngine implements IProtocolEngine {
+    private static final Log log = LogFactory.getLog(TR069ProtocolEngine.class);
 
     private String engineID = null;
     protected List<IProtocolPipeline> pipelines = null;
     private ISessionContextLocator contextLocator = null;
+
+    public void init() {
+    }
 
     public String getEngineID() {
         return engineID;
@@ -45,9 +48,12 @@ public abstract class AbstractProtocolEngine implements IProtocolEngine {
         this.contextLocator = contextLocator;
     }
 
-    public void init() {
-        pipelines = new ArrayList<IProtocolPipeline>();
-        inintPipelines();
+    public List<IProtocolPipeline> getPipelines() {
+        return pipelines;
+    }
+
+    public void setPipelines(List<IProtocolPipeline> pipelines) {
+        this.pipelines = pipelines;
     }
 
     public final void service(IProtocolEndPoint endPoint) throws ACSException {
@@ -61,8 +67,7 @@ public abstract class AbstractProtocolEngine implements IProtocolEngine {
         writeResponse(endPoint, messageContext);
     }
 
-
-    private IMessageContext prepareMessageContext(IProtocolEndPoint endPoint) throws ContextException{
+    protected IMessageContext prepareMessageContext(IProtocolEndPoint endPoint) throws ContextException{
         ISessionContext context = contextLocator.retrieve(endPoint);
         return context.newMessageContext(endPoint);
     }
@@ -83,9 +88,8 @@ public abstract class AbstractProtocolEngine implements IProtocolEngine {
         endPoint.writeResponse(context);
     }
 
-    protected abstract void inintPipelines();
-
     protected void beforeDoService(IMessageContext messageContext) throws ACSException{
+
     }
 
     protected void afterDoService(IMessageContext messageContext) throws ACSException {
@@ -94,9 +98,8 @@ public abstract class AbstractProtocolEngine implements IProtocolEngine {
                 sessionStatus == ACSConstants.SESSION_STATUS_CLOSED ||
                 sessionStatus == ACSConstants.SESSION_STATUS_TIMEOUT){
             //session status is not checked, closed, timeout
-            getContextLocator().release(messageContext.getEndPoint(),messageContext.getSessionContext());
+            contextLocator.release(messageContext.getEndPoint(), messageContext.getSessionContext());
         }
     }
-
 }
 

@@ -1,0 +1,14 @@
+package org.slstudio.acs.tr069.messagedealer.plugin;
+
+import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
+import org.slstudio.acs.tr069.soap.SOAPMessage;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: chandler
+ * Date: 13-5-1
+ * Time: ионГ1:05
+ */
+public interface IPreDealMessagePlugin {
+    public void execute(ITR069MessageContext context, SOAPMessage request);
+}

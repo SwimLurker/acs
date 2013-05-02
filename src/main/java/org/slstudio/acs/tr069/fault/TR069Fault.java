@@ -1,7 +1,7 @@
 package org.slstudio.acs.tr069.fault;
 
+import org.slstudio.acs.exception.ACSException;
 import org.slstudio.acs.tr069.constant.TR069Constants;
-import org.slstudio.acs.tr069.exception.TR069Exception;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,7 +9,7 @@ import org.slstudio.acs.tr069.exception.TR069Exception;
  * Date: 13-4-28
  * Time: обнГ3:14
  */
-public class TR069Fault extends TR069Exception {
+public class TR069Fault extends ACSException {
 
     private boolean bFromClient =true;
     private String faultCode=null;

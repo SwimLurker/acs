@@ -76,14 +76,6 @@ public class SOAPUtil {
         return encoder.encode(data);
     }
 
-    public static Boolean convertToBoolean(String value) {
-        if ("true".equalsIgnoreCase(value) || "1".equals(value)) {
-            return Boolean.TRUE;
-        } else {
-            return Boolean.FALSE;
-        }
-    }
-
     public static void fillSOAPHeader(String requestID, StringBuffer result) {
         result.append("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"");
         result.append(TR069Constants.SOAP_NAMESPACE);

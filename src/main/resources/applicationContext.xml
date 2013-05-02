@@ -22,10 +22,38 @@
         <property name="sessionManager" ref="sessionManager" />
         <property name="sessionIDManager" ref="sessionIDManager" />
     </bean>
-    <bean id="tr069Engine" class="org.slstudio.acs.tr069.engine.TR069Engine">
+
+    <bean id="methodDispatcher" class="org.slstudio.acs.tr069.dispatcher.DefaultTR069MethodDispatcher" />
+
+    <bean id="initializePipeline" class="org.slstudio.acs.tr069.pipeline.InitializePipeline" />
+    <bean id="parseMessagePipeline" class="org.slstudio.acs.tr069.pipeline.ParseMessagePipeline" />
+    <bean id="validateMessagePipeline" class="org.slstudio.acs.tr069.pipeline.ValidateMessagePipeline" />
+    <bean id="checkSessionPipeline" class="org.slstudio.acs.tr069.pipeline.CheckSessionPipeline" />
+    <bean id="dispatchMethodPipeline" class="org.slstudio.acs.tr069.pipeline.DispatchMethodPipeline" >
+        <constructor-arg ref="methodDispatcher" />
+    </bean>
+    <bean id="finalizePipeline" class="org.slstudio.acs.tr069.pipeline.FinalizePipeline" />
+    <bean id="testPipeline" class="org.slstudio.acs.tr069.pipeline.TestPipeline" />
+
+    <bean id="tr069EnginePipelineList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="initializePipeline" />
+                <ref bean="parseMessagePipeline" />
+                <ref bean="validateMessagePipeline" />
+                <ref bean="checkSessionPipeline" />
+                <ref bean="dispatchMethodPipeline" />
+                <ref bean="finalizePipeline" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <!-- bean for protocal engine -->
+    <bean id="tr069Engine" class="org.slstudio.acs.tr069.engine.TR069ProtocolEngine">
         <property name="engineID" value="tr069" />
         <property name="contextLocator" ref="contextLocator" />
+        <property name="pipelines" ref="tr069EnginePipelineList" />
     </bean>
+
     <bean id="tr069AM1Engine" class="org.slstudio.acs.tr069.engine.TR069AM1Engine">
         <property name="engineID" value="tr069AM1" />
         <property name="contextLocator" ref="contextLocator" />
@@ -42,8 +70,18 @@
         <property name="engineID" value="tr069AM4" />
         <property name="contextLocator" ref="contextLocator" />
     </bean>
-    <bean id="tr069TestEngine" class="org.slstudio.acs.tr069.engine.TR069TestEngine">
+
+    <bean id="testEnginePipelineList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="testPipeline" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="tr069TestEngine" class="org.slstudio.acs.tr069.engine.TR069ProtocolEngine">
         <property name="engineID" value="tr069Test" />
         <property name="contextLocator" ref="contextLocator" />
+        <property name="pipelines" ref="testEnginePipelineList" />
     </bean>
 </beans>

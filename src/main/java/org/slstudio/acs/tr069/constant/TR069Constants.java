@@ -10,6 +10,8 @@ public class TR069Constants {
     //session context key for TR069
     public static final String SESSIONCONTEXT_KEY_CLIENTIP = "SessionContext_Key_ClientIP";
     public static final String SESSIONCONTEXT_KEY_CLIENTPORT = "SessionContext_Key_ClientPort";
+    public static final String SESSIONCONTEXT_KEY_INFORMREQUEST = "SessionContext_Key_InformRequest";
+    public static final String SESSIONCONTEXT_KEY_DEVICEID = "SessionContext_Key_DeviceID";
 
     //message context key for TR069
     public static final String MESSAGECONTEXT_KEY_SOAPMESSAGELIST = "Message_Key_SoapMessageList";

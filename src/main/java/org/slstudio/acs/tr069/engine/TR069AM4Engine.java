@@ -1,9 +1,7 @@
 package org.slstudio.acs.tr069.engine;
 
 import org.slstudio.acs.exception.ACSException;
-import org.slstudio.acs.kernal.engine.AbstractProtocolEngine;
 import org.slstudio.acs.kernal.session.context.IMessageContext;
-import org.slstudio.acs.tr069.pipeline.TestPipeline;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,11 +9,7 @@ import org.slstudio.acs.tr069.pipeline.TestPipeline;
  * Date: 13-4-28
  * Time: ÏÂÎç3:57
  */
-public class TR069AM4Engine extends AbstractProtocolEngine {
-    @Override
-    protected void inintPipelines() {
-        pipelines.add(new TestPipeline());
-    }
+public class TR069AM4Engine extends TR069ProtocolEngine {
     @Override
     protected void beforeDoService(IMessageContext messageContext) throws ACSException {
         throw new ACSException("Unsupport TR069 version");

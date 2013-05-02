@@ -8,8 +8,7 @@ import org.slstudio.acs.kernal.engine.IEngineSelector;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
 import org.slstudio.acs.tr069.endpoint.stream.StreamEndPoint;
 import org.slstudio.acs.tr069.engine.DefaultEngineSelector;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.slstudio.acs.util.BeanLocator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,14 +30,12 @@ public class DebugACSServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-
-        engineList.add((IProtocolEngine)ctx.getBean("tr069Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069AM1Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069AM2Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069AM3Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069AM4Engine"));
-        engineList.add((IProtocolEngine)ctx.getBean("tr069TestEngine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM1Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM2Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM3Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM4Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069TestEngine"));
         for(IProtocolEngine engine: engineList){
             engine.init();
         }

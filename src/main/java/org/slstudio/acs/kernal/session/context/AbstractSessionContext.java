@@ -22,7 +22,7 @@ public abstract class AbstractSessionContext implements ISessionContext {
     private int status = ACSConstants.SESSION_STATUS_CREATED;
     private String clientID = null;
     private long timestamp = 0l;
-    private Map properties = new HashMap();
+    private Map<String, Object> properties = new HashMap<String, Object>();
     private List<IMessageContext> messageContextList = new ArrayList<IMessageContext>();
     private IMessageContextFactory messageContextFactory = null;
 

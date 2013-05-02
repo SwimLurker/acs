@@ -1,6 +1,8 @@
 package org.slstudio.acs.tr069.session.context;
 
+import org.slstudio.acs.hms.device.DeviceID;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
+import org.slstudio.acs.tr069.databinding.request.InformRequest;
 
 import java.util.List;
 
@@ -16,6 +18,10 @@ public interface ITR069SessionContext extends ISessionContext {
     public void setClientIP(String clientIP);
     public int getClientPort();
     public void setClientPort(int port);
+    public InformRequest getInformRequest();
+    public void setInformRequest(InformRequest informRequest);
+    public DeviceID getDeviceID();
+    public void setDeviceID(DeviceID deviceID);
     public ITR069MessageContext getCurrentTR069MessageContext();
     public List<ITR069MessageContext> getTR069MessageContextList();
 }

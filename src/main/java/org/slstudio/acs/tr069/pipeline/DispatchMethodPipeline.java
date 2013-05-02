@@ -61,12 +61,14 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
                     }else{
                         try {
                             dealer.deal(context,message);
-                        } catch (Exception exp){
+                        }catch (Exception exp){
                             log.error("deal tr069 method failed",exp);
-                            dealMessageWithFault(message, new TR069Fault(false,
+                            if(!message.isDealed()) {
+                                dealMessageWithFault(message, new TR069Fault(false,
                                     TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
                                     FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_INTERNAL_ERROR),
                                     requestID));
+                            }
                         }
                     }
                 }
