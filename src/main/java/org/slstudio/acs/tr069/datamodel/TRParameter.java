@@ -1,8 +1,8 @@
 package org.slstudio.acs.tr069.datamodel;
 
+import org.apache.axis2.databinding.utils.ConverterUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slstudio.acs.tr069.soap.SOAPUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -136,7 +136,7 @@ public class TRParameter extends TR069DataModel {
             public String getValueByType(Object val) {
                 boolean value = false;
                 try {
-                    value = SOAPUtil.convertToBoolean(val.toString());
+                    value = ConverterUtil.convertToBoolean(val.toString());
                 } catch (IllegalArgumentException e) {
                     log.error("Value and Type are mismatch, Boolean Value Expected", e);
                 }

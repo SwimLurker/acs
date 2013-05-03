@@ -3,6 +3,7 @@ package org.slstudio.acs.tr069.session.context;
 import org.slstudio.acs.hms.device.DeviceID;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.tr069.databinding.request.InformRequest;
+import org.slstudio.acs.tr069.engine.TR069ProtocolEngine;
 
 import java.util.List;
 
@@ -24,4 +25,5 @@ public interface ITR069SessionContext extends ISessionContext {
     public void setDeviceID(DeviceID deviceID);
     public ITR069MessageContext getCurrentTR069MessageContext();
     public List<ITR069MessageContext> getTR069MessageContextList();
+    public TR069ProtocolEngine getTR069Engine();
 }

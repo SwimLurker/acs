@@ -2,6 +2,7 @@ package org.slstudio.acs.kernal.session.context;
 
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
+import org.slstudio.acs.kernal.engine.IProtocolEngine;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.factory.IMessageContextFactory;
 import org.slstudio.acs.kernal.session.factory.SessionIDGeneratorFactory;
@@ -21,6 +22,7 @@ public abstract class AbstractSessionContext implements ISessionContext {
     private String sessionID = null;
     private int status = ACSConstants.SESSION_STATUS_CREATED;
     private String clientID = null;
+    private IProtocolEngine engine = null;
     private long timestamp = 0l;
     private Map<String, Object> properties = new HashMap<String, Object>();
     private List<IMessageContext> messageContextList = new ArrayList<IMessageContext>();
@@ -61,6 +63,15 @@ public abstract class AbstractSessionContext implements ISessionContext {
     public void setClientID(String clientID){
         this.clientID = clientID;
     }
+
+    public IProtocolEngine getEngine() {
+        return engine;
+    }
+
+    public void setEngine(IProtocolEngine engine) {
+        this.engine = engine;
+    }
+
     public long getTimestamp() {
         return timestamp;
     }

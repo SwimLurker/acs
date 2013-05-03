@@ -1,0 +1,14 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:cwmp="urn:dslforum-org:cwmp-1-0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<SOAP-ENV:Header>
+		<cwmp:ID SOAP-ENV:mustUnderstand="1">1111</cwmp:ID>
+	</SOAP-ENV:Header>
+	<SOAP-ENV:Body>
+		<cwmp:DownloadResponse>
+			<Status>1</Status>
+			<StartTime>0000-00-00T00:00:00-00:00</StartTime>
+			<CompleteTime>0000-00-00T00:00:00-00:00</CompleteTime>
+		</cwmp:DownloadResponse>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

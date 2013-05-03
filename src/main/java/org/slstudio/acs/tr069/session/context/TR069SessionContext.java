@@ -6,6 +6,7 @@ import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.context.AbstractSessionContext;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.request.InformRequest;
+import org.slstudio.acs.tr069.engine.TR069ProtocolEngine;
 import org.slstudio.acs.tr069.session.factory.TR069MessageContextFactory;
 
 import java.util.List;
@@ -69,6 +70,10 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
 
     public List<ITR069MessageContext> getTR069MessageContextList() {
         return (List<ITR069MessageContext>) getMessageContextList();
+    }
+
+    public TR069ProtocolEngine getTR069Engine() {
+        return (TR069ProtocolEngine)getEngine();
     }
 
     @Override

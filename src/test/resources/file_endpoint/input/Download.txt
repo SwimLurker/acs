@@ -1,0 +1,21 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"  
+	xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cwmp="urn:dslforum-org:cwmp-1-0">  
+	<SOAP-ENV:Header>  
+		<cwmp:ID SOAP-ENV:mustUnderstand="1">1111</cwmp:ID>  
+	</SOAP-ENV:Header>  
+	<SOAP-ENV:Body>
+		<cwmp:Download>
+			<CommandKey>1271227474281</CommandKey>
+			<FileType>3 Vendor Configuration File</FileType>
+			<URL>http://116.231.72.207:8888/ACS//Tr069PropertyFile/config_acs.xml</URL>
+			<Username />
+			<Password />
+			<FileSize>146242</FileSize>
+			<TargetFileName>config.xml</TargetFileName>
+			<DelaySeconds>180</DelaySeconds>
+			<SuccessURL />
+			<FailureURL />
+		</cwmp:Download>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>  

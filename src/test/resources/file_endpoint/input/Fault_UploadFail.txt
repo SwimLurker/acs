@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
+	<SOAP-ENV:Header>
+		<cwmp:ID SOAP-ENV:mustUnderstand="1">ID:intrnl.unset.id.Upload1345013027757.5358475</cwmp:ID>
+	</SOAP-ENV:Header>
+	<SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+		<SOAP-ENV:Fault>
+			<faultcode>SOAP-ENV:Client</faultcode>
+			<faultstring>CWMP fault</faultstring>
+			<detail>
+				<cwmp:Fault>
+					<FaultCode>9011</FaultCode>
+					<FaultString>Upload failure</FaultString>
+				</cwmp:Fault>
+			</detail>
+		</SOAP-ENV:Fault>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

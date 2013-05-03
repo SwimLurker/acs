@@ -13,6 +13,7 @@ import org.slstudio.acs.kernal.pipeline.IProtocolPipeline;
 import org.slstudio.acs.kernal.session.context.IMessageContext;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.kernal.session.contextlocator.ISessionContextLocator;
+import org.slstudio.acs.tr069.engine.spec.ITR069Spec;
 
 import java.util.List;
 
@@ -26,8 +27,9 @@ public class TR069ProtocolEngine implements IProtocolEngine {
     private static final Log log = LogFactory.getLog(TR069ProtocolEngine.class);
 
     private String engineID = null;
-    protected List<IProtocolPipeline> pipelines = null;
+    private List<IProtocolPipeline> pipelines = null;
     private ISessionContextLocator contextLocator = null;
+    private ITR069Spec tr069Spec = null;
 
     public void init() {
     }
@@ -56,6 +58,14 @@ public class TR069ProtocolEngine implements IProtocolEngine {
         this.pipelines = pipelines;
     }
 
+    public ITR069Spec getTr069Spec() {
+        return tr069Spec;
+    }
+
+    public void setTr069Spec(ITR069Spec tr069Spec) {
+        this.tr069Spec = tr069Spec;
+    }
+
     public final void service(IProtocolEndPoint endPoint) throws ACSException {
         IMessageContext messageContext = prepareMessageContext(endPoint);
         beforeDoService(messageContext);
@@ -69,6 +79,7 @@ public class TR069ProtocolEngine implements IProtocolEngine {
 
     protected IMessageContext prepareMessageContext(IProtocolEndPoint endPoint) throws ContextException{
         ISessionContext context = contextLocator.retrieve(endPoint);
+        context.setEngine(this);
         return context.newMessageContext(endPoint);
     }
 

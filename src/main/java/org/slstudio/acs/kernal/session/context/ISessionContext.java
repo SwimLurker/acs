@@ -1,6 +1,7 @@
 package org.slstudio.acs.kernal.session.context;
 
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
+import org.slstudio.acs.kernal.engine.IProtocolEngine;
 import org.slstudio.acs.kernal.exception.ContextException;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public interface ISessionContext {
     public void setStatus(int status);
     public String getClientID();
     public void setClientID(String clientID);
+    public IProtocolEngine getEngine();
+    public void setEngine(IProtocolEngine engine);
     public Object getProperty(String key);
     public void setProperty(String key, Object value);
     public long getTimestamp();

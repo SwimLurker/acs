@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
+	<SOAP-ENV:Header>
+		<cwmp:ID SOAP-ENV:mustUnderstand="1">ID:intrnl.unset.id.Reboot1345013027582.16300368</cwmp:ID>
+	</SOAP-ENV:Header>
+	<SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+		<cwmp:RebootResponse></cwmp:RebootResponse>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

@@ -23,6 +23,10 @@
         <property name="sessionIDManager" ref="sessionIDManager" />
     </bean>
 
+    <bean id="schemaLocator" class="org.slstudio.acs.tr069.util.SchemaLocator" />
+
+    <!-- bean for tr069 protocol engine -->
+
     <bean id="methodDispatcher" class="org.slstudio.acs.tr069.dispatcher.DefaultTR069MethodDispatcher" />
 
     <bean id="initializePipeline" class="org.slstudio.acs.tr069.pipeline.InitializePipeline" />
@@ -47,28 +51,145 @@
             </list>
         </constructor-arg>
     </bean>
-    <!-- bean for protocal engine -->
+    <bean id="tr069Spec" class="org.slstudio.acs.tr069.engine.spec.TR069Spec" />
     <bean id="tr069Engine" class="org.slstudio.acs.tr069.engine.TR069ProtocolEngine">
         <property name="engineID" value="tr069" />
         <property name="contextLocator" ref="contextLocator" />
         <property name="pipelines" ref="tr069EnginePipelineList" />
+        <property name="tr069Spec" ref="tr069Spec" />
     </bean>
 
-    <bean id="tr069AM1Engine" class="org.slstudio.acs.tr069.engine.TR069AM1Engine">
+    <!-- bean for tr069 amendment 1 protocol engine -->
+    <bean id="methodDispatcher_AM1" class="org.slstudio.acs.tr069.dispatcher.DefaultTR069MethodDispatcher" />
+
+    <bean id="initializePipeline_AM1" class="org.slstudio.acs.tr069.pipeline.InitializePipeline" />
+    <bean id="parseMessagePipeline_AM1" class="org.slstudio.acs.tr069.pipeline.ParseMessagePipeline" />
+    <bean id="validateMessagePipeline_AM1" class="org.slstudio.acs.tr069.pipeline.ValidateMessageSchemaPipeline">
+        <constructor-arg ref="schemaLocator" />
+    </bean>
+    <bean id="checkSessionPipeline_AM1" class="org.slstudio.acs.tr069.pipeline.CheckSessionPipeline" />
+    <bean id="dispatchMethodPipeline_AM1" class="org.slstudio.acs.tr069.pipeline.DispatchMethodPipeline" >
+        <constructor-arg ref="methodDispatcher_AM1" />
+    </bean>
+    <bean id="finalizePipeline_AM1" class="org.slstudio.acs.tr069.pipeline.FinalizePipeline" />
+    <bean id="tr069EnginePipelineList_AM1" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="initializePipeline_AM1" />
+                <ref bean="parseMessagePipeline_AM1" />
+                <ref bean="validateMessagePipeline_AM1" />
+                <ref bean="checkSessionPipeline_AM1" />
+                <ref bean="dispatchMethodPipeline_AM1" />
+                <ref bean="finalizePipeline_AM1" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="tr069AM1Spec" class="org.slstudio.acs.tr069.engine.spec.TR069AM1Spec" />
+
+    <bean id="tr069AM1Engine" class="org.slstudio.acs.tr069.engine.TR069ProtocolEngine">
         <property name="engineID" value="tr069AM1" />
         <property name="contextLocator" ref="contextLocator" />
+        <property name="pipelines" ref="tr069EnginePipelineList_AM1" />
+        <property name="tr069Spec" ref="tr069AM1Spec" />
     </bean>
-    <bean id="tr069AM2Engine" class="org.slstudio.acs.tr069.engine.TR069AM2Engine">
+
+    <!-- bean for tr069 amendment 2 protocol engine -->
+    <bean id="methodDispatcher_AM2" class="org.slstudio.acs.tr069.dispatcher.DefaultTR069MethodDispatcher" />
+
+    <bean id="initializePipeline_AM2" class="org.slstudio.acs.tr069.pipeline.InitializePipeline" />
+    <bean id="parseMessagePipeline_AM2" class="org.slstudio.acs.tr069.pipeline.ParseMessagePipeline" />
+    <bean id="validateMessagePipeline_AM2" class="org.slstudio.acs.tr069.pipeline.ValidateMessageSchemaPipeline">
+        <constructor-arg ref="schemaLocator" />
+    </bean>
+    <bean id="checkSessionPipeline_AM2" class="org.slstudio.acs.tr069.pipeline.CheckSessionPipeline" />
+    <bean id="dispatchMethodPipeline_AM2" class="org.slstudio.acs.tr069.pipeline.DispatchMethodPipeline" >
+        <constructor-arg ref="methodDispatcher_AM2" />
+    </bean>
+    <bean id="finalizePipeline_AM2" class="org.slstudio.acs.tr069.pipeline.FinalizePipeline" />
+    <bean id="tr069EnginePipelineList_AM2" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="initializePipeline_AM2" />
+                <ref bean="parseMessagePipeline_AM2" />
+                <ref bean="validateMessagePipeline_AM2" />
+                <ref bean="checkSessionPipeline_AM2" />
+                <ref bean="dispatchMethodPipeline_AM2" />
+                <ref bean="finalizePipeline_AM2" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="tr069AM2Spec" class="org.slstudio.acs.tr069.engine.spec.TR069AM2Spec" />
+    <bean id="tr069AM2Engine" class="org.slstudio.acs.tr069.engine.TR069ProtocolEngine">
         <property name="engineID" value="tr069AM2" />
         <property name="contextLocator" ref="contextLocator" />
+        <property name="pipelines" ref="tr069EnginePipelineList_AM2" />
+        <property name="tr069Spec" ref="tr069AM2Spec" />
     </bean>
+
+    <!-- bean for tr069 amendment 3 protocol engine -->
+    <bean id="methodDispatcher_AM3" class="org.slstudio.acs.tr069.dispatcher.DefaultTR069MethodDispatcher" />
+
+    <bean id="initializePipeline_AM3" class="org.slstudio.acs.tr069.pipeline.InitializePipeline" />
+    <bean id="parseMessagePipeline_AM3" class="org.slstudio.acs.tr069.pipeline.ParseMessagePipeline" />
+    <bean id="validateMessagePipeline_AM3" class="org.slstudio.acs.tr069.pipeline.ValidateMessageSchemaPipeline" >
+        <constructor-arg ref="schemaLocator"/>
+    </bean>
+    <bean id="checkSessionPipeline_AM3" class="org.slstudio.acs.tr069.pipeline.CheckSessionPipeline" />
+    <bean id="dispatchMethodPipeline_AM3" class="org.slstudio.acs.tr069.pipeline.DispatchMethodPipeline" >
+        <constructor-arg ref="methodDispatcher_AM3" />
+    </bean>
+    <bean id="finalizePipeline_AM3" class="org.slstudio.acs.tr069.pipeline.FinalizePipeline" />
+    <bean id="tr069EnginePipelineList_AM3" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="initializePipeline_AM3" />
+                <ref bean="parseMessagePipeline_AM3" />
+                <ref bean="validateMessagePipeline_AM3" />
+                <ref bean="checkSessionPipeline_AM3" />
+                <ref bean="dispatchMethodPipeline_AM3" />
+                <ref bean="finalizePipeline_AM3" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="tr069AM3Spec" class="org.slstudio.acs.tr069.engine.spec.TR069AM3Spec" />
     <bean id="tr069AM3Engine" class="org.slstudio.acs.tr069.engine.TR069AM3Engine">
         <property name="engineID" value="tr069AM3" />
         <property name="contextLocator" ref="contextLocator" />
+        <property name="pipelines" ref="tr069EnginePipelineList_AM3" />
+        <property name="tr069Spec" ref="tr069AM3Spec" />
     </bean>
+
+    <!-- bean for tr069 amendment 4 protocol engine -->
+    <bean id="methodDispatcher_AM4" class="org.slstudio.acs.tr069.dispatcher.DefaultTR069MethodDispatcher" />
+
+    <bean id="initializePipeline_AM4" class="org.slstudio.acs.tr069.pipeline.InitializePipeline" />
+    <bean id="parseMessagePipeline_AM4" class="org.slstudio.acs.tr069.pipeline.ParseMessagePipeline" />
+    <bean id="validateMessagePipeline_AM4" class="org.slstudio.acs.tr069.pipeline.ValidateMessageSchemaPipeline" >
+        <constructor-arg ref="schemaLocator"/>
+    </bean>
+    <bean id="checkSessionPipeline_AM4" class="org.slstudio.acs.tr069.pipeline.CheckSessionPipeline" />
+    <bean id="dispatchMethodPipeline_AM4" class="org.slstudio.acs.tr069.pipeline.DispatchMethodPipeline" >
+        <constructor-arg ref="methodDispatcher_AM4" />
+    </bean>
+    <bean id="finalizePipeline_AM4" class="org.slstudio.acs.tr069.pipeline.FinalizePipeline" />
+    <bean id="tr069EnginePipelineList_AM4" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="initializePipeline_AM4" />
+                <ref bean="parseMessagePipeline_AM4" />
+                <ref bean="validateMessagePipeline_AM4" />
+                <ref bean="checkSessionPipeline_AM4" />
+                <ref bean="dispatchMethodPipeline_AM4" />
+                <ref bean="finalizePipeline_AM4" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="tr069AM4Spec" class="org.slstudio.acs.tr069.engine.spec.TR069AM4Spec" />
     <bean id="tr069AM4Engine" class="org.slstudio.acs.tr069.engine.TR069AM4Engine">
         <property name="engineID" value="tr069AM4" />
         <property name="contextLocator" ref="contextLocator" />
+        <property name="pipelines" ref="tr069EnginePipelineList_AM4" />
+        <property name="tr069Spec" ref="tr069AM4Spec" />
     </bean>
 
     <bean id="testEnginePipelineList" class="java.util.ArrayList">

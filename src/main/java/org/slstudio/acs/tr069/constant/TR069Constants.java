@@ -25,6 +25,14 @@ public class TR069Constants {
     public static final String SOAP_XSD_NAMESPACE="http://www.w3.org/2001/XMLSchema";
     public static final String SOAP_XSI_NAMESPACE="http://www.w3.org/2001/XMLSchema-instance";
 
+    //constants for TR069 schema
+    public static final String SCHEMA_TR069 = "cwmp-1-0";
+    public static final String SCHEMA_TR069_AM1 = "cwmp-1-0";
+    public static final String SCHEMA_TR069_AM2 = "cwmp-1-1";
+    public static final String SCHEMA_TR069_AM3 = "cwmp-1-2";
+    public static final String SCHEMA_TR069_AM4 = "cwmp-1-3";
+
+
     //constants for SOAP/TR069 message
     public static final String TR069_SOAP_FAULTSTRING="CWMP fault";
     public static final String TR069_SOAP_RESPONSE="Response";
