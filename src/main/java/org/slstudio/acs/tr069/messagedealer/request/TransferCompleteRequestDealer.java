@@ -5,7 +5,6 @@ import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.databinding.request.TransferCompleteRequest;
 import org.slstudio.acs.tr069.exception.TR069Exception;
-import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.messagedealer.AbstractRequestDealer;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.tr069.soap.SOAPUtil;
@@ -23,7 +22,7 @@ public class TransferCompleteRequestDealer extends AbstractRequestDealer {
     }
 
     @Override
-    protected String dealRequest(ITR069MessageContext context, TR069Message request) throws TR069Fault {
+    protected String getResponseString(ITR069MessageContext context, TR069Message request) {
         String requestID = SOAPUtil.getIDFromHeader(request.getEnvelope());
         return getTransferCompleteResponse(requestID);
     }
@@ -56,4 +55,5 @@ public class TransferCompleteRequestDealer extends AbstractRequestDealer {
 
         return result.toString();
     }
+
 }

@@ -16,10 +16,10 @@ public class TR069Config {
     }
 
     public static int getMaxReceiveEnvelopeCount() {
-        return 1;
+        return 5;
     }
 
     public static int getMaxSendEnvelopeCount() {
-        return 1;
+        return 5;
     }
 }

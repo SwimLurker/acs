@@ -6,7 +6,6 @@ import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.databinding.request.GetRPCMethodsRequest;
 import org.slstudio.acs.tr069.engine.TR069ProtocolEngine;
 import org.slstudio.acs.tr069.exception.TR069Exception;
-import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.messagedealer.AbstractRequestDealer;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.tr069.soap.SOAPUtil;
@@ -26,7 +25,7 @@ public class GetRPCMethodsRequestDealer extends AbstractRequestDealer {
     }
 
     @Override
-    protected String dealRequest(ITR069MessageContext context, TR069Message request) throws TR069Fault {
+    protected String getResponseString(ITR069MessageContext context, TR069Message request) {
         String requestID = SOAPUtil.getIDFromHeader(request.getEnvelope());
         TR069ProtocolEngine engine = context.getTR069SessionContext().getTR069Engine();
         List<String> rpcMethodList = engine.getTr069Spec().getRpcMethodList();
@@ -66,4 +65,5 @@ public class GetRPCMethodsRequestDealer extends AbstractRequestDealer {
 
         return result.toString();
     }
+
 }

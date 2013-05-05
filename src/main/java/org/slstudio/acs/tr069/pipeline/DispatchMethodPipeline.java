@@ -8,11 +8,11 @@ import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.dispatcher.ITR069MethodDispatcher;
 import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
-import org.slstudio.acs.tr069.messagedealer.EmptyMessageDealer;
 import org.slstudio.acs.tr069.messagedealer.ITR069MethodDealer;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.tr069.soap.SOAPMessage;
 import org.slstudio.acs.tr069.soap.SOAPUtil;
+import org.slstudio.acs.util.BeanLocator;
 
 import java.util.List;
 
@@ -33,11 +33,8 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
     @Override
     protected void process(ITR069MessageContext context) throws PipelineException {
         List<SOAPMessage> messages = context.getSoapMessageList();
-        int maxReceiveEnvelopeCount = context.getMaxReceiveEnvelopeCount();
-        Integer maxSendEnvelopes=context.getMaxSendEnvelopeCount();
-
-        context.setCanSendEnvelopeCount(maxSendEnvelopes);
-
+        int maxReceiveEnvelopeCount = context.getTR069SessionContext().getMaxReceiveEnvelopeCount();
+        log.debug("current message can send envelope:" + context.getCanSendEnvelopeCount() );
 
         StringBuilder resultBuf=new StringBuilder();
         for(int i=0;i<messages.size();i++){
@@ -77,6 +74,7 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
                 resultBuf.append(responseStr);
             }
             //set new can send envelopes count
+            log.debug("first use can send envelope count is:" + context.getCanSendEnvelopeCount());
             int currentAvailableEnvelopes=context.getCanSendEnvelopeCount();
             if(currentAvailableEnvelopes!=-1){
                 context.setCanSendEnvelopeCount(currentAvailableEnvelopes - message.getResponses().size());
@@ -91,7 +89,7 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
         while(context.getCanSendEnvelopeCount()>0){
             SOAPMessage message=new SOAPMessage(null);
             try {
-                ITR069MethodDealer dealer=new EmptyMessageDealer();
+                ITR069MethodDealer dealer= (ITR069MethodDealer)BeanLocator.getBean("EmptyMessageDealer");
                 dealer.deal(context,message);
             } catch (Exception exp){
                 log.error("deal message failed",exp);

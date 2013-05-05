@@ -2,12 +2,11 @@ package org.slstudio.acs.tr069.messagedealer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.databinding.request.InformRequest;
+import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
-import org.slstudio.acs.tr069.job.IJobManager;
-import org.slstudio.acs.tr069.job.ISystemJob;
-import org.slstudio.acs.tr069.job.IUserJob;
+import org.slstudio.acs.tr069.job.IJob;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.tr069.soap.SOAPUtil;
@@ -20,34 +19,91 @@ import org.slstudio.acs.tr069.soap.SOAPUtil;
  */
 public abstract class AbstractResponseDealer extends AbstractMessageDealer {
     private static final Log log = LogFactory.getLog(AbstractResponseDealer.class);
-    private IJobManager jobManager = null;
 
-    protected String dealMessage(ITR069MessageContext context,TR069Message message) throws TR069Fault {
-        //first get responseID
-        String responseID = SOAPUtil.getIDFromHeader(message.getEnvelope());
-        String deviceKey = getDeviceKey(context.getTR069SessionContext().getInformRequest());
-        //then check if it is system job which stored in session/db
+    protected String dealMessage(ITR069MessageContext context,TR069Message response) throws TR069Fault {
+        //get responseID
+        String responseID = SOAPUtil.getIDFromHeader(response.getEnvelope());
+
+        //get device key
+        String deviceKey = getDeviceKey(context.getTR069SessionContext());
+
+        //get job id from response id
+        String jobID = getJobIDByResponseID(responseID);
+
         IJobRequest request = null;
-        ISystemJob systemJob = jobManager.findSystemJob(deviceKey, responseID);
-        if(systemJob != null){
-            request = systemJob.handleResponse(context, message);
-            if(request == null && systemJob.finished()){
-                jobManager.removeJob(systemJob);
-            }
-        }else{
-            IUserJob userJob = jobManager.findUserJob(deviceKey, responseID);
-            if(userJob != null){
-                request = userJob.handleResponse(context, message);
-                if(request == null && userJob.finished()){
-                    jobManager.removeJob(userJob);
-                }
-            }
+        //find related job, first search system job then user job
+        IJob currentJob = findJob(deviceKey, jobID);
+        if(currentJob == null){
+            // no job is running or can not find job for some reason, then just return null
+            log.debug("can not find job:" + jobID + ", for device:" + deviceKey + " when handle response:" + responseID);
+            return null;
         }
-        return (request == null)?null:request.toString();
+        if(currentJob.isRunning()){
+             request = handleRunningJob(currentJob, context, response, responseID);
+        }else if(currentJob.isReady()){
+            //impossible, should not happened, just return null to let further message deal
+            log.error("job:" + jobID + "should not be ready status for device:" + deviceKey + " when handle response:" + responseID);
+        }else if(currentJob.isFinished()){
+            //impossible, should not happened, just return null to let further message deal
+            log.error("job:" + jobID + "should not be finished status for device:" + deviceKey + " when handle response:" + responseID);
+            getJobManager().removeJob(currentJob);
+        }
+        return formatRequest(context, response, request);
     }
 
-    private String getDeviceKey(InformRequest informRequest) {
-        return null;
+    private String getJobIDByResponseID(String responseID) {
+        if(responseID == null){
+            return null;
+        }
+        int pos = responseID.indexOf("_");
+        if (pos == -1) {
+            return null;
+        }
+        String jobID = responseID.substring(0, pos);
+        if (jobID == null) {
+            return null;
+        }
+        return jobID;
+    }
+
+    private IJob findJob(String deviceKey, String jobID) {
+        if(jobID == null || deviceKey == null){
+            return null;
+        }
+        IJob result = null;
+        result = getJobManager().findSystemJob(deviceKey, jobID);
+        if(result == null){
+            result = getJobManager().findUserJob(deviceKey, jobID);
+        }
+        return result;
+    }
+
+    private IJobRequest handleRunningJob(IJob currentJob, ITR069MessageContext context, TR069Message response, String responseID)
+            throws TR069Fault{
+        IJobRequest request = null;
+        try{
+            log.debug("begin running job:" + currentJob.getJobID() + " with response:" + responseID);
+            request = currentJob.continueRunWithResponse(context, response);
+            if(currentJob.isFinished()){
+                log.debug("after handle response:" + responseID +", job:"+ currentJob.getJobID() + " has finished");
+                getJobManager().removeJob(currentJob);
+            }
+            log.debug("after handle response:" + responseID +"for job:"+ currentJob.getJobID() + ", get request:" + (request == null?"null":request.toSOAPMessage()));
+        }catch (Exception exp){
+            log.error("when handle response:" + responseID + ",job:" + currentJob.getJobID() + " failed for execution",exp);
+            currentJob.failOnError(exp);
+            getJobManager().removeJob(currentJob);
+            throw new TR069Fault(true,
+                    TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
+                    FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_INTERNAL_ERROR),
+                    responseID);
+        }
+        return request;
+    }
+
+    //method subclass can override to format request
+    protected String formatRequest(ITR069MessageContext context, TR069Message response, IJobRequest request){
+        return request == null? null: request.toSOAPMessage();
     }
 
 }

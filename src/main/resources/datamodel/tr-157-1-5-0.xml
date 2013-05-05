@@ -187,7 +187,7 @@
     <component ref="UI_RemoteAccessDiffs"/>
   </component>
   
-  <!--Update to Software Modules ExecEnv object to add run level parameter requested by OSGi-->
+  <!--Update to Software Modules ExecEnv object to add beginRun level parameter requested by OSGi-->
   <component name="SoftwareModulesDiffs">
     <object base="SoftwareModules.ExecEnv.{i}." access="readOnly" minEntries="0" maxEntries="unbounded" numEntriesParameter="ExecEnvNumberOfEntries">
       <parameter name="InitialExecutionUnitRunLevel" access="readWrite" dmr:previousParameter="CurrentRunLevel">

@@ -89,4 +89,9 @@ public class UploadResponse extends TR069Message {
         }
     }
 
+    @Override
+    public String getMessageName() {
+        return TR069Constants.CLIENT_UPLOAD_MESSAGERESPONSE;
+    }
+
 }

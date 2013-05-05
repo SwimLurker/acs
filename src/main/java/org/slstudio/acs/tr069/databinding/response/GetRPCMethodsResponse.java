@@ -45,4 +45,9 @@ public class GetRPCMethodsResponse extends TR069Message {
             }
         }
     }
+
+    @Override
+    public String getMessageName() {
+        return TR069Constants.CLIENT_GETRPCMETHODS_MESSAGERESPONSE;
+    }
 }

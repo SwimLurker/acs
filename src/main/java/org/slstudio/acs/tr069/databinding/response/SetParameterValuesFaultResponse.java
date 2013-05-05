@@ -43,4 +43,8 @@ public class SetParameterValuesFaultResponse extends FaultResponse {
             this.parameterFaultList.add(new ParameterFaultStruct(paramOE));
         }
     }
+    @Override
+    public String getMessageName() {
+        return TR069Constants.CLIENT_SETPARAMETERVALUES_MESSAGEFAULT;
+    }
 }

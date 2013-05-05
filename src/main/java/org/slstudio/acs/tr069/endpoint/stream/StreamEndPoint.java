@@ -3,6 +3,7 @@ package org.slstudio.acs.tr069.endpoint.stream;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.EndPointException;
 import org.slstudio.acs.kernal.session.context.IMessageContext;
+import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +53,14 @@ public class StreamEndPoint implements IProtocolEndPoint {
     public void writeResponse(IMessageContext context) throws EndPointException {
         PrintWriter pw = new PrintWriter(responseOS);
         pw.write(Integer.toString(context.getLastErrorCode()));
+        pw.write("\r\n");
+        pw.write("DeviceKey=" + ((ITR069MessageContext)context).getTR069SessionContext().getDeviceKey());
+        pw.write("\r\n");
+        pw.write("ClientIP=" + ((ITR069MessageContext)context).getTR069SessionContext().getClientIP());
+        pw.write("\r\n");
+        pw.write("ClientPort=" + ((ITR069MessageContext)context).getTR069SessionContext().getClientPort());
+        pw.write("\r\n");
+        pw.write("SessionID=" + (context.getSessionContext().getSessionID()));
         pw.write("\r\n");
         if(context.getResponse()!=null){
             pw.write(context.getResponse());

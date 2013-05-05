@@ -205,4 +205,56 @@
         <property name="contextLocator" ref="contextLocator" />
         <property name="pipelines" ref="testEnginePipelineList" />
     </bean>
+
+    <!-- beans for request message dealer -->
+    <bean id="saveInformInfoPlugin" class="org.slstudio.acs.tr069.messagedealer.plugin.SaveInformInfoPlugin" />
+    <bean id="informPrePluginList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="saveInformInfoPlugin" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="InformDealer" class="org.slstudio.acs.tr069.messagedealer.request.InformRequestDealer">
+        <property name="prePlugins" ref="informPrePluginList" />
+    </bean>
+    <bean id="TransferCompleteDealer" class="org.slstudio.acs.tr069.messagedealer.request.TransferCompleteRequestDealer">
+    </bean>
+    <bean id="GetRPCMethodsDealer" class="org.slstudio.acs.tr069.messagedealer.request.GetRPCMethodsRequestDealer">
+    </bean>
+    <!-- beans for response message dealer -->
+    <bean id="AddObjectResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.AddObjectResponseDealer">
+    </bean>
+    <bean id="DeleteObjectResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.DeleteObjectResponseDealer">
+    </bean>
+    <bean id="DownloadResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.DownloadResponseDealer">
+    </bean>
+    <bean id="FactoryResetResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.FactoryResetResponseDealer">
+    </bean>
+    <bean id="GetParameterAttributesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.GetParameterAttributesResponseDealer">
+    </bean>
+    <bean id="GetParameterNamesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.GetParameterNamesResponseDealer">
+    </bean>
+    <bean id="GetParameterValuesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.GetParameterValuesResponseDealer">
+    </bean>
+    <bean id="GetRPCMethodsResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.GetRPCMethodsResponseDealer">
+    </bean>
+    <bean id="RebootResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.RebootResponseDealer">
+    </bean>
+    <bean id="ScheduleInformResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.ScheduleInformResponseDealer">
+    </bean>
+    <bean id="SetParameterAttributesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.SetParameterAttributesResponseDealer">
+    </bean>
+    <bean id="SetParameterValuesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.SetParameterValuesResponseDealer">
+    </bean>
+    <bean id="UploadResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.UploadResponseDealer">
+    </bean>
+    <!-- beans for fault message dealer -->
+    <bean id="FaultDealer" class="org.slstudio.acs.tr069.messagedealer.response.FaultDealer">
+    </bean>
+    <bean id="SetParameterValuesFaultDealer" class="org.slstudio.acs.tr069.messagedealer.response.SetParameterValuesFaultDealer">
+    </bean>
+    <!-- beans for empty message dealer -->
+    <bean id="EmptyMessageDealer" class="org.slstudio.acs.tr069.messagedealer.EmptyMessageDealer">
+    </bean>
 </beans>

@@ -17,6 +17,13 @@ public class JobQueue<T extends IJob> {
     }
     public T pop(){
         if(queue.size()>0){
+            return queue.remove(0);
+        }
+        return null;
+    }
+
+    public T fetch(){
+        if(queue.size()>0){
             return queue.get(0);
         }
         return null;

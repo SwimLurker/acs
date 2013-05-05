@@ -154,5 +154,10 @@ public class InformRequest extends TR069Message {
         }
     }
 
+    @Override
+    public String getMessageName() {
+        return TR069Constants.INFORM_MESSAGE;
+    }
+
 
 }

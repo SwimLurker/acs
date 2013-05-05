@@ -59,4 +59,9 @@ public class AddObjectResponse extends TR069Message {
         this.status=ConverterUtil.convertToInt(((OMElement)statusKeyIt.next()).getText());
     }
 
+    @Override
+    public String getMessageName() {
+        return TR069Constants.CLIENT_ADDOBJECT_MESSAGERESPONSE;
+    }
+
 }

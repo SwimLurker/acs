@@ -59,7 +59,7 @@ public class MemoryJobManager implements IJobManager {
     public ISystemJob fetchSystemJob(String deviceKey) {
         JobQueue<ISystemJob> jobQueue = systemJobQueueTable.get(deviceKey);
         if(jobQueue != null){
-            return jobQueue.pop();
+            return jobQueue.fetch();
         }
         return null;
     }
@@ -67,7 +67,7 @@ public class MemoryJobManager implements IJobManager {
     public IUserJob fetchUserJob(String deviceKey) {
         JobQueue<IUserJob> jobQueue = userJobQueueTable.get(deviceKey);
         if(jobQueue != null){
-            return jobQueue.pop();
+            return jobQueue.fetch();
         }
         return null;
     }
@@ -76,14 +76,17 @@ public class MemoryJobManager implements IJobManager {
         JobQueue<ISystemJob> jobQueue = systemJobQueueTable.get(job.getDeviceKey());
         if(jobQueue == null){
             jobQueue = new JobQueue<ISystemJob>();
+            systemJobQueueTable.put(job.getDeviceKey(),jobQueue);
         }
         jobQueue.push(job);
+
     }
 
     public void addUserJob(IUserJob job){
         JobQueue<IUserJob> jobQueue = userJobQueueTable.get(job.getDeviceKey());
         if(jobQueue == null){
             jobQueue = new JobQueue<IUserJob>();
+            userJobQueueTable.put(job.getDeviceKey(),jobQueue);
         }
         jobQueue.push(job);
     }

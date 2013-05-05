@@ -49,5 +49,10 @@ public class GetParameterValuesResponse  extends TR069Message {
 
     }
 
+    @Override
+    public String getMessageName() {
+        return TR069Constants.CLIENT_GETPARAMETERVALUES_MESSAGERESPONSE;
+    }
+
 }
 

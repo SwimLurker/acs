@@ -7,4 +7,5 @@ package org.slstudio.acs.tr069.job.request;
  * Time: ионГ1:45
  */
 public interface IJobRequest {
+    public String toSOAPMessage();
 }

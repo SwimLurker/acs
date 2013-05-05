@@ -89,4 +89,9 @@ public class DownloadResponse extends TR069Message {
         }
     }
 
+    @Override
+    public String getMessageName() {
+        return TR069Constants.CLIENT_DOWNLOAD_MESSAGERESPONSE;
+    }
+
 }

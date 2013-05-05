@@ -1,9 +1,9 @@
 package org.slstudio.acs.tr069.session.context;
 
-import org.slstudio.acs.hms.device.DeviceID;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.context.AbstractSessionContext;
+import org.slstudio.acs.tr069.config.TR069Config;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.request.InformRequest;
 import org.slstudio.acs.tr069.engine.TR069ProtocolEngine;
@@ -18,6 +18,8 @@ import java.util.List;
  * Time: ÉÏÎç12:01
  */
 public class TR069SessionContext extends AbstractSessionContext implements ITR069SessionContext {
+    private int maxReceivedEnvelopeCount = 1;
+    private int maxSendEnvelopeCount = 1;
 
     public TR069SessionContext() {
         super(new TR069MessageContextFactory());
@@ -56,12 +58,12 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
         setProperty(TR069Constants.SESSIONCONTEXT_KEY_INFORMREQUEST, informRequest);
     }
 
-    public DeviceID getDeviceID() {
-        return (DeviceID)getProperty(TR069Constants.SESSIONCONTEXT_KEY_DEVICEID);
+    public String getDeviceKey() {
+        return (String)getProperty(TR069Constants.SESSIONCONTEXT_KEY_DEVICEKEY);
     }
 
-    public void setDeviceID(DeviceID deviceID) {
-        setProperty(TR069Constants.SESSIONCONTEXT_KEY_DEVICEID, deviceID);
+    public void setDeviceKey(String deviceKey) {
+        setProperty(TR069Constants.SESSIONCONTEXT_KEY_DEVICEKEY, deviceKey);
     }
 
     public ITR069MessageContext getCurrentTR069MessageContext() {
@@ -76,6 +78,22 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
         return (TR069ProtocolEngine)getEngine();
     }
 
+    public int getMaxReceiveEnvelopeCount() {
+        return maxReceivedEnvelopeCount;
+    }
+
+    public void setMaxReceiveEnvelopeCount(int maxReceiveEnvelopeCount) {
+        this.maxReceivedEnvelopeCount = maxReceiveEnvelopeCount;
+    }
+
+    public int getMaxSendEnvelopeCount() {
+        return maxSendEnvelopeCount;
+    }
+
+    public void setMaxSendEnvelopeCount(int maxSendEnvelopeCount) {
+        this.maxSendEnvelopeCount = maxSendEnvelopeCount;
+    }
+
     @Override
     public void init(IProtocolEndPoint endPoint) throws ContextException {
         String clientIP = endPoint.getProperty(TR069Constants.SESSIONCONTEXT_KEY_CLIENTIP);
@@ -88,5 +106,7 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
             port = -1;
         }
         setClientPort(-1);
+        setMaxReceiveEnvelopeCount(TR069Config.getMaxReceiveEnvelopeCount());
+        setMaxSendEnvelopeCount(TR069Config.getMaxSendEnvelopeCount());
     }
 }

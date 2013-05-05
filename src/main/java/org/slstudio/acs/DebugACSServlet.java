@@ -100,7 +100,7 @@ public class DebugACSServlet extends HttpServlet {
         result.append("<form action=\"");
         result.append(postTarget);
         result.append("\" method=\"post\">");
-        result.append("<tr valign=\"top\"><td width=\"10%\">Properties:</td><td><textarea name=\"properties\" rows=\"8\" cols=\"80\" ></textarea></td></tr>");
+        result.append("<tr valign=\"top\"><td width=\"10%\">Properties:</td><td><textarea name=\"properties\" rows=\"8\" cols=\"80\" >SessionContext_Key_ClientIP=127.0.0.1\r\nSessionContext_Key_ClientID=10000</textarea></td></tr>");
         result.append("<tr valign=\"top\"><td>Request:</td><td><textarea name=\"requestMsg\" rows=\"20\" cols=\"80\" ></textarea></td></tr>");
         result.append("<tr valign=\"top\"><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"Submit\" /></td></tr>");
         result.append("</form>");

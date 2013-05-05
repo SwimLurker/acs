@@ -1,6 +1,5 @@
 package org.slstudio.acs.tr069.session.context;
 
-import org.slstudio.acs.hms.device.DeviceID;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.tr069.databinding.request.InformRequest;
 import org.slstudio.acs.tr069.engine.TR069ProtocolEngine;
@@ -21,9 +20,14 @@ public interface ITR069SessionContext extends ISessionContext {
     public void setClientPort(int port);
     public InformRequest getInformRequest();
     public void setInformRequest(InformRequest informRequest);
-    public DeviceID getDeviceID();
-    public void setDeviceID(DeviceID deviceID);
+    public String getDeviceKey();
+    public void setDeviceKey(String deviceKey);
     public ITR069MessageContext getCurrentTR069MessageContext();
     public List<ITR069MessageContext> getTR069MessageContextList();
     public TR069ProtocolEngine getTR069Engine();
+    public int getMaxReceiveEnvelopeCount();
+    public void setMaxReceiveEnvelopeCount(int maxReceiveEnvelopeCount);
+    public int getMaxSendEnvelopeCount();
+    public void setMaxSendEnvelopeCount(int maxSendEnvelopeCount);
+
 }

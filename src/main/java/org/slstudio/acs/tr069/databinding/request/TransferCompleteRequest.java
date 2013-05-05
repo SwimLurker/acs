@@ -98,4 +98,9 @@ public class TransferCompleteRequest extends TR069Message {
             throw new DataBindingException(TR069Constants.ERROR_DATA_BINDING,"complete time format error",e);
         }
     }
+
+    @Override
+    public String getMessageName() {
+        return TR069Constants.TRANSFERCOMPLETE_MESSAGE;
+    }
 }

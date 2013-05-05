@@ -11,9 +11,14 @@ import org.slstudio.acs.tr069.event.ITR069Event;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
+import org.slstudio.acs.tr069.job.DefaultTR069Job;
+import org.slstudio.acs.tr069.job.IJobManager;
+import org.slstudio.acs.tr069.job.ISystemJob;
+import org.slstudio.acs.tr069.job.MemoryJobManager;
 import org.slstudio.acs.tr069.messagedealer.plugin.IPostDealMessagePlugin;
 import org.slstudio.acs.tr069.messagedealer.plugin.IPreDealMessagePlugin;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
+import org.slstudio.acs.tr069.session.context.ITR069SessionContext;
 import org.slstudio.acs.tr069.soap.SOAPMessage;
 import org.slstudio.acs.tr069.soap.SOAPUtil;
 
@@ -29,9 +34,24 @@ import java.util.List;
 public abstract class AbstractMessageDealer implements ITR069MethodDealer{
     private static final Log log = LogFactory.getLog(AbstractMessageDealer.class);
 
+    private static IJobManager jobManager = null;
+    static {
+        jobManager = new MemoryJobManager();
+        ISystemJob job = new DefaultTR069Job("FC1234567890","1");
+        jobManager.addSystemJob(job);
+    }
+
     private List<IPreDealMessagePlugin> prePlugins = new ArrayList<IPreDealMessagePlugin>();
     private List<IPostDealMessagePlugin> postPlugins = new ArrayList<IPostDealMessagePlugin>();
     private List<IRequestEventListener> listeners = new ArrayList<IRequestEventListener>();
+
+    public IJobManager getJobManager() {
+        return jobManager;
+    }
+
+    public void setJobManager(IJobManager jobManager) {
+        this.jobManager = jobManager;
+    }
 
     public List<IPreDealMessagePlugin> getPrePlugins() {
         return prePlugins;
@@ -58,9 +78,6 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
     }
 
     public void deal(ITR069MessageContext context, SOAPMessage message){
-        //call plugins before deal request
-        callPreRequestPlugins(context, message);
-
         TR069Message tr069Message = null;
         try{
             tr069Message = convertMessage(message.getEnvelope());
@@ -68,6 +85,10 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
             log.error("convert soap message to tr069 message failed",fault);
             dealMessageWithFault(message, fault);
         }
+        //call plugins before deal message
+        callPreDealMessagePlugins(context, message, tr069Message);
+
+
         if(!message.isDealed()){
             try{
                 String response = dealMessage(context, tr069Message);
@@ -82,7 +103,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         }
 
         //call plugins after deal request
-        callPostRequestPlugins(context, message);
+        callPostDealMessagePlugins(context, message, tr069Message);
 
         //fire event
         fireRequestEvent(context, tr069Message);
@@ -108,13 +129,16 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         }
     }
 
-    private void callPreRequestPlugins(ITR069MessageContext context, SOAPMessage message) {
+    private void callPreDealMessagePlugins(ITR069MessageContext context, SOAPMessage soapMessage, TR069Message tr069Message) {
         for(IPreDealMessagePlugin plugin : prePlugins) {
-            plugin.execute(context, message);
+            plugin.execute(context, soapMessage, tr069Message);
         }
     }
 
     private TR069Message convertMessage(SOAPEnvelope envelope) throws TR069Fault{
+        if(envelope == null){
+            return null;
+        }
         String requestID = SOAPUtil.getIDFromHeader(envelope);
         TR069Message request = null;
         try{
@@ -129,9 +153,9 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         return request;
     }
 
-    private void callPostRequestPlugins(ITR069MessageContext context, SOAPMessage message){
+    private void callPostDealMessagePlugins(ITR069MessageContext context, SOAPMessage soapMessage, TR069Message tr069Message){
         for(IPostDealMessagePlugin plugin : postPlugins) {
-            plugin.execute(context, message);
+            plugin.execute(context, soapMessage, tr069Message);
         }
     }
 
@@ -144,6 +168,20 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
 
     protected ITR069Event createMessageEvent(ITR069MessageContext context, TR069Message message){
         return new DefaultTR069Event(context, message);
+    }
+
+    protected String getDeviceKey(ITR069SessionContext context) {
+        String deviceKey = null;
+        deviceKey = context.getDeviceKey();
+        if(deviceKey == null){
+            String clientID = context.getClientID();
+            deviceKey = findDeviceKeyByClientID(clientID);
+        }
+        return deviceKey;
+    }
+
+    private String findDeviceKeyByClientID(String clientID){
+        return null;
     }
 
     protected abstract TR069Message convertToTR069Message(SOAPEnvelope envelope) throws TR069Exception;

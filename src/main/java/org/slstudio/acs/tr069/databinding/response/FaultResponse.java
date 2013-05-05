@@ -55,5 +55,10 @@ public class FaultResponse extends TR069Message {
         }
 
     }
+
+    @Override
+    public String getMessageName() {
+        return TR069Constants.CLIENT_MESSAGEFAULT;
+    }
 }
 

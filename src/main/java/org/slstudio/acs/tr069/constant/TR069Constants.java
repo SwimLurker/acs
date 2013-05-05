@@ -11,7 +11,7 @@ public class TR069Constants {
     public static final String SESSIONCONTEXT_KEY_CLIENTIP = "SessionContext_Key_ClientIP";
     public static final String SESSIONCONTEXT_KEY_CLIENTPORT = "SessionContext_Key_ClientPort";
     public static final String SESSIONCONTEXT_KEY_INFORMREQUEST = "SessionContext_Key_InformRequest";
-    public static final String SESSIONCONTEXT_KEY_DEVICEID = "SessionContext_Key_DeviceID";
+    public static final String SESSIONCONTEXT_KEY_DEVICEKEY = "SessionContext_Key_DeviceKey";
 
     //message context key for TR069
     public static final String MESSAGECONTEXT_KEY_SOAPMESSAGELIST = "Message_Key_SoapMessageList";
@@ -81,6 +81,7 @@ public class TR069Constants {
     public static final String CLIENT_GETRPCMETHODS_MESSAGERESPONSE = "GetRPCMethodsResponse";
     public static final String CLIENT_GETPARAMETERATTRIBUTES_MESSAGERESPONSE = "GetParameterAttributesResponse";
     public static final String CLIENT_SETPARAMETERATTRIBUTES_MESSAGERESPONSE = "SetParameterAttributesResponse";
+    public static final String CLIENT_MESSAGEFAULT ="Fault";
     public static final String CLIENT_SETPARAMETERVALUES_MESSAGEFAULT ="SetParameterValuesFault";
 
     //constants for TR069 client side fault code

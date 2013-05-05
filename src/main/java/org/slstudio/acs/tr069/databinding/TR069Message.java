@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Date: 13-5-1
  * Time: ионГ2:46
  */
-public class TR069Message implements Serializable {
+public abstract class TR069Message implements Serializable {
     private transient SOAPEnvelope envelope=null;
 
     public TR069Message(SOAPEnvelope envelope) {
@@ -24,5 +24,7 @@ public class TR069Message implements Serializable {
     public void setEnvelope(SOAPEnvelope envelope) {
         this.envelope = envelope;
     }
+
+    public abstract String getMessageName();
 }
 

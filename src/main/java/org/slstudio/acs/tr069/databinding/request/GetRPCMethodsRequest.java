@@ -1,6 +1,7 @@
 package org.slstudio.acs.tr069.databinding.request;
 
 import org.apache.axiom.soap.SOAPEnvelope;
+import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.DataBindingException;
 
@@ -13,5 +14,10 @@ import org.slstudio.acs.tr069.exception.DataBindingException;
 public class GetRPCMethodsRequest extends TR069Message {
     public GetRPCMethodsRequest(SOAPEnvelope envelope) throws DataBindingException {
         super(envelope);
+    }
+
+    @Override
+    public String getMessageName() {
+        return TR069Constants.GETRPCMETHODS_MESSAGE;
     }
 }

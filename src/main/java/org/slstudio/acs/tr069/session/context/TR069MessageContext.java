@@ -1,10 +1,11 @@
 package org.slstudio.acs.tr069.session.context;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.context.AbstractMessageContext;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
-import org.slstudio.acs.tr069.config.TR069Config;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.soap.SOAPMessage;
 
@@ -17,32 +18,16 @@ import java.util.List;
  * Time: ÉÏÎç2:35
  */
 public class TR069MessageContext extends AbstractMessageContext implements ITR069MessageContext {
+    private static final Log log = LogFactory.getLog(TR069MessageContext.class);
 
-    private int maxReceivedEnvelopeCount = 1;
-    private int maxSendEnvelopeCount = 1;
     private int canSendEnvelopeCount = -1;
-
-    public int getMaxReceiveEnvelopeCount() {
-        return maxReceivedEnvelopeCount;
-    }
-
-    public void setMaxReceiveEnvelopeCount(int maxReceiveEnvelopeCount) {
-        this.maxReceivedEnvelopeCount = maxReceiveEnvelopeCount;
-    }
-
-    public int getMaxSendEnvelopeCount() {
-        return maxSendEnvelopeCount;
-    }
-
-    public void setMaxSendEnvelopeCount(int maxSendEnvelopeCount) {
-        this.maxSendEnvelopeCount = maxSendEnvelopeCount;
-    }
 
     public int getCanSendEnvelopeCount(){
         return canSendEnvelopeCount;
     }
     public void setCanSendEnvelopeCount(int canSendEnvelopeCount){
         this.canSendEnvelopeCount = canSendEnvelopeCount;
+        log.debug("set can send evenlope count to " + canSendEnvelopeCount);
     }
 
     public TR069MessageContext(ISessionContext sessionContext) {
@@ -51,8 +36,7 @@ public class TR069MessageContext extends AbstractMessageContext implements ITR06
 
     @Override
     public void init(IProtocolEndPoint endPoint) throws ContextException {
-        setMaxReceiveEnvelopeCount(TR069Config.getMaxReceiveEnvelopeCount());
-        setMaxSendEnvelopeCount(TR069Config.getMaxSendEnvelopeCount());
+        setCanSendEnvelopeCount(getTR069SessionContext().getMaxSendEnvelopeCount());
     }
 
     public List<SOAPMessage> getSoapMessageList() {
