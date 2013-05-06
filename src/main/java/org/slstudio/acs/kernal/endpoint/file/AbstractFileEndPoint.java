@@ -133,7 +133,7 @@ public abstract class AbstractFileEndPoint implements IProtocolEndPoint {
     }
 
     private void writeFile(String fileName, String fileContent) throws IOException{
-        FileWriter fw = new FileWriter(new File(outputDir,fileName));
+        FileWriter fw = new FileWriter(new File(outputDir,fileName), true);
         if(fileContent!=null){
             fw.write(fileContent);
         }

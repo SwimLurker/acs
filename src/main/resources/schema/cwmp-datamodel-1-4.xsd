@@ -107,7 +107,7 @@
       - made import/@file attribute required for import element 
       - removed size facet's default maxLength on string/base64/hexBinary 
         parameters
-      - added syntax/@command attribute to the syntax element
+      - added syntax/@instruction attribute to the syntax element
     July 2011: cwmp-datamodel-1-4.xsd, corresponds to TR-106 Amendment 6
       - added top-level @file attribute
  

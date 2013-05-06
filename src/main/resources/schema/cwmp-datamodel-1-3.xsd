@@ -77,7 +77,7 @@
       - made import/@file attribute required for import element 
       - removed size facet's default maxLength on string/base64/hexBinary 
         parameters
-      - added syntax/@command attribute to the syntax element
+      - added syntax/@instruction attribute to the syntax element
 -->
 
 <!DOCTYPE cwmp-datamodel [

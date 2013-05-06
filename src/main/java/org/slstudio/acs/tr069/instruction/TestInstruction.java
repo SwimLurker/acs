@@ -1,7 +1,7 @@
-package org.slstudio.acs.tr069.command;
+package org.slstudio.acs.tr069.instruction;
 
-import org.slstudio.acs.tr069.command.exception.CommandFatalErrorException;
-import org.slstudio.acs.tr069.command.exception.CommandNormalErrorException;
+import org.slstudio.acs.tr069.instruction.exception.InstructionFatalErrorException;
+import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorException;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
 
 /**
@@ -10,11 +10,11 @@ import org.slstudio.acs.tr069.job.request.IJobRequest;
  * Date: 13-5-4
  * Time: ÉÏÎç3:39
  */
-public class TestCommand implements ICommand {
+public class TestInstruction implements IInstruction {
     private String jobID = null;
     private String someValue = null;
 
-    public TestCommand(String jobID, String someValue) {
+    public TestInstruction(String jobID, String someValue) {
         this.jobID = jobID;
         this.someValue = someValue;
     }
@@ -35,11 +35,11 @@ public class TestCommand implements ICommand {
         this.someValue = someValue;
     }
 
-    public String getCommandID() {
+    public String getInstructionID() {
         return "c1";
     }
 
-    public IJobRequest execute(CommandContext cmdContext) throws CommandNormalErrorException, CommandFatalErrorException {
+    public IJobRequest execute(InstructionContext cmdContext) throws InstructionNormalErrorException, InstructionFatalErrorException {
         cmdContext.getSymbolTable().put("test", someValue+"_test");
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

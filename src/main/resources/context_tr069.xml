@@ -10,19 +10,6 @@
        http://www.springframework.org/schema/util
        http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-    <bean id="sessionIDManager" class="org.slstudio.acs.tr069.session.idmanager.MemorySessionIDManager" >
-    </bean>
-    <bean id="sessionManager" class="org.slstudio.acs.tr069.session.sessionmanager.MemorySessionManager" >
-        <property name="sessionIDManager" ref="sessionIDManager" />
-    </bean>
-    <bean id="sessionContextFactory" class="org.slstudio.acs.tr069.session.factory.TR069SessionContextFactory" >
-    </bean>
-    <bean id="contextLocator" class="org.slstudio.acs.tr069.session.contextlocator.DefaultSessionContextLocator" >
-        <property name="sessionContextFactory" ref="sessionContextFactory" />
-        <property name="sessionManager" ref="sessionManager" />
-        <property name="sessionIDManager" ref="sessionIDManager" />
-    </bean>
-
     <bean id="schemaLocator" class="org.slstudio.acs.tr069.util.SchemaLocator" />
 
     <!-- bean for tr069 protocol engine -->

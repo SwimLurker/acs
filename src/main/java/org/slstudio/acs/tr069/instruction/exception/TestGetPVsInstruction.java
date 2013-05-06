@@ -1,7 +1,7 @@
-package org.slstudio.acs.tr069.command.exception;
+package org.slstudio.acs.tr069.instruction.exception;
 
-import org.slstudio.acs.tr069.command.CommandContext;
-import org.slstudio.acs.tr069.command.IWaitResponseCommand;
+import org.slstudio.acs.tr069.instruction.InstructionContext;
+import org.slstudio.acs.tr069.instruction.IWaitResponseInstruction;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.databinding.response.GetParameterValuesResponse;
 import org.slstudio.acs.tr069.job.request.DefaultJobRequest;
@@ -13,10 +13,10 @@ import org.slstudio.acs.tr069.job.request.IJobRequest;
  * Date: 13-5-6
  * Time: ÉÏÎç1:14
  */
-public class TestGetPVsCommand implements IWaitResponseCommand {
+public class TestGetPVsInstruction implements IWaitResponseInstruction {
     private String jobID = null;
 
-    public TestGetPVsCommand(String jobID) {
+    public TestGetPVsInstruction(String jobID) {
         this.jobID = jobID;
     }
 
@@ -28,22 +28,22 @@ public class TestGetPVsCommand implements IWaitResponseCommand {
         this.jobID = jobID;
     }
 
-    public boolean handleResponse(CommandContext cmdContext, TR069Message response) throws CommandNormalErrorException, CommandFatalErrorException {
+    public boolean handleResponse(InstructionContext cmdContext, TR069Message response) throws InstructionNormalErrorException, InstructionFatalErrorException {
         if(response instanceof GetParameterValuesResponse){
             GetParameterValuesResponse gvResposne = (GetParameterValuesResponse)response;
-            System.out.println("Command execute successfully with parameter list size:" + gvResposne.getParameterList().size());
+            System.out.println("Instruction execute successfully with parameter list size:" + gvResposne.getParameterList().size());
             return true;
         }else{
-            throw new CommandFatalErrorException("response type invalid");
+            throw new InstructionFatalErrorException("response type invalid");
         }
 
     }
 
-    public String getCommandID() {
+    public String getInstructionID() {
         return "c2";
     }
 
-    public IJobRequest execute(CommandContext cmdContext) throws CommandNormalErrorException, CommandFatalErrorException {
+    public IJobRequest execute(InstructionContext cmdContext) throws InstructionNormalErrorException, InstructionFatalErrorException {
         StringBuilder sb = new StringBuilder();
         sb.append("<SOAP-ENV:Envelope xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                 "\t<SOAP-ENV:Header>\n" +

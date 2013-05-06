@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+    <import resource="context_tr069.xml"/>
+    <import resource="context_messaging.xml"/>
+
+    <bean id="sessionIDManager" class="org.slstudio.acs.tr069.session.idmanager.MemorySessionIDManager" >
+    </bean>
+    <bean id="sessionManager" class="org.slstudio.acs.tr069.session.sessionmanager.MemorySessionManager" >
+        <property name="sessionIDManager" ref="sessionIDManager" />
+    </bean>
+    <bean id="sessionContextFactory" class="org.slstudio.acs.tr069.session.factory.TR069SessionContextFactory" >
+    </bean>
+    <bean id="contextLocator" class="org.slstudio.acs.tr069.session.contextlocator.DefaultSessionContextLocator" >
+        <property name="sessionContextFactory" ref="sessionContextFactory" />
+        <property name="sessionManager" ref="sessionManager" />
+        <property name="sessionIDManager" ref="sessionIDManager" />
+    </bean>
+
+</beans>

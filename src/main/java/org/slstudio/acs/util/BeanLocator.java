@@ -15,7 +15,7 @@ public class BeanLocator {
     private static final Log log = LogFactory.getLog(BeanLocator.class);
     private static ApplicationContext context = null;
     static {
-        context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        context = new ClassPathXmlApplicationContext("context_all.xml");
     }
     public static Object getBean(String beanName){
         try{

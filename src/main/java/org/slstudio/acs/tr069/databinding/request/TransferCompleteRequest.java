@@ -62,7 +62,7 @@ public class TransferCompleteRequest extends TR069Message {
         //commandKey
         Iterator cmdKeyIt= element.getChildrenWithName(new QName("CommandKey"));
         if(cmdKeyIt==null||!cmdKeyIt.hasNext()){
-            throw new DataBindingException(TR069Constants.ERROR_DATA_BINDING,"command key is null");
+            throw new DataBindingException(TR069Constants.ERROR_DATA_BINDING,"instruction key is null");
         }
         this.commandKey=((OMElement)cmdKeyIt.next()).getText();
 

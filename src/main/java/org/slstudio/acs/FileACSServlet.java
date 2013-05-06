@@ -3,11 +3,11 @@ package org.slstudio.acs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.exception.ACSException;
-import org.slstudio.acs.kernal.config.ConfigurationManager;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
+import org.slstudio.acs.kernal.engine.IEngineSelector;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
-import org.slstudio.acs.tr069.config.TR069Config;
 import org.slstudio.acs.tr069.endpoint.file.FileEndPoint;
+import org.slstudio.acs.tr069.engine.DefaultEngineSelector;
 import org.slstudio.acs.util.BeanLocator;
 
 import javax.servlet.ServletException;
@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,23 +27,32 @@ import java.io.IOException;
  */
 public class FileACSServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(FileACSServlet.class);
-    private IProtocolEngine engine = null;
+    private List<IProtocolEngine> engineList = new ArrayList<IProtocolEngine>();
 
     @Override
     public void init() throws ServletException {
-        if(!ACSServer.getInstance().isRunning()){
-            log.error("ACS Server is not running");
-            throw new ServletException("ACS Server is not running");
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM1Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM2Engine"));
+        engineList.add((IProtocolEngine) BeanLocator.getBean("tr069AM3Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069AM4Engine"));
+        engineList.add((IProtocolEngine)BeanLocator.getBean("tr069TestEngine"));
+        for(IProtocolEngine engine: engineList){
+            engine.init();
         }
-        TR069Config config = ConfigurationManager.getTR069Config();
-
-
-        engine = (IProtocolEngine) BeanLocator.getBean("tr069Engine");
-        engine.init();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String requestID = getRequestID(req);
+        IProtocolEngine selectedEngine = engineList.get(0);
+        IEngineSelector selector = new DefaultEngineSelector();
+        for(IProtocolEngine engine: engineList){
+            if(selector.selectEngine(requestID, engine)){
+                selectedEngine = engine;
+                break;
+            }
+        }
         try{
             File inputDir = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\input\\");
             if((!inputDir.exists())||(!inputDir.isDirectory())){
@@ -56,7 +67,7 @@ public class FileACSServlet extends HttpServlet {
                 outputDir.mkdirs();
             }
             IProtocolEndPoint endPoint= new FileEndPoint(inputDir,outputDir,propertiesFile);
-            engine.service(endPoint);
+            selectedEngine.service(endPoint);
         }catch(ACSException exp){
             exp.printStackTrace();
             throw new IOException(exp.getMessage(), exp);
@@ -66,5 +77,15 @@ public class FileACSServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
+    }
+
+    private String getRequestID(HttpServletRequest req) {
+        String requestURI=req.getRequestURI();
+        String prePath = req.getContextPath() + req.getServletPath();
+        int startPos = prePath.length() + 1;
+        if( startPos >= requestURI.length()){
+            return "";
+        }
+        return requestURI.substring(startPos);
     }
 }

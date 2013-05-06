@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>hms.properties</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL">
+            <value>${messaging.message_broker_url}</value>
+        </property>
+    </bean>
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="jmsFactory" />
+        <!-- Çø±ðËü²ÉÓÃµÄÄ£Ê½ÎªfalseÊÇp2pÎªtrueÊÇ¶©ÔÄ -->
+        <property name="pubSubDomain" value="true" />
+    </bean>
+    <bean id="commandResultQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0">
+            <value>${messaging.queue_name_commandresult}</value>
+        </constructor-arg>
+    </bean>
+    <bean id="eventQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0">
+            <value>${messaging.queue_name_event}</value>
+        </constructor-arg>
+    </bean>
+    <bean id="commandQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0">
+            <value>${messaging.queue_name_command}</value>
+        </constructor-arg>
+    </bean>
+    <bean id="jsonObjectMapper" class="org.slstudio.acs.hms.messaging.JSONObjectMapper" />
+    <!-- message senders -->
+    <bean id="commandResultSender" class="org.slstudio.acs.hms.messaging.JMSMessageSender">
+        <property name="jmsTemplate" ref="jmsTemplate" />
+        <property name="destination" ref="commandResultQueue" />
+        <property name="objectMapper" ref="jsonObjectMapper" />
+    </bean>
+    <bean id="eventSender" class="org.slstudio.acs.hms.messaging.JMSMessageSender">
+        <property name="JmsTemplate" ref="jmsTemplate" />
+        <property name="destination" ref="eventQueue" />
+        <property name="objectMapper" ref="jsonObjectMapper" />
+    </bean>
+    <!-- message sender used for test message receiver -->
+    <bean id="commandSender" class="org.slstudio.acs.hms.messaging.JMSMessageSender">
+        <property name="jmsTemplate" ref="jmsTemplate" />
+        <property name="destination" ref="commandQueue" />
+        <property name="objectMapper" ref="jsonObjectMapper" />
+    </bean>
+    <!-- message receiver -->
+    <bean id="commandReceiver" class="org.slstudio.acs.hms.messaging.DebugJMSMessageReceiver">
+        <property name="objectMapper" ref="jsonObjectMapper" />
+        <property name="targetClassname" value="org.slstudio.acs.tr069.databinding.DeviceIdStruct" />
+    </bean>
+    <bean id="commandListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer"  >
+        <property name="concurrentConsumers" value="10" />
+        <property name="connectionFactory" ref="jmsFactory" />
+        <property name="destination" ref="commandQueue" />
+        <property name="messageListener" ref="commandReceiver" />
+        <property name="pubSubNoLocal" value="false" />
+        <property name="autoStartup" value="false" />
+    </bean>
+
+
+
+    <!-- message receiver used for test message receiver -->
+    <bean id="commandResultReceiver" class="org.slstudio.acs.hms.messaging.DebugJMSMessageReceiver">
+        <property name="objectMapper" ref="jsonObjectMapper" />
+        <property name="targetClassname" value="org.slstudio.acs.tr069.databinding.DeviceIdStruct" />
+    </bean>
+    <bean id="commandResultListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer" >
+        <property name="concurrentConsumers" value="10" />
+        <property name="connectionFactory" ref="jmsFactory" />
+        <property name="destination" ref="commandResultQueue" />
+        <property name="messageListener" ref="commandResultReceiver" />
+        <property name="pubSubNoLocal" value="false" />
+        <property name="autoStartup" value="false" />
+    </bean>
+
+    <bean id="eventReceiver" class="org.slstudio.acs.hms.messaging.DebugJMSMessageReceiver">
+        <property name="objectMapper" ref="jsonObjectMapper" />
+        <property name="targetClassname" value="org.slstudio.acs.tr069.databinding.DeviceIdStruct" />
+    </bean>
+    <bean id="eventListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer" >
+        <property name="concurrentConsumers" value="10" />
+        <property name="connectionFactory" ref="jmsFactory" />
+        <property name="destination" ref="commandResultQueue" />
+        <property name="messageListener" ref="eventReceiver" />
+        <property name="pubSubNoLocal" value="false" />
+        <property name="autoStartup" value="false" />
+    </bean>
+</beans>

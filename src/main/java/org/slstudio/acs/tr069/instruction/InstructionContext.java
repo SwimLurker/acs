@@ -1,4 +1,4 @@
-package org.slstudio.acs.tr069.command;
+package org.slstudio.acs.tr069.instruction;
 
 import java.util.Map;
 
@@ -8,10 +8,10 @@ import java.util.Map;
  * Date: 13-5-4
  * Time: ионГ2:09
  */
-public class CommandContext {
+public class InstructionContext {
     private Map<String, Object> symbolTable = null;
 
-    public CommandContext(Map<String, Object> symbolTable) {
+    public InstructionContext(Map<String, Object> symbolTable) {
         this.symbolTable = symbolTable;
     }
 

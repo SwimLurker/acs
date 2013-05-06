@@ -2,10 +2,10 @@ package org.slstudio.acs.tr069.job;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slstudio.acs.tr069.command.*;
-import org.slstudio.acs.tr069.command.exception.CommandFatalErrorException;
-import org.slstudio.acs.tr069.command.exception.CommandNormalErrorException;
-import org.slstudio.acs.tr069.command.exception.TestGetPVsCommand;
+import org.slstudio.acs.tr069.instruction.*;
+import org.slstudio.acs.tr069.instruction.exception.InstructionFatalErrorException;
+import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorException;
+import org.slstudio.acs.tr069.instruction.exception.TestGetPVsInstruction;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.JobException;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
@@ -32,8 +32,8 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
     private String jobID = null;
     private int status = STATUS_READY;
 
-    private ICommandQueue commandQueue = new DefaultCommandQueue();
-    private ICommand currentCommand = null;
+    private IInstructionQueue instructionQueue = new DefaultInstructionQueue();
+    private IInstruction currentInstruction = null;
     private Map<String, Object> symbolTable = new HashMap<String, Object>();
 
     private IJobRequest cachedRequest = null;
@@ -42,8 +42,8 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
     public DefaultTR069Job(String deviceKey, String jobID) {
         this.deviceKey = deviceKey;
         this.jobID = jobID;
-        commandQueue.push(new TestCommand("abc", jobID));
-        commandQueue.push(new TestGetPVsCommand(jobID));
+        instructionQueue.push(new TestInstruction("abc", jobID));
+        instructionQueue.push(new TestGetPVsInstruction(jobID));
     }
 
     public String getDeviceKey() {
@@ -92,10 +92,8 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
             setStatus(STATUS_RUNNING);
         }
 
-        //get new command and execute
-        currentCommand = commandQueue.pop();
-
-        return executeTillBlockingOrNoCommand(context);
+        //let job continue execute instruction
+        return executeTillBlockingOrNoInstruction(context);
     }
 
     public void beginRunWithRequest(ITR069MessageContext context, TR069Message message) throws JobException{
@@ -107,48 +105,45 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         if(isReady()){
             setStatus(STATUS_RUNNING);
         }
-        //fetch one command from queue
-        currentCommand = commandQueue.pop();
 
-        //then let job execute command until some command is blocking or all command has finished execution
-        IJobRequest jobRequest = executeTillBlockingOrNoCommand(context);
+        //then let job execute instruction until some instruction is blocking or all instruction has finished execution
+        IJobRequest jobRequest = executeTillBlockingOrNoInstruction(context);
 
-        //if jobRequest not null, then means there is some command is waiting response, then cache the jobRequest and
-        // return to let current command handle future response
+        //if jobRequest not null, then means there is some instruction is waiting response, then cache the jobRequest and
+        // return to let current instruction handle future response
         if(jobRequest !=null){
             cachedRequest = jobRequest;
-            log.debug("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") begin with request:" +
+            log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
                     message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPMessage());
             return;
         }
-        //all commands have finished execution -- job has completed, then return just return
-        if(currentCommand == null){
+        //all instructions have finished execution -- job has completed, then return just return
+        if(currentInstruction == null){
             log.debug("(job:" + jobID + ") begin with request:" +
-                    message.getMessageName() + ", all commands has been finished execution, job has completed");
+                    message.getMessageName() + ", all instructions has been finished execution, job has completed");
             return;
         }
-        //jobRequest is null and current command is not null ,means there is some command is waiting request
-        if(!isWaitingRequest(currentCommand)){
-            log.error("(job:" + jobID + ",command:" + currentCommand.getCommandID() + "): current command is wrong type to handle request:" + message.getMessageName());
-            throw new JobException("impossible command type for dealing request");
+        //jobRequest is null and current instruction is not null ,means there is some instruction is waiting request
+        if(!isWaitingRequest(currentInstruction)){
+            log.error("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + "): current instruction is wrong type to handle request:" + message.getMessageName());
+            throw new JobException("impossible instruction type for dealing request");
         }
 
-        IWaitRequestCommand waitRequestCommand = (IWaitRequestCommand)currentCommand;
-        boolean bHandled = handleCommandWithRequest(waitRequestCommand, message, context);
+        IWaitRequestInstruction waitRequestInstruction = (IWaitRequestInstruction) currentInstruction;
+        boolean bHandled = handleInstructionWithRequest(waitRequestInstruction, message, context);
         if(!bHandled){
-            //not handled by current command, return null to skip for future request
-            log.debug("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") skip this request:" +
+            //not handled by current instruction, return null to skip for future request
+            log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") skip this request:" +
                     (message == null? "empty message":message.getMessageName()));
             return;
         }
 
-        //get new command and let job continue execute command till some command is blocking or all command has been executed
-        currentCommand = commandQueue.pop();
-        jobRequest = executeTillBlockingOrNoCommand(context);
-        //cache the job Request if it is not null, then return to let current command handle future request or response
+        //let job continue execute instruction till some instruction is blocking or all instruction has been executed
+        jobRequest = executeTillBlockingOrNoInstruction(context);
+        //cache the job Request if it is not null, then return to let current instruction handle future request or response
         if(jobRequest !=null){
             cachedRequest = jobRequest;
-            log.debug("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") begin with request:" +
+            log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
                     message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPMessage());
         }
     }
@@ -163,10 +158,10 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         //job can not be ready
         checkJobNotReady();
 
-        //current command should not be null
-        checkCurrentCommandNotNull();
-        //current command should not be non-blocking
-        checkCurrentCommandBlocking();
+        //current instruction should not be null
+        checkCurrentInstructionNotNull();
+        //current instruction should not be non-blocking
+        checkCurrentInstructionBlocking();
 
         //send cached result
         IJobRequest request = getCachedRequest();
@@ -175,24 +170,23 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         }
 
         //if current job is waiting request, just return null to let job continue in running to deal other request
-        if(isWaitingRequest(currentCommand)) {
-            log.debug("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") is waiting request," +
+        if(isWaitingRequest(currentInstruction)) {
+            log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") is waiting request," +
                     "skip this response:" + (message == null? "empty message":message.getMessageName()));
             return null;
         }
 
-        //let current command handle response
-        IWaitResponseCommand waitResponseCommand = (IWaitResponseCommand)currentCommand;
-        boolean bHandled = handleCommandWithResponse(waitResponseCommand, message, context);
+        //let current instruction handle response
+        IWaitResponseInstruction waitResponseInstruction = (IWaitResponseInstruction) currentInstruction;
+        boolean bHandled = handleInstructionWithResponse(waitResponseInstruction, message, context);
         if(!bHandled){
-            //response not handled by current command, return null to skip for future response
-            log.debug("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") skip this response:" +
+            //response not handled by current instruction, return null to skip for future response
+            log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") skip this response:" +
                     (message == null? "empty message":message.getMessageName()));
             return null;
         }
-        //response has been handled, pop next command and run to get some request
-        currentCommand = commandQueue.pop();
-        return executeTillBlockingOrNoCommand(context);
+        //response has been handled, continue execute to get some request
+        return executeTillBlockingOrNoInstruction(context);
     }
 
     public void continueRunWithRequest(ITR069MessageContext context, TR069Message message) throws JobException {
@@ -201,34 +195,33 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         //job can not be ready
         checkJobNotReady();
 
-        //current command should not be null
-        checkCurrentCommandNotNull();
-        //current command should not be non-blocking
-        checkCurrentCommandBlocking();
+        //current instruction should not be null
+        checkCurrentInstructionNotNull();
+        //current instruction should not be non-blocking
+        checkCurrentInstructionBlocking();
 
         //if current job is waiting response, just return to let job continue in running to deal other response
-        if(isWaitingResponse(currentCommand)) {
-            log.debug("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") is waiting response," +
+        if(isWaitingResponse(currentInstruction)) {
+            log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") is waiting response," +
                     "skip this request:" + (message == null? "empty message":message.getMessageName()));
             return;
         }
 
-        //let current command handle request
-        IWaitRequestCommand waitRequestCommand = (IWaitRequestCommand)currentCommand;
-        boolean bHandled = handleCommandWithRequest(waitRequestCommand, message, context);
+        //let current instruction handle request
+        IWaitRequestInstruction waitRequestInstruction = (IWaitRequestInstruction) currentInstruction;
+        boolean bHandled = handleInstructionWithRequest(waitRequestInstruction, message, context);
         if(!bHandled){
-            //request not handled by current command, return to skip for future request
-            log.debug("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") skip this response:" +
+            //request not handled by current instruction, return to skip for future request
+            log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") skip this response:" +
                     (message == null? "empty message":message.getMessageName()));
             return;
         }
-        //request has been handled, pop next command and run to get some request
-        currentCommand = commandQueue.pop();
-        IJobRequest jobRequest = executeTillBlockingOrNoCommand(context);
-        //cache the job Request if it is not null, then return to let current command handle future request or response
+        //request has been handled, continue to get some request
+        IJobRequest jobRequest = executeTillBlockingOrNoInstruction(context);
+        //cache the job Request if it is not null, then return to let current instruction handle future request or response
         if(jobRequest !=null){
             cachedRequest = jobRequest;
-            log.debug("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") begin with request:" +
+            log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
                     message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPMessage());
         }
     }
@@ -250,80 +243,79 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
     }
 
 
-    //return null means all command has finished execution(current command is null) or there is some command waiting request (current command is not null)
-    //return not null means there is some command waiting response (current command is not null)
-    private IJobRequest executeTillBlockingOrNoCommand(ITR069MessageContext context) throws JobException{
+    //return null means all instruction has finished execution(current instruction is null) or there is some instruction waiting request (current instruction is not null)
+    //return not null means there is some instruction waiting response (current instruction is not null)
+    private IJobRequest executeTillBlockingOrNoInstruction(ITR069MessageContext context) throws JobException{
         IJobRequest request = null;
         boolean bContinue = true;
-        while(bContinue){
-            //no command in queue, job completed
-            if(currentCommand == null){
-                log.info("no command in queue, complete job:" + jobID);
-                complete(context);
-                break;
-            }
+        //fetch one instruction from queue
+
+
+        while((currentInstruction = instructionQueue.pop()) != null){
             try{
-                CommandContext cmdContext = new CommandContext(symbolTable);
-                //execute command to get result
-                request = currentCommand.execute(cmdContext);
-                if(isBlockingCommand(currentCommand)){
-                    //command is waiting request or response, then return
-                    bContinue = false;
-                }else{
-                    //command has been executed and not waiting request/response, then get next command to execute
-                    currentCommand = commandQueue.pop();
+                InstructionContext cmdContext = new InstructionContext(symbolTable);
+                //execute instruction to get result
+                request = currentInstruction.execute(cmdContext);
+                if(isBlockingInstruction(currentInstruction)){
+                    //instruction is waiting request or response, then return
+                    break;
                 }
-            }catch(CommandNormalErrorException cneExp){
-                log.warn("(job:" + jobID + ",command:" + currentCommand.getCommandID() +") command execute failed, but can go on next command", cneExp);
-                currentCommand = commandQueue.pop();
-            }catch(CommandFatalErrorException cfeExp){
-                log.warn("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") command execute failed with fatal error", cfeExp);
+            }catch(InstructionNormalErrorException cneExp){
+                log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() +") instruction execute failed, but can go on next instruction", cneExp);
+            }catch(InstructionFatalErrorException cfeExp){
+                log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") instruction execute failed with fatal error", cfeExp);
                 fail(context);
-                throw new JobException("command execute with fatal error, makes job failed", cfeExp);
+                throw new JobException("instruction execute with fatal error, makes job failed", cfeExp);
             }
+        }
+
+        if(currentInstruction == null){
+            //no instruction in queue, job completed
+            log.info("no instruction in queue, complete job:" + jobID);
+            complete(context);
         }
         return request;
     }
 
     private void checkJobNotFinished() throws JobException{
         if(isFinished()){
-            log.error("(job:" + jobID + ",command:" + (currentCommand == null?"null":currentCommand.getCommandID()) + "): job has already finished");
+            log.error("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): job has already finished");
             throw new JobException("job has already finished");
         }
     }
 
     private void checkJobNotReady() throws JobException{
         if(isReady()){
-            log.error("(job:" + jobID + ",command:" + (currentCommand == null?"null":currentCommand.getCommandID()) + "): job has not begun");
+            log.error("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): job has not begun");
             throw new JobException("job has not begun to run");
         }
     }
 
     private void checkJobNotRunning() throws JobException{
         if(isRunning()){
-            log.error("(job:" + jobID + ",command:" + (currentCommand == null?"null":currentCommand.getCommandID()) + "): job is still running");
+            log.error("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): job is still running");
             throw new JobException("job is running");
         }
     }
 
-    private void checkCurrentCommandNotNull() throws JobException{
-        if(currentCommand == null){
+    private void checkCurrentInstructionNotNull() throws JobException{
+        if(currentInstruction == null){
             log.error("job:" + jobID + " should not be null");
-            throw new JobException("current command is null");
+            throw new JobException("current instruction is null");
         }
     }
 
-    private void checkCurrentCommandBlocking() throws JobException{
-        //check if current command is blocking
-        if(!isBlockingCommand(currentCommand)) {
-            log.error("(job:" + jobID + ",command:" + currentCommand.getCommandID() + ") is not blocking command to handle response");
-            throw new JobException("current command is not blocking");
+    private void checkCurrentInstructionBlocking() throws JobException{
+        //check if current instruction is blocking
+        if(!isBlockingInstruction(currentInstruction)) {
+            log.error("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") is not blocking instruction to handle response");
+            throw new JobException("current instruction is not blocking");
         }
     }
 
     private IJobRequest getCachedRequest(){
         if(cachedRequest != null){
-            log.debug("(job:" + jobID + ",command:" + (currentCommand == null?"null":currentCommand.getCommandID()) +"): has cached request: " + cachedRequest.toSOAPMessage());
+            log.debug("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): has cached request: " + cachedRequest.toSOAPMessage());
             IJobRequest result = cachedRequest;
             cachedRequest = null;
             return result;
@@ -331,67 +323,67 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         return null;
     }
 
-    private boolean isWaitingResponse(ICommand command) {
-        if(command != null){
-            if(command instanceof IWaitResponseCommand ){
-                log.debug("(job:" + jobID + ",command:" + command.getCommandID() + "): command is waiting response");
+    private boolean isWaitingResponse(IInstruction instruction) {
+        if(instruction != null){
+            if(instruction instanceof IWaitResponseInstruction){
+                log.debug("(job:" + jobID + ",instruction:" + instruction.getInstructionID() + "): instruction is waiting response");
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isWaitingRequest(ICommand command) {
-        if(command != null){
-            if(command instanceof IWaitRequestCommand ){
-                log.debug("(job:" + jobID + ",command:" + command.getCommandID() + "): command is waiting request");
+    private boolean isWaitingRequest(IInstruction instruction) {
+        if(instruction != null){
+            if(instruction instanceof IWaitRequestInstruction){
+                log.debug("(job:" + jobID + ",instruction:" + instruction.getInstructionID() + "): instruction is waiting request");
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isBlockingCommand(ICommand command) {
-        if(command != null){
-            if(command instanceof IWaitResponseCommand || command instanceof IWaitRequestCommand){
-                log.debug("(job:" + jobID + ",command:" + command.getCommandID() + "): command is blocking");
+    private boolean isBlockingInstruction(IInstruction instruction) {
+        if(instruction != null){
+            if(instruction instanceof IWaitResponseInstruction || instruction instanceof IWaitRequestInstruction){
+                log.debug("(job:" + jobID + ",instruction:" + instruction.getInstructionID() + "): instruction is blocking");
                 return true;
             }
         }
         return false;
     }
 
-    private boolean handleCommandWithResponse(IWaitResponseCommand command, TR069Message response, ITR069MessageContext context)
+    private boolean handleInstructionWithResponse(IWaitResponseInstruction instruction, TR069Message response, ITR069MessageContext context)
             throws JobException{
-        CommandContext cmdContext = new CommandContext(symbolTable);
+        InstructionContext instructionContext = new InstructionContext(symbolTable);
         try{
-            return command.handleResponse(cmdContext, response);
-        }catch(CommandNormalErrorException cneExp){
-            log.warn("(Job:" + jobID + ",Command:" + command.getCommandID() + "): current command handle response:" +
-                    (response == null? "empty message":response.getMessageName()) + " failed, but can go on next command", cneExp);
+            return instruction.handleResponse(instructionContext, response);
+        }catch(InstructionNormalErrorException cneExp){
+            log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle response:" +
+                    (response == null? "empty message":response.getMessageName()) + " failed, but can go on next instruction", cneExp);
             return true;
-        }catch(CommandFatalErrorException cfeExp){
-            log.warn("(Job:" + jobID + ",Command:" + command.getCommandID() + "): current command handle response:" +
+        }catch(InstructionFatalErrorException cfeExp){
+            log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle response:" +
                     (response == null? "empty message":response.getMessageName()) + " failed with fatal error, makes job failed", cfeExp);
             fail(context);
-            throw new JobException("command execute with fatal error, makes job failed", cfeExp);
+            throw new JobException("instruction execute with fatal error, makes job failed", cfeExp);
         }
     }
 
-    private boolean handleCommandWithRequest(IWaitRequestCommand command, TR069Message request, ITR069MessageContext context)
+    private boolean handleInstructionWithRequest(IWaitRequestInstruction instruction, TR069Message request, ITR069MessageContext context)
             throws JobException{
-        CommandContext cmdContext = new CommandContext(symbolTable);
+        InstructionContext instructionContext = new InstructionContext(symbolTable);
         try{
-            return command.handleRequest(cmdContext, request);
-        }catch(CommandNormalErrorException cneExp){
-            log.warn("(Job:" + jobID + ",Command:" + command.getCommandID() + "): current command handle request:" +
-                    (request == null? "empty message":request.getMessageName()) + " failed, but can go on next command", cneExp);
+            return instruction.handleRequest(instructionContext, request);
+        }catch(InstructionNormalErrorException cneExp){
+            log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle request:" +
+                    (request == null? "empty message":request.getMessageName()) + " failed, but can go on next instruction", cneExp);
             return true;
-        }catch(CommandFatalErrorException cfeExp){
-            log.warn("(Job:" + jobID + ",Command:" + command.getCommandID() + "): current command handle request:" +
+        }catch(InstructionFatalErrorException cfeExp){
+            log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle request:" +
                     (request == null? "empty message":request.getMessageName()) + " failed with fatal error, makes job failed", cfeExp);
             fail(context);
-            throw new JobException("command execute with fatal error, makes job failed", cfeExp);
+            throw new JobException("instruction execute with fatal error, makes job failed", cfeExp);
         }
     }
 

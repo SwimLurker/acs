@@ -118,7 +118,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         }else{
             String commandName = SOAPUtil.getCommandName(message.getEnvelope());
             if(commandName == null){
-                log.error("command name is null");
+                log.error("instruction name is null");
             }else if(SOAPUtil.isRequest(commandName)){
                 message.setDealed(true);
                 message.addResponse(fault.toFault());

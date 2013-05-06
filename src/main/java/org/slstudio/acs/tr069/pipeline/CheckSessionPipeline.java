@@ -86,18 +86,18 @@ public class CheckSessionPipeline extends AbstractTR069Pipeline {
         }
         String commandName = SOAPUtil.getCommandName(envelope);
         if(commandName == null){
-            throw new CheckSessionException("Not Inform request,command name is null");
+            throw new CheckSessionException("Not Inform request,instruction name is null");
         }
         String cwmpID = SOAPUtil.getIDFromHeader(envelope);
         if(cwmpID == null){
-            throw new CheckSessionException("Not Inform request,command id is null");
+            throw new CheckSessionException("Not Inform request,instruction id is null");
         }
         return TR069Constants.INFORM_MESSAGE.equals(commandName);
     }
 
     // handle message with fault
     // for request, set response with fault; for response, just set it has been dealed
-    // if some message is invalid ,ex: command name is null or command id is null, just throw exception
+    // if some message is invalid ,ex: instruction name is null or instruction id is null, just throw exception
     private String dealMessageWithFault(SOAPMessage message) throws CheckSessionException{
         SOAPEnvelope envelope = message.getEnvelope();
         if(envelope == null){
@@ -105,11 +105,11 @@ public class CheckSessionPipeline extends AbstractTR069Pipeline {
         }
         String commandName = SOAPUtil.getCommandName(envelope);
         if(commandName == null){
-            throw new CheckSessionException("Some message command name is null in the messages when check session");
+            throw new CheckSessionException("Some message instruction name is null in the messages when check session");
         }
         String commandID = SOAPUtil.getIDFromHeader(envelope);
         if(commandID == null){
-            throw new CheckSessionException("Some message command id is null in the messages when check session");
+            throw new CheckSessionException("Some message instruction id is null in the messages when check session");
         }
 
         message.setDealed(true);
