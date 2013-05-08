@@ -37,6 +37,17 @@
             <version>3.2.2.RELEASE</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>3.2.2.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>3.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>stax</groupId>
             <artifactId>stax</artifactId>
             <version>1.2.0</version>
@@ -82,7 +93,7 @@
                         <defaultsDescriptor>src/main/resources/webdefault.xml</defaultsDescriptor>
                     </webAppConfig>
                     <connectors>
-                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                        <connector implementation="org.eclipse.jetty.server.bio.SocketConnector">
                             <port>8080</port>
                         </connector>
                     </connectors>

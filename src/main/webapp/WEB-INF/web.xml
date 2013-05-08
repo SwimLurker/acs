@@ -29,8 +29,16 @@
         <servlet-name>TestServlet</servlet-name>
         <servlet-class>org.slstudio.acs.TestServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
     <listener>
         <listener-class>org.slstudio.acs.ACSListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <servlet-mapping>
         <servlet-name>ACSServlet</servlet-name>
@@ -48,4 +56,13 @@
         <servlet-name>TestServlet</servlet-name>
         <url-pattern>/test</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <url-pattern>/webconsole/rest/*</url-pattern>
+    </servlet-mapping>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/mvc-dispatcher-servlet.xml</param-value>
+    </context-param>
+
 </web-app>

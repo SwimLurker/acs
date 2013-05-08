@@ -1,0 +1,7 @@
+{"total":5,"rows":[
+	{"enginName":"TR069 Engine","url":"http://localhost:8080/acs/tr069","status":"Running"},
+	{"enginName":"TR069 Amendment-1 Engine","url":"http://localhost:8080/acs/tr069am2","status":"Running"},
+	{"enginName":"TR069 Amendment-2 Engine","url":"http://localhost:8080/acs/tr069am2","status":"Running"},
+	{"enginName":"TR069 Amendment-3 Engine","url":"http://localhost:8080/acs/tr069am3","status":"Running"},
+	{"enginName":"TR069 Amendment-4 Engine","url":"http://localhost:8080/acs/tr069am4","status":"Running"}
+]}

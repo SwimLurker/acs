@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="./css/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="./css/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="./css/portal.css">
+<script type="text/javascript" src="./js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="./js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="./js/jquery.portal.js"></script>
+</head>
+<body class="easyui-layout" >
+	<div region="north" collapsible="false" style="height: 100px;background: #666">
+	<h1 style="color:#ffffff;padding:10px;">ACS Debug Console</h1>
+	</div>
+	<div region="west" split="true" title="Navigator" style="width:240px;" >
+		<div class="easyui-accordion" fit="true" >
+			<div title="Infomation Management" data-options="iconCls:'icon-tip'" style="overflow:auto;">
+                <ul id="menu1"></ul>
+			</div>
+			<div title="Debug Utilities" data-options="iconCls:'icon-tip'" style="padding:10px;">
+				<ul id="menu2"></ul>
+			</div>
+			<div title="Others" data-options="iconCls:'icon-tip'" style="padding:10px;">
+
+			</div>
+		</div>
+	</div>
+	<div id="content" region="center" title="WorkArea" style=" padding:5px;" >
+        <div id="maintabs" class="easyui-tabs" fit="true">
+            <div id="portal" title="First Page" style="position:relative">
+			<div style="width:30%">
+				<div title="System Summary" closable="true" style="text-align:center;background:#ffffff;height:150px;padding:5px;">
+					<table>
+						<tr>
+							<td>ACS Status:</td>
+							<td>Running</td>
+						</tr>
+						<tr>
+							<td>Messaging Service Status:</td>
+							<td>Running</td>
+						</tr>
+						<tr>
+							<td>Logging Service Status:</td>
+							<td>Running</td>
+						</tr>
+					</table>
+			    </div>
+			</div>
+			<div style="width:40%">
+				<div id="enginelist" title="Engine List" closable="true" style="height:200px;">
+					<table class="easyui-datagrid" style="height:auto"
+							fit="true" border="false"
+							singleSelect="true"
+							idField="enginName" url="./json/engine_list.json">
+						<thead>
+							<tr width="100%" >
+								<th field="enginName" width="150">Engine Name</th>
+								<th field="url" width="200">URL</th>
+								<th field="status" width = "60" align="right">Status</th>
+							</tr>
+						</thead>
+
+					</table>
+				</div>
+			</div>
+			<div style="width:30%">
+				<div title="System Time" closable="true" style="text-align:center;background:#f3eeaf;height:150px;padding:5px;">
+					<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="100" height="100">
+				      <param name="movie" value="http://www.respectsoft.com/onlineclock/analog.swf">
+				      <param name=quality value=high>
+				      <param name="wmode" value="transparent">
+				      <embed src="http://www.respectsoft.com/onlineclock/analog.swf" width="100" height="100" quality=high pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" wmode="transparent"></embed>
+				    </object>
+			    </div>
+				<div title="Quick Links" closable="true" style="text-align:left;height:150px;padding:5px;">
+					<div class="t-list"><a href="deviceList">View Devices</a></div>
+					<div class="t-list"><a href="./index.html">View Sessions</a></div>
+					<div class="t-list"><a href="./index.html">View Jobs</a></div>
+					<div class="t-list"><a href="./index.html">View TR069 Logs</a></div>
+			    </div>
+			</div>
+		</div>
+        </div>
+	</div> 
+<script type="text/javascript">
+	function viewdevice(){
+		alert("aaa");
+	}
+	$(function(){
+		$('#menu1').tree({
+			url:'./json/menu_tree.json',
+            onClick: function(node){
+                opentab(node.text, node.attributes.url);  // alert node text property when clicked
+            }
+		});
+		$('#portal').portal({
+			border:false,
+			fit:true
+		});
+		add();
+	});
+
+    function opentab(text, url){
+        alert(url);
+        if($('#maintabs').tabs('getTab',text) ==null){
+            $('#maintabs').tabs('add',{
+                title:text,
+                href:url,
+                closable:true,
+                tools:[{
+                    iconCls:'icon-mini-refresh',
+                    handler:function(){
+                        alert('refresh');
+                    }
+                }]
+            });
+        }else{
+            $('#maintabs').tabs('select',text)
+        }
+    }
+	function add(){
+		for(var i=0; i<3; i++){
+			var p = $('<div/>').appendTo('body');
+			p.panel({
+				title:'Title'+i,
+				content:'<div style="padding:5px;">Content'+(i+1)+'</div>',
+				height:100,
+				closable:true,
+				collapsible:true
+			});
+			$('#portal').portal('add', {
+				panel:p,
+				columnIndex:i
+			});
+		}
+		$('#portal').portal('resize');
+	}
+	function remove(){
+		$('#portal').portal('remove',$('#pgrid'));
+		$('#portal').portal('resize');
+	}
+</script>
+</body>
+</html>

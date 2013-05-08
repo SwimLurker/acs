@@ -1,0 +1,32 @@
+<table class="easyui-datagrid" style="height:auto;padding: 10px;"
+       fit="true" border="true"
+       data-options="singleSelect:true,url:'/webconsole/rest/device/',toolbar:'#toolbar',pagination:true"
+       sortName="devicID" sortOrder="asc" remoteSort="true"
+       idField="deviceID" >
+    <thead>
+    <tr width="100%" >
+        <th field="deviceID" width="100" sortable="true">Device ID</th>
+        <th field="deviceKey" width="100" sortable="true">Device Key</th>
+        <th field="deviceIP" width = "100" >IP Address</th>
+        <th field="manufacturer" width = "80" >Manufacturer</th>
+        <th field="deviceOUI" width = "60" >OUI</th>
+        <th field="productClass" width = "80" >ProductClass</th>
+        <th field="serialNumber" width = "100" >SerialNumber</th>
+        <th field="crURL" width = "200" >Connection Request URL</th>
+        <th field="crUsername" width = "60" >Username</th>
+        <th field="crPassword" width = "60" >Password</th>
+        <th field="lastInformTime" width = "120" sortable="true">Last Inform Time</th>
+    </tr>
+    </thead>
+
+</table>
+<div id="toolbar" style="padding:5px;height:auto">
+    <div style="margin-bottom:5px">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">Add Device</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">Edit Device</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true">Remove Device</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-tip" plain="true">Notify Device</a>
+        <input type="text" name="sDeviceID" />
+        <a href="#" class="easyui-linkbutton" iconCls="icon-search">Search</a>
+    </div>
+</div>

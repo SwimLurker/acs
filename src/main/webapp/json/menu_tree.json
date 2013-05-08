@@ -1,0 +1,111 @@
+[{   
+    "id":1,   
+    "text":"Device Management",    
+    "children":[{   
+		"id":11,
+        "text":"View Devices",
+        "attributes":{
+            "url":"/pages/view_devices.html"
+        }
+    },{
+		"id":12,
+        "text":"Add Device",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+	}]   
+},{   
+    "id":2,   
+    "text":"Session Management",    
+    "children":[{   
+		"id":21,
+        "text":"View Sessions",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+    },{
+		"id":22,
+        "text":"View Session/Device Mapping",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+	}]   
+},{   
+    "id":3,   
+    "text":"Job Management",    
+    "children":[{   
+		"id":31,
+        "text":"View Jobs",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+    },{
+		"id":32,
+        "text":"Add Job",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+	}]   
+},{   
+    "id":4,   
+    "text":"Messaging Management",    
+    "children":[{   
+		"id":41,
+        "text":"View Command Queue",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+    },{
+		"id":42,
+        "text":"View CommandResult Queue",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+	},{
+        "id":43,
+        "text":"View Device Queue",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+    },{
+        "id":44,
+        "text":"View Event Queue",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+    }]
+},{   
+    "id":5,   
+    "text":"Log Management",    
+    "children":[{   
+		"id":51,
+        "text":"View TR069 Logs",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+    },{
+		"id":52,
+        "text":"View Messaging Logs",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+	},{
+		"id":53,
+        "text":"View Session Logs",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+	},{
+		"id":54,
+        "text":"View Job Logs",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+	},{
+		"id":55,
+        "text":"View Instruction Logs",
+        "attributes":{
+            "url":"/view_devices.html"
+        }
+	}]   
+}]  
