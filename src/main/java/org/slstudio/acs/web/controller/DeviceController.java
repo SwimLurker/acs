@@ -2,6 +2,7 @@ package org.slstudio.acs.web.controller;
 
 import org.slstudio.acs.hms.device.DeviceInfo;
 import org.slstudio.acs.hms.device.IDeviceManager;
+import org.slstudio.acs.web.util.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,29 +16,66 @@ import java.util.*;
  * Time: ÉÏÎç3:02
  */
 @Controller
-@RequestMapping("/device")
+@RequestMapping("/devices")
 public class DeviceController {
     @Resource(name = "deviceManager")
     private IDeviceManager deviceManager= null;
 
-    @RequestMapping(value="{deviceKey}", method = RequestMethod.GET)
+    @RequestMapping(value="/{deviceKey}", method = RequestMethod.GET)
     public @ResponseBody DeviceInfo getDeviceInfo(@PathVariable String deviceKey) {
 
         DeviceInfo device = deviceManager.findDevice(deviceKey);
         return device;
 
     }
-    @RequestMapping(value="/")
+
+    @RequestMapping(value="/{deviceKey}", method = RequestMethod.DELETE)
+    public @ResponseBody Result delete(@PathVariable String deviceKey) {
+
+        deviceManager.removeDevice(deviceKey);
+        return new Result(true, null);
+
+    }
+
+    @RequestMapping(value="/{deviceKey}", method = RequestMethod.POST)
+    public @ResponseBody Result update(@PathVariable String deviceKey, @RequestParam("deviceID") String deviceID,
+                                       @RequestParam("authUsername") String authUsername, @RequestParam("authPassword") String authPassword) {
+        DeviceInfo deviceInfo = deviceManager.findDevice(deviceKey);
+        deviceInfo.setDeviceID(deviceID);
+        deviceInfo.setAuthUsername(authUsername);
+        deviceInfo.setAuthPassword(authPassword);
+        return new Result(true, null);
+
+    }
+
+    @RequestMapping(value="/{deviceKey}", method = RequestMethod.PUT)
+    public @ResponseBody Result notifyDevice(@PathVariable String deviceKey) {
+        DeviceInfo deviceInfo = deviceManager.findDevice(deviceKey);
+        System.out.println("notify device with url:"+ deviceInfo.getCrURL());
+        return new Result(true, null);
+    }
+
+    @RequestMapping(value="/", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, Object> getDeviceInfo(@RequestParam("rows") int rows, @RequestParam("page") int page,
-                                      @RequestParam("sort") String sortName, @RequestParam("order") String sortOrder) {
+                                      @RequestParam("sort") String sortName, @RequestParam("order") String sortOrder,
+                                      @RequestParam(value = "deviceKey", required = false) String deviceKey) {
         System.out.println("rows:"+ rows);
         System.out.println("page:"+ page);
         System.out.println("sortName:"+ sortName);
         System.out.println("sortOrder:"+ sortOrder);
 
-        List<DeviceInfo> allDevices = deviceManager.getAllDeviceList();
-        List<DeviceInfo> sortedDevices = sortDevice(allDevices, sortName, sortOrder);
+        List<DeviceInfo> devices = null;
+        if(deviceKey==null || deviceKey.equals("")){
+            devices = deviceManager.getAllDeviceList();
+        }else{
+            devices = new ArrayList<DeviceInfo>();
+            DeviceInfo d = deviceManager.findDevice(deviceKey);
+            if(d!=null){
+                devices.add(d);
+            }
+        }
+        List<DeviceInfo> sortedDevices = sortDevice(devices, sortName, sortOrder);
         Map<String, Object> result = new HashMap<String, Object>();
         List<DeviceInfo> resultDeviceList = new ArrayList<DeviceInfo>();
 
@@ -53,6 +91,20 @@ public class DeviceController {
         result.put("rows", resultDeviceList);
         return result;
     }
+
+    @RequestMapping(value="/", method = RequestMethod.POST)
+    public @ResponseBody
+    Result addDevice(@RequestParam("deviceID") String deviceID, @RequestParam("deviceKey") String deviceKey,
+                                      @RequestParam("authUsername") String authUsername, @RequestParam("authPassword") String authPassword) {
+        DeviceInfo newDevice = new DeviceInfo();
+        newDevice.setDeviceID(deviceID);
+        newDevice.setDeviceKey(deviceKey);
+        newDevice.setAuthUsername(authUsername);
+        newDevice.setAuthPassword(authPassword);
+        deviceManager.addDevice(deviceKey, newDevice);
+        return new Result(true, null);
+    }
+
 
     private List<DeviceInfo> sortDevice(List<DeviceInfo> allDevices, String sortName, String sortOrder) {
         if(sortOrder.equals("desc")){

@@ -2,16 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="./css/themes/default/easyui.css">
+<link id="easyuiTheme" rel="stylesheet" type="text/css" href="./css/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="./css/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="./css/portal.css">
+<link rel="stylesheet" type="text/css" href="./css/webconsole.css">
 <script type="text/javascript" src="./js/jquery-1.8.0.min.js"></script>
-	<script type="text/javascript" src="./js/jquery.easyui.min.js"></script>
-	<script type="text/javascript" src="./js/jquery.portal.js"></script>
+<script type="text/javascript" src="./js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="./js/jquery.portal.js"></script>
+<script type="text/javascript" src="./js/jquery.cookie.js"></script>
+<script type="text/javascript" src="./js/changeEasyuiTheme.js"></script>
 </head>
 <body class="easyui-layout" >
 	<div region="north" collapsible="false" style="height: 100px;background: #666">
 	<h1 style="color:#ffffff;padding:10px;">ACS Debug Console</h1>
+        <div style="position:absolute; right:0;bottom:0;margin: 10px;color:#ffffff;">Theme:
+            <select id="cb-theme" onChange="javascript:changeThemeFun(this.options[this.options.selectedIndex].value)">
+                <option value='default' selected>Default</option>
+                <option value='gray' >Gray</option>
+                <option value='black' >Black</option>
+                <option value='bootstrap' >Bootstrap</option>
+                <option value='metro' >Metro</option>
+            </select>
+        </div>
 	</div>
 	<div region="west" split="true" title="Navigator" style="width:240px;" >
 		<div class="easyui-accordion" fit="true" >
@@ -84,9 +96,6 @@
         </div>
 	</div> 
 <script type="text/javascript">
-	function viewdevice(){
-		alert("aaa");
-	}
 	$(function(){
 		$('#menu1').tree({
 			url:'./json/menu_tree.json',
@@ -102,7 +111,6 @@
 	});
 
     function opentab(text, url){
-        alert(url);
         if($('#maintabs').tabs('getTab',text) ==null){
             $('#maintabs').tabs('add',{
                 title:text,
@@ -111,7 +119,8 @@
                 tools:[{
                     iconCls:'icon-mini-refresh',
                     handler:function(){
-                        alert('refresh');
+                        var currTab = $('#maintabs').tabs('getSelected'); //获得当前tab
+                        currTab.panel('refresh',url);
                     }
                 }]
             });

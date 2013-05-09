@@ -23,8 +23,12 @@
     </bean>
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
         <property name="connectionFactory" ref="jmsFactory" />
-        <!-- Çø±ðËü²ÉÓÃµÄÄ£Ê½ÎªfalseÊÇp2pÎªtrueÊÇ¶©ÔÄ -->
         <property name="pubSubDomain" value="true" />
+    </bean>
+    <bean id="deviceQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0">
+            <value>${messaging.queue_name_syncdevice}</value>
+        </constructor-arg>
     </bean>
     <bean id="commandResultQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg index="0">
@@ -59,6 +63,11 @@
         <property name="destination" ref="commandQueue" />
         <property name="objectMapper" ref="jsonObjectMapper" />
     </bean>
+    <bean id="deviceInfoSender" class="org.slstudio.acs.hms.messaging.JMSMessageSender">
+        <property name="jmsTemplate" ref="jmsTemplate" />
+        <property name="destination" ref="deviceQueue" />
+        <property name="objectMapper" ref="jsonObjectMapper" />
+    </bean>
     <!-- message receiver -->
     <bean id="commandReceiver" class="org.slstudio.acs.hms.messaging.DebugJMSMessageReceiver">
         <property name="objectMapper" ref="jsonObjectMapper" />
@@ -75,7 +84,7 @@
 
 
 
-    <!-- message receiver used for test message receiver -->
+    <!-- message receiver used for test message sender -->
     <bean id="commandResultReceiver" class="org.slstudio.acs.hms.messaging.DebugJMSMessageReceiver">
         <property name="objectMapper" ref="jsonObjectMapper" />
         <property name="targetClassname" value="org.slstudio.acs.tr069.databinding.DeviceIdStruct" />

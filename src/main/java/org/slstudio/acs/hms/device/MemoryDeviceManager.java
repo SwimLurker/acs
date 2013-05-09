@@ -29,6 +29,8 @@ public class MemoryDeviceManager implements IDeviceManager {
 
             device.setDeviceID("0000000"+ nf.format(i));
             device.setDeviceKey("FF00000" + nf.format(i));
+            device.setAuthUsername("admin");
+            device.setAuthPassword("admin");
             device.setDeviceIP("192.168.0.100");
             device.setManufacturer("FishCore");
             device.setDeviceOUI("00A00D");

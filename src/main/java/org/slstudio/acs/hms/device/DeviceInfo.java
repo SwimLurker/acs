@@ -20,6 +20,8 @@ import java.util.Date;
 public class DeviceInfo {
     private String deviceID = null;
     private String deviceKey = null;
+    private String authUsername = null;
+    private String authPassword = null;
     private String deviceIP = null;
     private String manufacturer = null;
     private String deviceOUI=null;
@@ -46,6 +48,22 @@ public class DeviceInfo {
 
     public void setDeviceKey(String deviceKey) {
         this.deviceKey = deviceKey;
+    }
+
+    public String getAuthUsername() {
+        return authUsername;
+    }
+
+    public void setAuthUsername(String authUsername) {
+        this.authUsername = authUsername;
+    }
+
+    public String getAuthPassword() {
+        return authPassword;
+    }
+
+    public void setAuthPassword(String authPassword) {
+        this.authPassword = authPassword;
     }
 
     public String getDeviceIP() {

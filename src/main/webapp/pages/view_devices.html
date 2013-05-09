@@ -1,8 +1,8 @@
-<table class="easyui-datagrid" style="height:auto;padding: 10px;"
+<table id="dg" class="easyui-datagrid" style="height:auto;padding: 10px;"
        fit="true" border="true"
-       data-options="singleSelect:true,url:'/webconsole/rest/device/',toolbar:'#toolbar',pagination:true"
+       data-options="singleSelect:true,url:'/webconsole/rest/devices/',method:'GET',toolbar:'#toolbar',pagination:true,onDblClickRow: deviceDetail"
        sortName="devicID" sortOrder="asc" remoteSort="true"
-       idField="deviceID" >
+       idField="deviceKey" >
     <thead>
     <tr width="100%" >
         <th field="deviceID" width="100" sortable="true">Device ID</th>
@@ -22,11 +22,187 @@
 </table>
 <div id="toolbar" style="padding:5px;height:auto">
     <div style="margin-bottom:5px">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">Add Device</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">Edit Device</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true">Remove Device</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-tip" plain="true">Notify Device</a>
-        <input type="text" name="sDeviceID" />
-        <a href="#" class="easyui-linkbutton" iconCls="icon-search">Search</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript: addDevice();">Add Device</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="javascript: updateDevice();">Edit Device</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript: removeDevice();">Remove Device</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-tip" plain="true" onclick="javascript: notifyDevice();">Notify Device</a>
+        <input type="text" id="sDeviceKey" />
+        <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript: searchDevice();">Search</a>
     </div>
 </div>
+<div id="deviceDetailDlg" class="easyui-dialog" title="New Device" style="width:400px;height:550px;padding:10px 20px" closed="true" buttons="#detaildlg-buttons">
+    <div class="ftitle">Device Detail Information</div>
+    <form id="fm_detail" method="post">
+        <div class="fitem">
+            <label>Device ID:</label>
+            <input name="deviceID" readonly>
+        </div>
+        <div class="fitem">
+            <label>Device Key:</label>
+            <input name="deviceKey" readonly>
+        </div>
+        <div class="fitem">
+            <label>Auth Username:</label>
+            <input name="authUsername" readonly>
+        </div>
+        <div class="fitem">
+            <label>Auth Password:</label>
+            <input name="authPassword" readonly>
+        </div>
+        <div class="fitem">
+            <label>IP Address:</label>
+            <input name="deviceIP" readonly>
+        </div>
+        <div class="fitem">
+            <label>Manufacturer:</label>
+            <input name="manufacturer" readonly>
+        </div>
+        <div class="fitem">
+            <label>OUI:</label>
+            <input name="deviceOUI" readonly>
+        </div>
+        <div class="fitem">
+            <label>ProductClass:</label>
+            <input name="productClass" readonly>
+        </div>
+        <div class="fitem">
+            <label>SerialNumber:</label>
+            <input name="serialNumber" readonly>
+        </div>
+        <div class="fitem">
+            <label>Notify URL:</label>
+            <input name="crURL" style="width:200px;" readonly>
+        </div>
+        <div class="fitem">
+            <label>Notify Username:</label>
+            <input name="crUsername" readonly>
+        </div>
+        <div class="fitem">
+            <label>Notify Password:</label>
+            <input name="crPassword" readonly>
+        </div>
+        <div class="fitem">
+            <label>Last Inform Time:</label>
+            <input name="lastInformTime" readonly>
+        </div>
+    </form>
+</div>
+<div id="deviceDlg" class="easyui-dialog" title="New Device" style="width:400px;height:280px;padding:10px 20px" closed="true" buttons="#dlg-buttons">
+    <div class="ftitle">Device Information</div>
+    <form id="fm" method="post">
+        <div class="fitem">
+            <label>Device ID:</label>
+            <input name="deviceID" class="easyui-validatebox" required="true">
+        </div>
+        <div class="fitem">
+            <label>Device Key:</label>
+            <input name="deviceKey" class="easyui-validatebox" required="true">
+        </div>
+        <div class="fitem">
+            <label>Auth Username:</label>
+            <input name="authUsername">
+        </div>
+        <div class="fitem">
+            <label>Auth Password:</label>
+            <input name="authPassword" type="password">
+        </div>
+    </form>
+</div>
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveDevice()">Save</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#deviceDlg').dialog('close')">Cancel</a>
+</div>
+<div id="detaildlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-close" onclick="javascript:$('#deviceDetailDlg').dialog('close')">Close</a>
+</div>
+<script type="text/javascript" >
+    var url;
+    var method;
+    function addDevice(){
+        $('#deviceDlg').dialog('open').dialog('setTitle', 'New Device');
+        $('#fm').form('clear');
+        url = '/webconsole/rest/devices/';
+    }
+    function updateDevice(){
+        var row = $('#dg').datagrid('getSelected');
+        if(row){
+            $('#deviceDlg').dialog('open').dialog('setTitle', 'Edit Device');
+            $('#fm').form('load', row);
+            $('#deviceDlg').find("input[name='deviceKey']").attr('readonly','readonly');
+            url = '/webconsole/rest/devices/' + row.deviceKey;
+        }
+    }
+    function saveDevice(){
+        $('#fm').form('submit',{
+            url: url,
+            onSubmit: function(){
+                return $(this).form('validate');
+            },
+            success: function(result){
+                var result = eval('('+result+')');
+                if (result.success){
+                    $('#deviceDlg').dialog('close'); // close the dialog
+                    $('#dg').datagrid('reload'); // reload the user data
+                } else {
+                    $.messager.show({title: 'Error',
+                        msg: result.msg
+                    });
+                }
+            }
+        });
+    }
+    function removeDevice(){
+        var row = $('#dg').datagrid('getSelected');
+        if (row){
+            $.messager.confirm('Confirm','Are you sure you want to remove this device?',
+                    function(r){
+                        if (r){
+                            $.ajax({ url:'/webconsole/rest/devices/'+ row.deviceKey,
+                                     type:'DELETE',
+                                     success: function(result){
+                                        if (result.success){
+                                            $('#dg').datagrid('reload'); // reload the data
+                                        } else {
+                                            $.messager.show({ // show error message
+                                                title: 'Error',
+                                                msg: result.msg
+                                            });
+                                        }
+                                    }});
+                        }
+                    });
+        }
+    }
+    function notifyDevice(){
+        var row = $('#dg').datagrid('getSelected');
+        if (row){
+            $.messager.confirm('Confirm','Are you sure you want to notify this device?',
+                    function(r){
+                        if (r){
+                            alert(row.deviceKey);
+                            $.ajax({ url:'/webconsole/rest/devices/'+ row.deviceKey,
+                                type:'PUT',
+                                success: function(result){
+                                    if (result.success){
+                                        $('#dg').datagrid('reload'); // reload the data
+                                    } else {
+                                        $.messager.show({ // show error message
+                                            title: 'Error',
+                                            msg: result.msg
+                                        });
+                                    }
+                                }});
+                        }
+                    });
+        }
+    }
+    function searchDevice(){
+        $('#dg').datagrid('load',{
+            deviceKey:$('#sDeviceKey').val()
+        });
+    }
+    function deviceDetail(rowIndex, row){
+        $('#deviceDetailDlg').dialog('open').dialog('setTitle', 'Show Device Detail Info');
+        $('#fm_detail').form('load', row);
+    }
+</script>
