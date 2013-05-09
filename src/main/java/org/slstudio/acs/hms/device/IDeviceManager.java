@@ -13,4 +13,5 @@ public interface IDeviceManager {
     public DeviceInfo findDevice(String deviceKey);
     public void removeDevice(String deviceKey);
     public List<DeviceInfo> getAllDeviceList();
+    public void clearDevices();
 }

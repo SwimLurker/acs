@@ -1,4 +1,4 @@
-package org.slstudio.acs.hms.messaging;
+package org.slstudio.acs.hms.messaging.mapper;
 
 import org.slstudio.acs.hms.exception.MessagingException;
 
@@ -8,7 +8,7 @@ import org.slstudio.acs.hms.exception.MessagingException;
  * Date: 13-5-7
  * Time: ионГ2:35
  */
-public interface IObjectMapper {
-    public Object toObject(String str, String className) throws MessagingException;
+public  interface IObjectMapper<T> {
+    public T toObject(String str) throws MessagingException;
     public String fromObject(Object obj) throws MessagingException;
 }

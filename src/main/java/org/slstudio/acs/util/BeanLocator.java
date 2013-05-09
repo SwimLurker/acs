@@ -3,7 +3,6 @@ package org.slstudio.acs.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,11 +10,22 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Date: 13-5-1
  * Time: ÉÏÎç2:38
  */
-public class BeanLocator {
+public class BeanLocator  {
     private static final Log log = LogFactory.getLog(BeanLocator.class);
+
+
+
     private static ApplicationContext context = null;
-    static {
-        context = new ClassPathXmlApplicationContext("context_all.xml");
+    //    static {
+//         context = new ClassPathXmlApplicationContext("app-context-all.xml");
+//    }
+
+    public static ApplicationContext getContext() {
+        return context;
+    }
+
+    public static void setContext(ApplicationContext context) {
+        BeanLocator.context = context;
     }
     public static Object getBean(String beanName){
         try{

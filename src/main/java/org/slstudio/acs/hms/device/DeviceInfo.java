@@ -3,7 +3,9 @@ package org.slstudio.acs.hms.device;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.slstudio.acs.util.CustomDateDeserializer;
 import org.slstudio.acs.util.CustomDateSerializer;
 
 import java.io.IOException;
@@ -32,6 +34,7 @@ public class DeviceInfo {
     private String crPassword = null;
 
     @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date lastInformTime = null;
 
     public String getDeviceID() {

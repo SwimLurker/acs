@@ -1,8 +1,9 @@
-package org.slstudio.acs.hms.messaging;
+package org.slstudio.acs.hms.messaging.sender;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.hms.exception.MessagingException;
+import org.slstudio.acs.hms.messaging.mapper.IObjectMapper;
 import org.slstudio.acs.tr069.databinding.DeviceIdStruct;
 import org.slstudio.acs.util.BeanLocator;
 import org.springframework.jms.core.JmsTemplate;
@@ -20,7 +21,7 @@ import javax.jms.Session;
  * Date: 13-5-7
  * Time: ÉÏÎç1:47
  */
-public class JMSMessageSender implements IMessageSender{
+public class JMSMessageSender implements IMessageSender {
     private static final Log log = LogFactory.getLog(JMSMessageSender.class);
 
     private JmsTemplate jmsTemplate = null;

@@ -14,6 +14,5 @@
        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
     <context:annotation-config />
     <context:component-scan base-package="org.slstudio.acs.web.controller" />
-    <bean name="deviceManager" class="org.slstudio.acs.hms.device.MemoryDeviceManager" />
     <mvc:annotation-driven />
 </beans>

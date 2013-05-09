@@ -1,4 +1,4 @@
-package org.slstudio.acs.hms.messaging;
+package org.slstudio.acs.hms.messaging.receiver;
 
 import org.slstudio.acs.hms.exception.MessagingException;
 

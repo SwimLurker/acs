@@ -1,8 +1,9 @@
-package org.slstudio.acs.hms.messaging;
+package org.slstudio.acs.hms.messaging.receiver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.hms.exception.MessagingException;
+import org.slstudio.acs.hms.messaging.mapper.IObjectMapper;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -19,15 +20,6 @@ public abstract class AbstractJMSMessageReceiver implements IMessageReceiver, Me
     private static final Log log = LogFactory.getLog(AbstractJMSMessageReceiver.class);
 
     private IObjectMapper objectMapper = null;
-    private String targetClassname = null;
-
-    public String getTargetClassname() {
-        return targetClassname;
-    }
-
-    public void setTargetClassname(String targetClassname) {
-        this.targetClassname = targetClassname;
-    }
 
     public IObjectMapper getObjectMapper() {
         return objectMapper;
@@ -43,10 +35,9 @@ public abstract class AbstractJMSMessageReceiver implements IMessageReceiver, Me
                 String str = ((TextMessage)message).getText();
                 Object obj = null;
                 try{
-                    log.debug("convert string:" + str + " to object type: " + targetClassname);
-                    obj = objectMapper.toObject(str, targetClassname);
+                    obj = objectMapper.toObject(str);
                 }catch(Exception exp){
-                    log.error("convert from str:" + str + " to object type:" + targetClassname + " error", exp);
+                    log.error("convert from str:" + str + " to object type error", exp);
                     throw new JMSException("convert string to object error");
                 }
                 try{

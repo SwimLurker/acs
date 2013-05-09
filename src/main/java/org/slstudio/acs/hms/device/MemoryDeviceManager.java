@@ -16,7 +16,7 @@ public class MemoryDeviceManager implements IDeviceManager {
 
     public MemoryDeviceManager() {
         deviceTable = Collections.synchronizedMap(new HashMap<String,DeviceInfo>());
-        addTestData();
+        //addTestData();
     }
 
     private void addTestData() {
@@ -62,5 +62,9 @@ public class MemoryDeviceManager implements IDeviceManager {
 
     public List<DeviceInfo> getAllDeviceList() {
         return new ArrayList<DeviceInfo>(deviceTable.values());
+    }
+
+    public void clearDevices() {
+        deviceTable.clear();
     }
 }

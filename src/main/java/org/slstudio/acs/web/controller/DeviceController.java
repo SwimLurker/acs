@@ -60,11 +60,6 @@ public class DeviceController {
     Map<String, Object> getDeviceInfo(@RequestParam("rows") int rows, @RequestParam("page") int page,
                                       @RequestParam("sort") String sortName, @RequestParam("order") String sortOrder,
                                       @RequestParam(value = "deviceKey", required = false) String deviceKey) {
-        System.out.println("rows:"+ rows);
-        System.out.println("page:"+ page);
-        System.out.println("sortName:"+ sortName);
-        System.out.println("sortOrder:"+ sortOrder);
-
         List<DeviceInfo> devices = null;
         if(deviceKey==null || deviceKey.equals("")){
             devices = deviceManager.getAllDeviceList();

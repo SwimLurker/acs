@@ -13,8 +13,8 @@
        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
 
-    <import resource="context_tr069.xml"/>
-    <import resource="context_messaging.xml"/>
+    <import resource="app-context-tr069.xml"/>
+    <import resource="app-context-messaging.xml"/>
 
     <bean id="sessionIDManager" class="org.slstudio.acs.tr069.session.idmanager.MemorySessionIDManager" >
     </bean>
@@ -28,5 +28,6 @@
         <property name="sessionManager" ref="sessionManager" />
         <property name="sessionIDManager" ref="sessionIDManager" />
     </bean>
+    <bean name="deviceManager" class="org.slstudio.acs.hms.device.MemoryDeviceManager" />
 
 </beans>
