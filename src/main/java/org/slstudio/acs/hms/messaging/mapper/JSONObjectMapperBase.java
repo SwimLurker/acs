@@ -17,7 +17,7 @@ import java.io.IOException;
  * Date: 13-5-11
  * Time: ÉÏÎç12:23
  */
-public abstract class JSONObjectMapperBase<T> implements IObjectMapper <T>{
+public abstract class JSONObjectMapperBase<T> implements IObjectMapper {
     private static final Log log = LogFactory.getLog(JSONObjectMapperBase.class);
 
     private ObjectMapper mapper = null;
@@ -28,10 +28,13 @@ public abstract class JSONObjectMapperBase<T> implements IObjectMapper <T>{
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
     }
 
-    public <T> T toObject(String str) throws MessagingException {
-
+    @SuppressWarnings("unchecked")
+    public T toObject(String str) throws MessagingException {
+        T obj = null;
         try {
-            return mapper.readValue(str, new TypeReference<T>(){});
+            TypeReference tr = getTypeReference();
+            obj = mapper.readValue(str, tr);
+            return obj;
         } catch ( Exception exp){
             log.error("convert string:" + str + " to object type error", exp);
             throw new MessagingException("convert string to object error", exp);
@@ -48,4 +51,7 @@ public abstract class JSONObjectMapperBase<T> implements IObjectMapper <T>{
         }
         return jsonString;
     }
+
+    protected abstract TypeReference getTypeReference();
+
 }

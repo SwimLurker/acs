@@ -21,6 +21,7 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-tx:3.2.2.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-web:3.2.2.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:3.2.2.RELEASE" />
+          <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.7.2" />
           <element id="library" level="project" name="Maven: stax:stax:1.2.0" />
           <element id="library" level="project" name="Maven: stax:stax-api:1.0.1" />
           <element id="library" level="project" name="Maven: org.apache.ws.commons.axiom:axiom-impl:1.2.14" />

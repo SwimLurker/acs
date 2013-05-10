@@ -37,7 +37,8 @@ public abstract class AbstractStringMessageReceiver implements IMessageReceiver 
     }
 
     public void consumeStringMessage(String message) throws MessagingException {
-        consumeObjectMessage(objectMapper.toObject(message));
+        Object obj = objectMapper.toObject(message);
+        consumeObjectMessage(obj);
     }
 
     public void consumeObjectMessage(Object message)throws MessagingException{
