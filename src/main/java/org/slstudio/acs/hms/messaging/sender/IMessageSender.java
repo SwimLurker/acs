@@ -9,5 +9,6 @@ import org.slstudio.acs.hms.exception.MessagingException;
  * Time: ионГ1:43
  */
 public interface IMessageSender {
+    public String getTargetName();
     public void sendMessage(Object message) throws MessagingException;
 }

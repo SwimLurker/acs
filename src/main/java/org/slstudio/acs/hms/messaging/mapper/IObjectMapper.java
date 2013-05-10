@@ -9,6 +9,6 @@ import org.slstudio.acs.hms.exception.MessagingException;
  * Time: ионГ2:35
  */
 public  interface IObjectMapper<T> {
-    public T toObject(String str) throws MessagingException;
-    public String fromObject(Object obj) throws MessagingException;
+    public<T> T toObject(String str) throws MessagingException;
+    public String toString(Object obj) throws MessagingException;
 }

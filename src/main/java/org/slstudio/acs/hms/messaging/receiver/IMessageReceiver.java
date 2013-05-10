@@ -9,5 +9,6 @@ import org.slstudio.acs.hms.exception.MessagingException;
  * Time: ионГ1:46
  */
 public interface IMessageReceiver {
-    public void receive(Object message) throws MessagingException;
+    public void receiveMessage(Object message) throws MessagingException;
+    public String getSourceName();
 }

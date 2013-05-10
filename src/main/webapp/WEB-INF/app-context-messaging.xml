@@ -69,9 +69,25 @@
         <property name="destination" ref="deviceQueue" />
         <property name="objectMapper" ref="jsonSyncDeviceMapper" />
     </bean>
-    <!-- message receiver -->
-    <bean id="commandReceiver" class="org.slstudio.acs.hms.messaging.receiver.DebugJMSMessageReceiver">
+
+    <!-- message handler -->
+    <bean name="debugMessageHandler" class="org.slstudio.acs.hms.messaging.handler.DebugMessageHandler" />
+    <bean name="syncDevicesMessageHandler" class="org.slstudio.acs.hms.messaging.handler.SyncDevicesMessageHandler">
+        <property name="deviceManager" ref="deviceManager" />
+    </bean>
+
+    <!-- command message receiver -->
+    <bean name="comamndHandlerList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+               <ref bean="debugMessageHandler" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="commandReceiver" class="org.slstudio.acs.hms.messaging.receiver.JMSMessageReceiver">
         <property name="objectMapper" ref="jsonStringMapper" />
+        <property name="sourceName" value="${messaging.queue_name_command}" />
+        <property name="handlers" ref="comamndHandlerList" />
     </bean>
     <bean id="commandListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer"  >
         <property name="concurrentConsumers" value="10" />
@@ -81,9 +97,20 @@
         <property name="pubSubNoLocal" value="false" />
         <property name="autoStartup" value="false" />
     </bean>
-    <bean id="syncDevicesReceiver" class="org.slstudio.acs.hms.messaging.receiver.SyncDevicesJMSMessageReceiver">
+
+    <!-- sync devices info message receiver -->
+    <bean name="syncDevicesHandlerList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="debugMessageHandler" />
+                <ref bean="syncDevicesMessageHandler" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="syncDevicesReceiver" class="org.slstudio.acs.hms.messaging.receiver.JMSMessageReceiver">
         <property name="objectMapper" ref="jsonSyncDeviceMapper" />
-        <property name="deviceManager" ref="deviceManager" />
+        <property name="sourceName" value="${messaging.queue_name_syncdevice}" />
+        <property name="handlers" ref="syncDevicesHandlerList" />
     </bean>
     <bean id="syncDeviceListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer"  >
         <property name="concurrentConsumers" value="10" />
@@ -96,8 +123,18 @@
 
 
     <!-- message receiver used for test message sender -->
-    <bean id="commandResultReceiver" class="org.slstudio.acs.hms.messaging.receiver.DebugJMSMessageReceiver">
+    <!-- command result message receiver -->
+    <bean name="commandResultHandlerList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="debugMessageHandler" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="commandResultReceiver" class="org.slstudio.acs.hms.messaging.receiver.JMSMessageReceiver">
         <property name="objectMapper" ref="jsonStringMapper" />
+        <property name="sourceName" value="${messaging.queue_name_commandresult}" />
+        <property name="handlers" ref="commandResultHandlerList" />
     </bean>
     <bean id="commandResultListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer" >
         <property name="concurrentConsumers" value="10" />
@@ -108,13 +145,23 @@
         <property name="autoStartup" value="false" />
     </bean>
 
-    <bean id="eventReceiver" class="org.slstudio.acs.hms.messaging.receiver.DebugJMSMessageReceiver">
+    <!-- event message receiver -->
+    <bean name="eventHandlerList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="debugMessageHandler" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="eventReceiver" class="org.slstudio.acs.hms.messaging.receiver.JMSMessageReceiver">
         <property name="objectMapper" ref="jsonStringMapper" />
+        <property name="sourceName" value="${messaging.queue_name_event}" />
+        <property name="handlers" ref="eventHandlerList" />
     </bean>
     <bean id="eventListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer" >
         <property name="concurrentConsumers" value="10" />
         <property name="connectionFactory" ref="jmsFactory" />
-        <property name="destination" ref="commandResultQueue" />
+        <property name="destination" ref="eventQueue" />
         <property name="messageListener" ref="eventReceiver" />
         <property name="pubSubNoLocal" value="false" />
         <property name="autoStartup" value="false" />

@@ -3,9 +3,9 @@ package org.slstudio.acs.hms.messaging.sender;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.hms.exception.MessagingException;
-import org.slstudio.acs.hms.messaging.mapper.IObjectMapper;
 import org.slstudio.acs.tr069.databinding.DeviceIdStruct;
 import org.slstudio.acs.util.BeanLocator;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
@@ -21,12 +21,11 @@ import javax.jms.Session;
  * Date: 13-5-7
  * Time: ÉÏÎç1:47
  */
-public class JMSMessageSender implements IMessageSender {
+public class JMSMessageSender extends AbstractStringMessageSender {
     private static final Log log = LogFactory.getLog(JMSMessageSender.class);
 
     private JmsTemplate jmsTemplate = null;
     private Destination destination = null;
-    private IObjectMapper objectMapper = null;
 
     public JmsTemplate getJmsTemplate() {
         return jmsTemplate;
@@ -44,37 +43,28 @@ public class JMSMessageSender implements IMessageSender {
         this.destination = destination;
     }
 
-    public IObjectMapper getObjectMapper() {
-        return objectMapper;
+    public void sendStringMessage(String messageStr) throws MessagingException {
+        log.debug("send message:" + messageStr);
+        try{
+            jmsTemplate.send(destination, new MyMessageCreator(messageStr));
+        }catch(JmsException exp){
+            log.error("send message failed",exp);
+        }
     }
 
-    public void setObjectMapper(IObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    public void sendMessage(Object message) throws MessagingException {
-        jmsTemplate.send(destination, new MyMessageCreator(objectMapper,message));
+    public String getTargetName(){
+        return destination.toString();
     }
 
     class MyMessageCreator implements MessageCreator {
-        private IObjectMapper objectMapper = null;
+        private String messageStr = null;
 
-        private Object message = null;
-
-        public MyMessageCreator(IObjectMapper mapper, Object message){
-            this.objectMapper = mapper;
-            this.message = message;
+        public MyMessageCreator(String messageStr){
+            this.messageStr = messageStr;
         }
 
         public Message createMessage(Session session) throws JMSException {
-            String str = null;
-            try {
-                str = objectMapper.fromObject(message);
-            } catch (MessagingException e) {
-                log.debug("convert form object type:" + message.getClass().getName() + " to string error", e);
-                throw new JMSException("convert object to string error");
-            }
-            return session.createTextMessage(str);
+            return session.createTextMessage(messageStr);
         }
     }
 

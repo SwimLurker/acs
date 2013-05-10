@@ -1,4 +1,4 @@
-package org.slstudio.acs.hms.messaging.receiver;
+package org.slstudio.acs.hms.messaging.handler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,8 +13,8 @@ import org.slstudio.acs.hms.messaging.bean.SyncDevicesBean;
  * Date: 13-5-9
  * Time: ÏÂÎç10:14
  */
-public class SyncDevicesJMSMessageReceiver extends AbstractJMSMessageReceiver {
-    private static final Log log = LogFactory.getLog(SyncDevicesJMSMessageReceiver.class);
+public class SyncDevicesMessageHandler implements IMessageHandler{
+    private static final Log log = LogFactory.getLog(SyncDevicesMessageHandler.class);
 
     IDeviceManager deviceManager = null;
 
@@ -26,7 +26,7 @@ public class SyncDevicesJMSMessageReceiver extends AbstractJMSMessageReceiver {
         this.deviceManager = deviceManager;
     }
 
-    public void receive(Object message) throws MessagingException {
+    public void handle(Object message) throws MessagingException {
         SyncDevicesBean sync = (SyncDevicesBean)message;
         if(sync == null){
             throw new MessagingException("sync device info error: null message");

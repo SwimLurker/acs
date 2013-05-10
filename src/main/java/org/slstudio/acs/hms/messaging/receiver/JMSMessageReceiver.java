@@ -3,7 +3,6 @@ package org.slstudio.acs.hms.messaging.receiver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.hms.exception.MessagingException;
-import org.slstudio.acs.hms.messaging.mapper.IObjectMapper;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -13,35 +12,27 @@ import javax.jms.TextMessage;
 /**
  * Created with IntelliJ IDEA.
  * User: chandler
- * Date: 13-5-7
- * Time: ÉÏÎç1:56
+ * Date: 13-5-11
+ * Time: ÉÏÎç12:10
  */
-public abstract class AbstractJMSMessageReceiver implements IMessageReceiver, MessageListener{
-    private static final Log log = LogFactory.getLog(AbstractJMSMessageReceiver.class);
+public class JMSMessageReceiver extends AbstractStringMessageReceiver implements MessageListener {
+    private static final Log log = LogFactory.getLog(JMSMessageReceiver.class);
 
-    private IObjectMapper objectMapper = null;
+    private String sourceName = null;
 
-    public IObjectMapper getObjectMapper() {
-        return objectMapper;
+    public String getSourceName() {
+        return sourceName;
     }
 
-    public void setObjectMapper(IObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
     }
 
-    public void onMessage(Message  message){
+    public void onMessage(Message message) {
         try{
             if (message instanceof TextMessage) {
-                String str = ((TextMessage)message).getText();
-                Object obj = null;
                 try{
-                    obj = objectMapper.toObject(str);
-                }catch(Exception exp){
-                    log.error("convert from str:" + str + " to object type error", exp);
-                    throw new JMSException("convert string to object error");
-                }
-                try{
-                    receive(obj);
+                    receiveMessage(((TextMessage) message).getText());
                 }catch(MessagingException mexp){
                     log.error("consume message exception", mexp);
                     throw new JMSException("consume message exception");
@@ -55,5 +46,4 @@ public abstract class AbstractJMSMessageReceiver implements IMessageReceiver, Me
             exp.printStackTrace();
         }
     }
-
 }
