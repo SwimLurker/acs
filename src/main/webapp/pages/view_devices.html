@@ -1,6 +1,6 @@
 <table id="dg" class="easyui-datagrid" style="height:auto;padding: 10px;"
        fit="true" border="true"
-       data-options="singleSelect:true,url:'/webconsole/rest/devices/',method:'GET',toolbar:'#toolbar',pagination:true,onDblClickRow: deviceDetail"
+       data-options="singleSelect:true,url:'/json/rest/devices/',method:'GET',toolbar:'#toolbar',pagination:true,onDblClickRow: deviceDetail"
        sortName="devicID" sortOrder="asc" remoteSort="true"
        idField="deviceKey" >
     <thead>
@@ -30,7 +30,7 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript: searchDevice();">Search</a>
     </div>
 </div>
-<div id="deviceDetailDlg" class="easyui-dialog" title="New Device" style="width:400px;height:550px;padding:10px 20px" closed="true" buttons="#detaildlg-buttons">
+<div id="deviceDetailDlg" class="easyui-dialog" title="Device Detail Info" style="width:400px;height:550px;padding:10px 20px" closed="true" buttons="#detaildlg-buttons">
     <div class="ftitle">Device Detail Information</div>
     <form id="fm_detail" method="post">
         <div class="fitem">

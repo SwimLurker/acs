@@ -7,13 +7,7 @@
         "attributes":{
             "url":"/pages/view_devices.html"
         }
-    },{
-		"id":12,
-        "text":"Add Device",
-        "attributes":{
-            "url":"/view_devices.html"
-        }
-	}]   
+    }]
 },{   
     "id":2,   
     "text":"Session Management",    
@@ -21,7 +15,7 @@
 		"id":21,
         "text":"View Sessions",
         "attributes":{
-            "url":"/view_devices.html"
+            "url":"/pages/view_sessions.html"
         }
     },{
 		"id":22,

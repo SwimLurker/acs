@@ -30,7 +30,7 @@ public class DeviceController {
     }
 
     @RequestMapping(value="/{deviceKey}", method = RequestMethod.DELETE)
-    public @ResponseBody Result delete(@PathVariable String deviceKey) {
+    public @ResponseBody Result removeDevice(@PathVariable String deviceKey) {
 
         deviceManager.removeDevice(deviceKey);
         return new Result(true, null);
@@ -38,7 +38,7 @@ public class DeviceController {
     }
 
     @RequestMapping(value="/{deviceKey}", method = RequestMethod.POST)
-    public @ResponseBody Result update(@PathVariable String deviceKey, @RequestParam("deviceID") String deviceID,
+    public @ResponseBody Result updateDevice(@PathVariable String deviceKey, @RequestParam("deviceID") String deviceID,
                                        @RequestParam("authUsername") String authUsername, @RequestParam("authPassword") String authPassword) {
         DeviceInfo deviceInfo = deviceManager.findDevice(deviceKey);
         deviceInfo.setDeviceID(deviceID);

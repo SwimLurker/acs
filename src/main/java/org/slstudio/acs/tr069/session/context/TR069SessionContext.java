@@ -1,5 +1,10 @@
 package org.slstudio.acs.tr069.session.context;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.context.AbstractSessionContext;
@@ -9,6 +14,7 @@ import org.slstudio.acs.tr069.databinding.request.InformRequest;
 import org.slstudio.acs.tr069.engine.TR069ProtocolEngine;
 import org.slstudio.acs.tr069.session.factory.TR069MessageContextFactory;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -17,6 +23,7 @@ import java.util.List;
  * Date: 13-4-24
  * Time: ÉÏÎç12:01
  */
+@JsonAutoDetect()
 public class TR069SessionContext extends AbstractSessionContext implements ITR069SessionContext {
     private int maxReceivedEnvelopeCount = 1;
     private int maxSendEnvelopeCount = 1;
@@ -50,6 +57,7 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
         setProperty(TR069Constants.SESSIONCONTEXT_KEY_CLIENTPORT, new Integer(port));
     }
 
+    @JsonIgnore()
     public InformRequest getInformRequest() {
         return (InformRequest)getProperty(TR069Constants.SESSIONCONTEXT_KEY_INFORMREQUEST);
     }
@@ -65,15 +73,15 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
     public void setDeviceKey(String deviceKey) {
         setProperty(TR069Constants.SESSIONCONTEXT_KEY_DEVICEKEY, deviceKey);
     }
-
+    @JsonIgnore()
     public ITR069MessageContext getCurrentTR069MessageContext() {
         return (ITR069MessageContext)getCurrentMessageContext();
     }
-
+    @JsonIgnore()
     public List<ITR069MessageContext> getTR069MessageContextList() {
         return (List<ITR069MessageContext>) getMessageContextList();
     }
-
+    @JsonIgnore()
     public TR069ProtocolEngine getTR069Engine() {
         return (TR069ProtocolEngine)getEngine();
     }
@@ -108,5 +116,17 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
         setClientPort(-1);
         setMaxReceiveEnvelopeCount(TR069Config.getMaxReceiveEnvelopeCount());
         setMaxSendEnvelopeCount(TR069Config.getMaxSendEnvelopeCount());
+    }
+
+    public static void main(String[] args) throws IOException {
+        TR069SessionContext sc = new TR069SessionContext();
+        sc.setSessionID("1111");
+        sc.setClientIP("127.0.0.1");
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(JsonMethod.GETTER, JsonAutoDetect.Visibility.ANY);
+        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+        String jsonStr =  mapper.writeValueAsString(sc);
+        System.out.println(jsonStr);
     }
 }

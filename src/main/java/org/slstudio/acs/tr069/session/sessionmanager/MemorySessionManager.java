@@ -6,9 +6,7 @@ import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.kernal.session.idmanager.ISessionIDManager;
 import org.slstudio.acs.kernal.session.sessionmanager.ISessionManager;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +29,10 @@ public class MemorySessionManager implements ISessionManager {
 
     public void setSessionIDManager(ISessionIDManager sessionIDManager) {
         this.sessionIDManager = sessionIDManager;
+    }
+
+    public List<ISessionContext> getAllSessionContexts() {
+        return new ArrayList<ISessionContext>(contextMap.values());
     }
 
     public ISessionContext getSessionContext(String sessionID) {

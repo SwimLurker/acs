@@ -5,7 +5,6 @@ import org.slstudio.acs.hms.exception.MessagingException;
 import org.slstudio.acs.hms.messaging.bean.SyncDevicesBean;
 import org.slstudio.acs.hms.messaging.sender.IMessageSender;
 import org.slstudio.acs.util.BeanLocator;
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -41,10 +40,10 @@ public class ACSServer {
     }
 
     public boolean start() {
-        DefaultMessageListenerContainer dmlc = (DefaultMessageListenerContainer)BeanLocator.getBean("syncDeviceListenerContainer");
-        dmlc.start();
+//        DefaultMessageListenerContainer dmlc = (DefaultMessageListenerContainer)BeanLocator.getBean("syncDeviceListenerContainer");
+//        dmlc.start();
         bRunning = true;
-        sendMockSyncDevicesMessage();
+//        sendMockSyncDevicesMessage();
         return bRunning;
     }
 

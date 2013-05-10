@@ -1,5 +1,6 @@
 package org.slstudio.acs.kernal.session.context;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
@@ -31,7 +32,7 @@ public abstract class AbstractSessionContext implements ISessionContext {
     protected AbstractSessionContext(IMessageContextFactory messageFactory) {
         this.messageContextFactory = messageFactory;
     }
-
+    @JsonIgnore()
     public IMessageContextFactory getMessageContextFactory() {
         return messageContextFactory;
     }
@@ -63,7 +64,7 @@ public abstract class AbstractSessionContext implements ISessionContext {
     public void setClientID(String clientID){
         this.clientID = clientID;
     }
-
+    @JsonIgnore()
     public IProtocolEngine getEngine() {
         return engine;
     }
@@ -95,11 +96,11 @@ public abstract class AbstractSessionContext implements ISessionContext {
         messageContextList.add(messageContext);
         return messageContext;
     }
-
+    @JsonIgnore()
     public IMessageContext getCurrentMessageContext(){
         return messageContextList.get(messageContextList.size()-1);
     }
-
+    @JsonIgnore()
     public List<? extends IMessageContext> getMessageContextList(){
         return messageContextList;
     }
