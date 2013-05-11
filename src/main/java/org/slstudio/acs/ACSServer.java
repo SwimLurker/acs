@@ -1,15 +1,10 @@
 package org.slstudio.acs;
 
-import org.slstudio.acs.hms.device.DeviceInfo;
-import org.slstudio.acs.hms.exception.MessagingException;
-import org.slstudio.acs.hms.messaging.bean.SyncDevicesBean;
-import org.slstudio.acs.hms.messaging.sender.IMessageSender;
-import org.slstudio.acs.util.BeanLocator;
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
+import org.slstudio.acs.hms.lifecycle.MessagingServiceServerListener;
+import org.slstudio.acs.kernal.lifecycle.ILifecycle;
+import org.slstudio.acs.kernal.lifecycle.ILifecycleListener;
+import org.slstudio.acs.kernal.lifecycle.LifecycleSupport;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,11 +13,21 @@ import java.util.List;
  * Date: 13-4-24
  * Time: ÉÏÎç12:18
  */
-public class ACSServer {
+public class ACSServer implements ILifecycle{
+    public static final String BEFORE_START_EVENT = "Event_BeforeStart";
+    public static final String START_EVENT = "Event_Start";
+    public static final String AFTER_START_EVENT = "Event_AfterStart";
+    public static final String BEFORE_STOP_EVENT = "Event_BeforeStop";
+    public static final String STOP_EVENT = "Event_Stop";
+    public static final String AFTER_STOP_EVENT = "Event_AfterStop";
+
     private static ACSServer _instance = null;
     private boolean bRunning = false;
+    private LifecycleSupport lifecycle = null;
 
     protected ACSServer(){
+        lifecycle =new LifecycleSupport(this);
+        addLifecycleListener(new MessagingServiceServerListener());
     }
 
     public static ACSServer getInstance(){
@@ -40,52 +45,30 @@ public class ACSServer {
 
     }
 
-    public boolean start() {
-        DefaultMessageListenerContainer dmlc = (DefaultMessageListenerContainer)BeanLocator.getBean("syncDeviceListenerContainer");
-       dmlc.start();
+    public void addLifecycleListener(ILifecycleListener listener) {
+        lifecycle.addLifecycleListener(listener);
+    }
+
+    public void removeLifecycleListener(ILifecycleListener listener) {
+        lifecycle.removeLifecycleListener(listener);
+    }
+
+    public List<ILifecycleListener> getLifecycleListeners() {
+        return lifecycle.getLifecycleListeners();
+    }
+
+    public void start() {
+        lifecycle.fireLifecycleEvent(BEFORE_START_EVENT, null);
+        lifecycle.fireLifecycleEvent(START_EVENT, null);
         bRunning = true;
-        sendMockSyncDevicesMessage();
-        return bRunning;
+        lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
+
     }
 
-    private void sendMockSyncDevicesMessage() {
-        List<DeviceInfo> deviceList = new ArrayList<DeviceInfo>();
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMaximumIntegerDigits(3);
-        nf.setMinimumIntegerDigits(3);
-
-        for(int i=0;i<100;i++){
-            DeviceInfo device = new DeviceInfo();
-
-            device.setDeviceID("0000000"+ nf.format(i));
-            device.setDeviceKey("FF00000" + nf.format(i));
-            device.setAuthUsername("admin");
-            device.setAuthPassword("admin");
-            device.setDeviceIP("192.168.0.100");
-            device.setManufacturer("FishCore");
-            device.setDeviceOUI("00A00D");
-            device.setProductClass("FishCore IGD Device");
-            device.setSerialNumber("FF00000" + nf.format(i));
-            device.setCrURL("http://192.168.0.100:9892/acscall");
-            device.setCrUsername("test");
-            device.setCrPassword("test");
-            Date date = new Date();
-            int rndValue = (int)Math.round(Math.random() * (1000000 - 1) + 1);
-            date.setTime(System.currentTimeMillis() + rndValue);
-            device.setLastInformTime(date);
-
-            deviceList.add(device);
-        }
-        IMessageSender sender = (IMessageSender)BeanLocator.getBean("syncDevicesSender");
-        try {
-            sender.sendMessage(new SyncDevicesBean(SyncDevicesBean.COMMAND_SYNC, deviceList));
-        } catch (MessagingException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-    public boolean stop() {
+    public void stop() {
+        lifecycle.fireLifecycleEvent(BEFORE_STOP_EVENT, null);
+        lifecycle.fireLifecycleEvent(STOP_EVENT, null);
         bRunning = false;
-        return true;
+        lifecycle.fireLifecycleEvent(AFTER_STOP_EVENT, null);
     }
 }

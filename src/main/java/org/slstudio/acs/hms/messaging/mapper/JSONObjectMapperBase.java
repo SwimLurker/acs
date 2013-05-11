@@ -25,7 +25,7 @@ public abstract class JSONObjectMapperBase<T> implements IObjectMapper {
     public JSONObjectMapperBase() {
         mapper = new ObjectMapper();
         mapper.setVisibility(JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
-        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, false);
     }
 
     @SuppressWarnings("unchecked")

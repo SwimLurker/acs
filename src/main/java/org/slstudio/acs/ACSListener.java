@@ -28,20 +28,13 @@ public class ACSListener implements ServletContextListener {
         ACSServer server= ACSServer.getInstance();
         server.setAcsConfigFile(ACS_CONFIGFILE);
 
-        if(!server.start()){
-            log.error("Start ACS Server failed!");
-        }else{
-            log.info("ACS Server Started!");
-
-        }
+        server.start();
+        log.info("ACS Server Started!");
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         log.info("Stop ACS Server...");
-        if(!ACSServer.getInstance().stop()){
-            log.error("Stop ACS Server failed!");
-        }else{
-            log.info("ACS Server Stopped!");
-        }
+        ACSServer.getInstance().stop();
+        log.info("ACS Server Stopped!");
     }
 }

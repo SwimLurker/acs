@@ -1,6 +1,7 @@
 package org.slstudio.acs.hms.messaging.bean;
 
 import org.slstudio.acs.hms.device.DeviceInfo;
+import org.slstudio.acs.util.JSONUtil;
 
 import java.util.List;
 
@@ -41,5 +42,9 @@ public class SyncDevicesBean {
 
     public void setDeviceList(List<DeviceInfo> deviceList) {
         this.deviceList = deviceList;
+    }
+
+    public String toString(){
+        return JSONUtil.toJsonString(this);
     }
 }

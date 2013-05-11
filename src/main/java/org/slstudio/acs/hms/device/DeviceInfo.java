@@ -157,7 +157,7 @@ public class DeviceInfo {
 
         ObjectMapper mapper = new ObjectMapper();
 //        mapper.setVisibility(JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
-        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, false);
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
         String jsonStr =  mapper.writeValueAsString(device);
         System.out.println(jsonStr);

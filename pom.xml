@@ -58,6 +58,17 @@
             <version>1.7.2</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>3.2.2.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
             <groupId>stax</groupId>
             <artifactId>stax</artifactId>
             <version>1.2.0</version>
@@ -107,6 +118,7 @@
                             <port>8080</port>
                         </connector>
                     </connectors>
+                    <jvmArgs>aaa</jvmArgs>
                 </configuration>
             </plugin>
             <plugin>

@@ -1,8 +1,9 @@
-package org.slstudio.acs.hms.messaging.receiver;
+package org.slstudio.acs.hms.messaging.listener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.hms.exception.MessagingException;
+import org.slstudio.acs.hms.messaging.receiver.IMessageReceiver;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -15,24 +16,24 @@ import javax.jms.TextMessage;
  * Date: 13-5-11
  * Time: ÉÏÎç12:10
  */
-public class JMSMessageReceiver extends AbstractStringMessageReceiver implements MessageListener {
-    private static final Log log = LogFactory.getLog(JMSMessageReceiver.class);
+public class JMSTextMessageListener implements MessageListener {
+    private static final Log log = LogFactory.getLog(JMSTextMessageListener.class);
 
-    private String sourceName = null;
+    private IMessageReceiver receiver = null;
 
-    public String getSourceName() {
-        return sourceName;
+    public IMessageReceiver getReceiver() {
+        return receiver;
     }
 
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
+    public void setReceiver(IMessageReceiver receiver) {
+        this.receiver = receiver;
     }
 
     public void onMessage(Message message) {
         try{
             if (message instanceof TextMessage) {
                 try{
-                    receiveMessage(((TextMessage) message).getText());
+                    receiver.receiveMessage(((TextMessage) message).getText());
                 }catch(MessagingException mexp){
                     log.error("consume message exception", mexp);
                     throw new JMSException("consume message exception");

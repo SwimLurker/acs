@@ -14,11 +14,20 @@ import java.util.List;
  * Date: 13-5-7
  * Time: ÉÏÎç1:56
  */
-public abstract class AbstractStringMessageReceiver implements IMessageReceiver {
-    private static final Log log = LogFactory.getLog(AbstractStringMessageReceiver.class);
+public class StringMessageReceiver implements IMessageReceiver {
+    private static final Log log = LogFactory.getLog(StringMessageReceiver.class);
 
     private IObjectMapper objectMapper = null;
     private List<IMessageHandler> handlers = null;
+    private String sourceName = null;
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
 
     public IObjectMapper getObjectMapper() {
         return objectMapper;
@@ -52,7 +61,7 @@ public abstract class AbstractStringMessageReceiver implements IMessageReceiver 
     }
 
 
-    public final void receiveMessage(Object message) throws MessagingException{
+    public void receiveMessage(Object message) throws MessagingException{
         if(message instanceof String){
             consumeStringMessage((String) message);
         }else{
