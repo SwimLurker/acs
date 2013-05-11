@@ -15,6 +15,13 @@ import org.springframework.stereotype.Component;
  * Date: 13-5-11
  * Time: ионГ1:38
  */
+/*
+This class use spring aop to intercept logging function, but as spring aop use jvm dynamic
+proxy for aop, so only can intercept the spring-managed bean(use BeanLocactor.load() to get
+in the program) which implement some interface, can not intercept some method called internal.
+TODO: Try use other aop instead later.
+ */
+
 
 @Aspect
 @Component

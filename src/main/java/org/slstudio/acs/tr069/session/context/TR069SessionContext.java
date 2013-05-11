@@ -2,6 +2,7 @@ package org.slstudio.acs.tr069.session.context;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
+
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -23,9 +24,9 @@ import java.util.List;
  * Date: 13-4-24
  * Time: ÉÏÎç12:01
  */
-@JsonAutoDetect()
+@JsonAutoDetect(value = JsonMethod.GETTER)
 public class TR069SessionContext extends AbstractSessionContext implements ITR069SessionContext {
-    private int maxReceivedEnvelopeCount = 1;
+    private int maxReceiveEnvelopeCount = 1;
     private int maxSendEnvelopeCount = 1;
 
     public TR069SessionContext() {
@@ -57,7 +58,6 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
         setProperty(TR069Constants.SESSIONCONTEXT_KEY_CLIENTPORT, new Integer(port));
     }
 
-    @JsonIgnore()
     public InformRequest getInformRequest() {
         return (InformRequest)getProperty(TR069Constants.SESSIONCONTEXT_KEY_INFORMREQUEST);
     }
@@ -87,11 +87,11 @@ public class TR069SessionContext extends AbstractSessionContext implements ITR06
     }
 
     public int getMaxReceiveEnvelopeCount() {
-        return maxReceivedEnvelopeCount;
+        return maxReceiveEnvelopeCount;
     }
 
     public void setMaxReceiveEnvelopeCount(int maxReceiveEnvelopeCount) {
-        this.maxReceivedEnvelopeCount = maxReceiveEnvelopeCount;
+        this.maxReceiveEnvelopeCount = maxReceiveEnvelopeCount;
     }
 
     public int getMaxSendEnvelopeCount() {

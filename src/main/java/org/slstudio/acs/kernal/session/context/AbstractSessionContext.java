@@ -1,12 +1,14 @@
 package org.slstudio.acs.kernal.session.context;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.factory.IMessageContextFactory;
 import org.slstudio.acs.kernal.session.factory.SessionIDGeneratorFactory;
+import org.slstudio.acs.util.LongToDateSerializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +75,7 @@ public abstract class AbstractSessionContext implements ISessionContext {
         this.engine = engine;
     }
 
+    @JsonSerialize(using = LongToDateSerializer.class)
     public long getTimestamp() {
         return timestamp;
     }
@@ -96,7 +99,7 @@ public abstract class AbstractSessionContext implements ISessionContext {
         messageContextList.add(messageContext);
         return messageContext;
     }
-    @JsonIgnore()
+
     public IMessageContext getCurrentMessageContext(){
         return messageContextList.get(messageContextList.size()-1);
     }

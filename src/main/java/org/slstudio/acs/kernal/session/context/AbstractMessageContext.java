@@ -1,5 +1,6 @@
 package org.slstudio.acs.kernal.session.context;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.ContextException;
@@ -18,6 +19,7 @@ import java.util.Map;
 public abstract class AbstractMessageContext implements IMessageContext{
     private ISessionContext sessionContext = null;
     private InputStream inputStream = null;
+    private String request = null;
     private String response = null;
     private int lastErrorCode = ACSConstants.ERROR_CODE_SUCCESS;
     private IProtocolEndPoint endPoint = null;
@@ -26,20 +28,30 @@ public abstract class AbstractMessageContext implements IMessageContext{
     protected AbstractMessageContext(ISessionContext sessionContext) {
         this.sessionContext = sessionContext;
     }
-
+    @JsonIgnore
     public ISessionContext getSessionContext(){
         return sessionContext;
     }
+
     public void setSessionContext(ISessionContext sessionContext){
         this.sessionContext = sessionContext;
     }
 
+    @JsonIgnore
     public InputStream getInputStream(){
         return inputStream;
     }
 
     public void setInputStream(InputStream is){
         this.inputStream = is;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public void setRequest(String request) {
+        this.request = request;
     }
 
     public String getResponse(){
@@ -58,6 +70,7 @@ public abstract class AbstractMessageContext implements IMessageContext{
         this.lastErrorCode = errorCode;
     }
 
+    @JsonIgnore
     public IProtocolEndPoint getEndPoint() {
         return endPoint;
     }
@@ -66,6 +79,7 @@ public abstract class AbstractMessageContext implements IMessageContext{
         this.endPoint = endPoint;
     }
 
+    @JsonIgnore
     public Object getProperty(String key){
         return properties.get(key);
     }

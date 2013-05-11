@@ -15,6 +15,8 @@ public interface IMessageContext {
     public ISessionContext getSessionContext();
     public InputStream getInputStream();
     public void setInputStream(InputStream is);
+    public String getRequest();
+    public void setRequest(String request);
     public String getResponse();
     public void setResponse(String response);
     public int getLastErrorCode();

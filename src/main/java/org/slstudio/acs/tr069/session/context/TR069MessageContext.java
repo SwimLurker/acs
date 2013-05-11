@@ -2,6 +2,9 @@ package org.slstudio.acs.tr069.session.context;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonMethod;
 import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.session.context.AbstractMessageContext;
@@ -17,6 +20,8 @@ import java.util.List;
  * Date: 13-4-27
  * Time: ÉÏÎç2:35
  */
+
+@JsonAutoDetect(value = JsonMethod.GETTER)
 public class TR069MessageContext extends AbstractMessageContext implements ITR069MessageContext {
     private static final Log log = LogFactory.getLog(TR069MessageContext.class);
 
@@ -25,6 +30,7 @@ public class TR069MessageContext extends AbstractMessageContext implements ITR06
     public int getCanSendEnvelopeCount(){
         return canSendEnvelopeCount;
     }
+
     public void setCanSendEnvelopeCount(int canSendEnvelopeCount){
         this.canSendEnvelopeCount = canSendEnvelopeCount;
         log.debug("set can send evenlope count to " + canSendEnvelopeCount);
@@ -39,6 +45,7 @@ public class TR069MessageContext extends AbstractMessageContext implements ITR06
         setCanSendEnvelopeCount(getTR069SessionContext().getMaxSendEnvelopeCount());
     }
 
+    @JsonIgnore
     public List<SOAPMessage> getSoapMessageList() {
         Object obj = getProperty(TR069Constants.MESSAGECONTEXT_KEY_SOAPMESSAGELIST);
         if(obj != null){
@@ -51,6 +58,7 @@ public class TR069MessageContext extends AbstractMessageContext implements ITR06
         setProperty(TR069Constants.MESSAGECONTEXT_KEY_SOAPMESSAGELIST,messageList);
     }
 
+    @JsonIgnore
     public ITR069SessionContext getTR069SessionContext() {
         return (ITR069SessionContext)getSessionContext();
     }

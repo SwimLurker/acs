@@ -51,5 +51,15 @@ public class ParseMessagePipeline extends AbstractTR069Pipeline {
             throw new ParseMessageException("Parse message failed",e);
         }
         context.setSoapMessageList(messages);
+        context.setRequest(getRequestString(messages));
     }
+
+    private String getRequestString(List<SOAPMessage> messages) {
+        StringBuilder sb = new StringBuilder();
+        for(SOAPMessage m: messages){
+            sb.append(m.getEnvelope().toString());
+        }
+        return sb.toString();
+    }
+
 }

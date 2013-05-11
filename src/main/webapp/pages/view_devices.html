@@ -1,6 +1,6 @@
-<table id="dg" class="easyui-datagrid" style="height:auto;padding: 10px;"
+<table id="dg_device" class="easyui-datagrid" style="height:auto;padding: 10px;"
        fit="true" border="true"
-       data-options="singleSelect:true,url:'/webconsole/rest/devices/',method:'GET',toolbar:'#toolbar',pagination:true,onDblClickRow: deviceDetail"
+       data-options="singleSelect:true,url:'/webconsole/rest/devices/',method:'GET',toolbar:'#toolbar_device',pagination:true,onDblClickRow: deviceDetail"
        sortName="devicID" sortOrder="asc" remoteSort="true"
        idField="deviceKey" >
     <thead>
@@ -20,7 +20,7 @@
     </thead>
 
 </table>
-<div id="toolbar" style="padding:5px;height:auto">
+<div id="toolbar_device" style="padding:5px;height:auto">
     <div style="margin-bottom:5px">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript: addDevice();">Add Device</a>
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="javascript: updateDevice();">Edit Device</a>
@@ -30,9 +30,9 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript: searchDevice();">Search</a>
     </div>
 </div>
-<div id="deviceDetailDlg" class="easyui-dialog" title="Device Detail Info" style="width:400px;height:550px;padding:10px 20px" closed="true" buttons="#detaildlg-buttons">
+<div id="deviceDetailDlg" class="easyui-dialog" title="Device Detail Info" style="width:400px;height:550px;padding:10px 20px" closed="true" buttons="#devicedetaildlg-buttons">
     <div class="ftitle">Device Detail Information</div>
-    <form id="fm_detail" method="post">
+    <form id="fm_device_detail" method="post">
         <div class="fitem">
             <label>Device ID:</label>
             <input name="deviceID" readonly>
@@ -87,9 +87,9 @@
         </div>
     </form>
 </div>
-<div id="deviceDlg" class="easyui-dialog" title="New Device" style="width:400px;height:280px;padding:10px 20px" closed="true" buttons="#dlg-buttons">
+<div id="deviceDlg" class="easyui-dialog" title="New Device" style="width:400px;height:280px;padding:10px 20px" closed="true" buttons="#devicedlg-buttons">
     <div class="ftitle">Device Information</div>
-    <form id="fm" method="post">
+    <form id="fm_device" method="post">
         <div class="fitem">
             <label>Device ID:</label>
             <input name="deviceID" class="easyui-validatebox" required="true">
@@ -108,11 +108,11 @@
         </div>
     </form>
 </div>
-<div id="dlg-buttons">
+<div id="devicedlg-buttons">
     <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveDevice()">Save</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#deviceDlg').dialog('close')">Cancel</a>
 </div>
-<div id="detaildlg-buttons">
+<div id="devicedetaildlg-buttons">
     <a href="#" class="easyui-linkbutton" iconCls="icon-close" onclick="javascript:$('#deviceDetailDlg').dialog('close')">Close</a>
 </div>
 <script type="text/javascript" >
@@ -120,20 +120,20 @@
     var method;
     function addDevice(){
         $('#deviceDlg').dialog('open').dialog('setTitle', 'New Device');
-        $('#fm').form('clear');
+        $('#fm_device').form('clear');
         url = '/webconsole/rest/devices/';
     }
     function updateDevice(){
-        var row = $('#dg').datagrid('getSelected');
+        var row = $('#dg_device').datagrid('getSelected');
         if(row){
             $('#deviceDlg').dialog('open').dialog('setTitle', 'Edit Device');
-            $('#fm').form('load', row);
+            $('#fm_device').form('load', row);
             $('#deviceDlg').find("input[name='deviceKey']").attr('readonly','readonly');
             url = '/webconsole/rest/devices/' + row.deviceKey;
         }
     }
     function saveDevice(){
-        $('#fm').form('submit',{
+        $('#fm_device').form('submit',{
             url: url,
             onSubmit: function(){
                 return $(this).form('validate');
@@ -142,7 +142,7 @@
                 var result = eval('('+result+')');
                 if (result.success){
                     $('#deviceDlg').dialog('close'); // close the dialog
-                    $('#dg').datagrid('reload'); // reload the user data
+                    $('#dg_device').datagrid('reload'); // reload the user data
                 } else {
                     $.messager.show({title: 'Error',
                         msg: result.msg
@@ -152,7 +152,7 @@
         });
     }
     function removeDevice(){
-        var row = $('#dg').datagrid('getSelected');
+        var row = $('#dg_device').datagrid('getSelected');
         if (row){
             $.messager.confirm('Confirm','Are you sure you want to remove this device?',
                     function(r){
@@ -161,7 +161,7 @@
                                      type:'DELETE',
                                      success: function(result){
                                         if (result.success){
-                                            $('#dg').datagrid('reload'); // reload the data
+                                            $('#dg_device').datagrid('reload'); // reload the data
                                         } else {
                                             $.messager.show({ // show error message
                                                 title: 'Error',
@@ -174,7 +174,7 @@
         }
     }
     function notifyDevice(){
-        var row = $('#dg').datagrid('getSelected');
+        var row = $('#dg_device').datagrid('getSelected');
         if (row){
             $.messager.confirm('Confirm','Are you sure you want to notify this device?',
                     function(r){
@@ -184,7 +184,7 @@
                                 type:'PUT',
                                 success: function(result){
                                     if (result.success){
-                                        $('#dg').datagrid('reload'); // reload the data
+                                        $('#dg_device').datagrid('reload'); // reload the data
                                     } else {
                                         $.messager.show({ // show error message
                                             title: 'Error',
@@ -197,12 +197,12 @@
         }
     }
     function searchDevice(){
-        $('#dg').datagrid('load',{
+        $('#dg_device').datagrid('load',{
             deviceKey:$('#sDeviceKey').val()
         });
     }
     function deviceDetail(rowIndex, row){
         $('#deviceDetailDlg').dialog('open').dialog('setTitle', 'Show Device Detail Info');
-        $('#fm_detail').form('load', row);
+        $('#fm_device_detail').form('load', row);
     }
 </script>

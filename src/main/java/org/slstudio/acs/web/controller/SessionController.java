@@ -7,8 +7,10 @@ package org.slstudio.acs.web.controller;
  * Time: ÉÏÎç2:30
  */
 
+import org.slstudio.acs.kernal.session.context.IMessageContext;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
 import org.slstudio.acs.kernal.session.sessionmanager.ISessionManager;
+import org.slstudio.acs.util.JSONUtil;
 import org.slstudio.acs.web.util.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -67,9 +69,28 @@ public class SessionController {
         }
         result.put("total",sortedSessions.size());
         result.put("rows", resultSessionList);
+        System.out.println(JSONUtil.toJsonString(result));
         return result;
     }
 
+    @RequestMapping(value="/{sessionID}/messages", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> getSessionMessageList(@PathVariable String sessionID) {
+        List<IMessageContext> messages = new ArrayList<IMessageContext>();
+        if(sessionID != null){
+            ISessionContext sessionContext = sessionManager.getSessionContext(sessionID);
+            if(sessionContext != null){
+                messages.addAll(sessionContext.getMessageContextList());
+            }
+        }
+
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("total",messages.size());
+        result.put("rows", messages);
+        System.out.println(JSONUtil.toJsonString(result));
+        return result;
+    }
     private List<ISessionContext> sortSessions(List<ISessionContext> allSessions, String sortName, String sortOrder) {
         if(sortOrder.equals("desc")){
             if(sortName.equals("sessionID")){

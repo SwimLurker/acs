@@ -1,47 +1,59 @@
-<table id="dg" class="easyui-datagrid" style="height:auto;padding: 10px;"
-       fit="true" border="true"
-       data-options="singleSelect:true,url:'/webconsole/rest/sessions/',method:'GET',toolbar:'#toolbar',pagination:true,onDblClickRow: sessionDetail"
-       sortName="sessionID" sortOrder="asc"
-       idField="sessionID" >
-    <thead>
-    <tr width="100%" >
-        <th field="sessionID" width="100" sortable="true">Session ID</th>
-        <th field="deviceKey" width = "100" >deviceKey</th>
-        <th field="lastUpdateTime" width="120" sortable="true">Last Update Time</th>
-    </tr>
-    </thead>
-
+<table id="dg_session" class="easyui-datagrid" style="height:auto;padding: 10px;" border="true">
 </table>
-<div id="toolbar" style="padding:5px;height:auto">
+<div id="toolbar_session" style="padding:5px;height:auto">
     <div style="margin-bottom:5px">
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript: removeSession();">Remove Session</a>
         <input type="text" id="sSessionID" />
         <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript: searchSession();">Search</a>
     </div>
 </div>
-<div id="sessionDetailDlg" class="easyui-dialog" title="Session Detail Info" style="width:400px;height:550px;padding:10px 20px" closed="true" buttons="#detaildlg-buttons">
+<div id="sessionDetailDlg" class="easyui-dialog" title="Session Detail Info" style="width:500px;height:600px;padding:10px 20px" closed="true" buttons="#sessiondetaildlg-buttons">
     <div class="ftitle">Session Detail Information</div>
-    <form id="fm_detail" method="post">
+    <form id="fm_session_detail" method="post">
         <div class="fitem">
-            <label>Session ID:</label>
-            <input name="sessionID" readonly>
+            <label style="width:150px;">Session ID:</label>
+            <input name="sessionID"  style="width:240px;" readonly>
         </div>
         <div class="fitem">
-            <label>Device Key:</label>
+            <label style="width:150px;">Device Key:</label>
             <input name="deviceKey" readonly>
         </div>
         <div class="fitem">
-            <label>Last Update Time:</label>
-            <input name="lastUpdateTime" readonly>
+            <label style="width:150px;">Client ID:</label>
+            <input name="clientID" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Client IP:</label>
+            <input name="clientIP" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Max Send  Envelope Count:</label>
+            <input name="maxSendEnvelopeCount" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Max Receive Envelope Count:</label>
+            <input name="maxReceiveEnvelopeCount" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Status:</label>
+            <input name="status" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Last Update Time:</label>
+            <input name="timestamp" style="width:200px;" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Latest Response:</label>
+            <textarea name="response" readonly style="width:250px" cols="30" rows="15"/>
         </div>
     </form>
 </div>
-<div id="detaildlg-buttons">
+<div id="sessiondetaildlg-buttons">
     <a href="#" class="easyui-linkbutton" iconCls="icon-close" onclick="javascript:$('#sessionDetailDlg').dialog('close')">Close</a>
 </div>
 <script type="text/javascript" >
     function removeSession(){
-        var row = $('#dg').datagrid('getSelected');
+        var row = $('#dg_session').datagrid('getSelected');
         if (row){
             $.messager.confirm('Confirm','Are you sure you want to remove this session?',
                     function(r){
@@ -50,7 +62,7 @@
                                 type:'DELETE',
                                 success: function(result){
                                     if (result.success){
-                                        $('#dg').datagrid('reload'); // reload the data
+                                        $('#dg_session').datagrid('reload'); // reload the data
                                     } else {
                                         $.messager.show({ // show error message
                                             title: 'Error',
@@ -63,12 +75,58 @@
         }
     }
     function searchSession(){
-        $('#dg').datagrid('load',{
+        $('#dg_session').datagrid('load',{
             sessionID:$('#sSessionID').val()
         });
     }
     function sessionDetail(rowIndex, row){
         $('#sessionDetailDlg').dialog('open').dialog('setTitle', 'Show Session Detail Info');
-        $('#fm_detail').form('load', row);
+        $('#fm_session_detail').form('load', {
+            sessionID: row.sessionID,
+            deviceKey: row.deviceKey,
+            clientID: row.clientID,
+            clientIP: row.clientIP,
+            maxSendEnvelopeCount: row.maxSendEnvelopeCount,
+            maxReceiveEnvelopeCount: row.maxReceiveEnvelopeCount,
+            response: row.currentMessageContext.response,
+            status: row.status,
+            timestamp: row.timestamp});
     }
+    $(function(){
+        $('#dg_session').datagrid({
+            singleSelect:true,
+            url:'/webconsole/rest/sessions/',
+            method:'GET',
+            toolbar:'#toolbar_session',
+            pagination:true,
+            sortName:'sessionID',
+            sortName:'sessionID',
+            sortOrder:'asc',
+            idField:'sessionID',
+            onDblClickRow: sessionDetail,
+            columns:[[
+                {field:'sessionID',title:'Session ID',width:300},
+                {field:'clientID',title:'Client ID',width:100},
+                {field:'clientIP',title:'Client IP',width:100},
+                {field:'deviceKey',title:'Device Key',width:100},
+                {field:'timestamp',title:'Last Update Time',width:200}
+            ]],
+            view: detailview,
+            detailFormatter:function(index,row){
+                return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+            },
+            onExpandRow: function(index,row){
+                $('#ddv-'+index).panel({
+                    height:150,
+                    border:false,
+                    cache:false,
+                    href:'/pages/view_session_messages.jsp?sessionID='+row.sessionID,
+                    onLoad:function(){
+                        //$('#dg_session').datagrid('fixDetailRowHeight',index);
+                    }
+                });
+                //$('#dg_session').datagrid('fixDetailRowHeight',index);
+            }
+        });
+    });
 </script>
