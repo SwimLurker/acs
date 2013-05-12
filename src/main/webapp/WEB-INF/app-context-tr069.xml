@@ -195,10 +195,14 @@
 
     <!-- beans for request message dealer -->
     <bean id="saveInformInfoPlugin" class="org.slstudio.acs.tr069.messagedealer.plugin.SaveInformInfoPlugin" />
+    <bean id="checkDevicePlugin" class="org.slstudio.acs.hms.messagedealer.plugin.CheckDevicePlugin">
+        <property name="deviceManager" ref="deviceManager" />
+    </bean>
     <bean id="informPrePluginList" class="java.util.ArrayList">
         <constructor-arg>
             <list>
                 <ref bean="saveInformInfoPlugin" />
+                <ref bean="checkDevicePlugin" />
             </list>
         </constructor-arg>
     </bean>

@@ -1,6 +1,7 @@
 package org.slstudio.acs.tr069.soap;
 
 import org.apache.axiom.soap.SOAPEnvelope;
+import org.slstudio.acs.tr069.fault.TR069Fault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class SOAPMessage implements java.io.Serializable{
 
     private SOAPEnvelope envelope=null;
     private List<String> responses=null;
+    private TR069Fault fault = null;
     private boolean isDealed=false;
 
 
@@ -42,6 +44,14 @@ public class SOAPMessage implements java.io.Serializable{
     }
     public void setResponses(List<String> responses){
         this.responses=responses;
+    }
+
+    public TR069Fault getFault() {
+        return fault;
+    }
+
+    public void setFault(TR069Fault fault) {
+        this.fault = fault;
     }
 
     public boolean isDealed() {

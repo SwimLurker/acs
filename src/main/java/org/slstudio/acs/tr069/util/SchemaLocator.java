@@ -70,17 +70,20 @@ public class SchemaLocator {
     public void test() throws Exception{
         Schema schema = schemaMap.get(TR069Constants.SCHEMA_TR069_AM2);
         Validator validator = schema.newValidator();
-        validator.validate(new StreamSource(new FileInputStream(new File("D:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\input\\Inform.txt"))));
+        validator.setErrorHandler(new MySchemaErrorHandler());
+        validator.validate(new StreamSource(new FileInputStream(new File("D:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\input\\TransferComplete.xml"))));
     }
 
     //implements error handler to avoid facet-valid error for soap "mustUnderStand" attribute
     class MySchemaErrorHandler implements ErrorHandler {
         public void warning(SAXParseException exception) throws SAXException {
             log.warn(exception);
+            System.out.println(exception.getMessage());
         }
 
         public void error(SAXParseException exception) throws SAXException {
             log.error(exception);
+            System.out.println(exception.getMessage());
         }
 
         public void fatalError(SAXParseException exception) throws SAXException {

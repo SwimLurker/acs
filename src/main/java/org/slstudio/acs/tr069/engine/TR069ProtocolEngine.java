@@ -8,7 +8,6 @@ import org.slstudio.acs.kernal.endpoint.IProtocolEndPoint;
 import org.slstudio.acs.kernal.engine.IProtocolEngine;
 import org.slstudio.acs.kernal.exception.ContextException;
 import org.slstudio.acs.kernal.exception.EndPointException;
-import org.slstudio.acs.kernal.exception.PipelineException;
 import org.slstudio.acs.kernal.pipeline.IProtocolPipeline;
 import org.slstudio.acs.kernal.session.context.IMessageContext;
 import org.slstudio.acs.kernal.session.context.ISessionContext;
@@ -74,7 +73,6 @@ public class TR069ProtocolEngine implements IProtocolEngine {
         }finally {
             afterDoService(messageContext);
         }
-        writeResponse(endPoint, messageContext);
     }
 
     protected IMessageContext prepareMessageContext(IProtocolEndPoint endPoint) throws ContextException{
@@ -83,20 +81,33 @@ public class TR069ProtocolEngine implements IProtocolEngine {
         return context.newMessageContext(endPoint);
     }
 
-    protected void doService(IMessageContext context) {
+    protected void doService(IMessageContext context) throws ACSException{
         try{
             for(IProtocolPipeline pipeline: pipelines){
                 pipeline.processMessage(context);
             }
-        }catch(PipelineException exp){
+        }catch(Exception exp){
             log.error(exp);
             context.setErrorCode(ACSConstants.ERROR_CODE_PIPELINEHANDLE);
             context.setResponse(exp.getMessage());
         }
+        try {
+            writeResponse(context);
+        } catch (EndPointException exp) {
+            log.error(exp);
+            context.setErrorCode(ACSConstants.ERROR_CODE_WRITERESPONSE);
+            //throw exception if write response error
+            throw exp;
+        }  catch (Exception e){
+            log.error(e);
+            context.setErrorCode(ACSConstants.ERROR_CODE_UNKNOWNERROR);
+            //throw exception if write response error
+            throw new ACSException(e);
+        }
     }
 
-    protected void writeResponse(IProtocolEndPoint endPoint,IMessageContext context) throws EndPointException {
-        endPoint.writeResponse(context);
+    protected void writeResponse(IMessageContext context) throws EndPointException {
+        context.getEndPoint().writeResponse(context);
     }
 
     protected void beforeDoService(IMessageContext messageContext) throws ACSException{

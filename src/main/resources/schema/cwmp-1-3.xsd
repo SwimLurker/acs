@@ -96,7 +96,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="urn:dslforum-org:cwmp-1-2" targetNamespace="urn:dslforum-org:cwmp-1-2" elementFormDefault="unqualified" attributeFormDefault="unqualified">
   <xs:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="http://schemas.xmlsoap.org/soap/envelope/"/>
   <xs:import namespace="http://schemas.xmlsoap.org/soap/encoding/" schemaLocation="http://schemas.xmlsoap.org/soap/encoding/"/>
-  <xs:include schemaLocation="http://www.broadband-forum.org/cwmp/cwmp-1-2.xsd"/>
+  <xs:include schemaLocation="cwmp-1-2.xsd"/>
 <!--
   New SOAP Header Element
 -->
@@ -104,7 +104,7 @@
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:unsignedInt">
-          <xs:attribute ref="soapenv:mustUnderstand" use="optional" fixed="0"/>
+          <xs:attribute ref="soapenv:mustUnderstand" use="optional" />
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>

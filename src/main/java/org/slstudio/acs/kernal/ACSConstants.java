@@ -16,6 +16,7 @@ public class ACSConstants {
     public static final int ERROR_CODE_UNKNOWNERROR = -1;
     public static final int ERROR_CODE_UNSUPPORTPROTOCOL = -2;
     public static final int ERROR_CODE_PIPELINEHANDLE = -3;
+    public static final int ERROR_CODE_WRITERESPONSE = -4;
 
     public static final int SESSION_STATUS_CREATED = 0;
     public static final int SESSION_STATUS_CHECKED = 1;

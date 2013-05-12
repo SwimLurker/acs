@@ -86,6 +86,16 @@ public class MessagingServiceServerListener extends DefaultACSServerLifecycleLis
         }
     }
 
+    private void sendMockSyncDevicesStringMessage() {
+       String msg = "{\"command\":0,\"deviceList\":[{\"deviceID\":\"0000000000\",\"deviceKey\":\"FF00000000\",\"authUsername\":\"admin\",\"authPassword\":\"admin\"},{\"deviceID\":\"0000000001\",\"deviceKey\":\"FF00000001\",\"authUsername\":\"admin\",\"authPassword\":\"admin\"}]}";
+        IMessageSender sender = (IMessageSender) BeanLocator.getBean("syncDevicesSender");
+        try {
+            sender.sendMessage(msg);
+        } catch (MessagingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
     private void startActiveMQ() throws LifecycleException{
         try{
             ActiveMQStarter starter = (ActiveMQStarter)BeanLocator.getBean("activeMQ");

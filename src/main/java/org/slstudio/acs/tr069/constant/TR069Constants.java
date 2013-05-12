@@ -155,5 +155,22 @@ public class TR069Constants {
     public static final String SOAP_FAULTCODE_SERVER="Server";
 
 
+    //constants for TR069 Parameters
+    public static final String TR069_PARAM_SPECVERSION="InternetGatewayDevice.DeviceInfo.SpecVersion";
+    public static final String TR069_PARAM_HARDWAREVERSION="InternetGatewayDevice.DeviceInfo.HardwareVersion";
+    public static final String TR069_PARAM_SOFTWAREVERSION="InternetGatewayDevice.DeviceInfo.SoftwareVersion";
+    public static final String TR069_PARAM_PROVISIONINGCODE="InternetGatewayDevice.DeviceInfo.ProvisioningCode";
+    public static final String TR069_PARAM_MANUFACTURER="InternetGatewayDevice.DeviceInfo.Manufacturer";
+    public static final String TR069_PARAM_MODEMFIRMWAREVERSION="InternetGatewayDevice.DeviceInfo.ModemFirmwareVersion";
+    public static final String TR069_PARAM_ADDITIONALHARDWAREVERSION="InternetGatewayDevice.DeviceInfo.AdditionalHardwareVersion";
+    public static final String TR069_PARAM_ADDITIONALSOFTWAREVERSION="InternetGatewayDevice.DeviceInfo.AdditionalSoftwareVersion";
+    public static final String TR069_PARAM_CONNECTIONREQUESTURL="InternetGatewayDevice.ManagementServer.ConnectionRequestURL";
+    public static final String TR069_PARAM_PARAMETERKEY="InternetGatewayDevice.ManagementServer.ParameterKey";
+
+    public static final String TR069_PARAM_ACSURL = "InternetGatewayDevice.ManagementServer.URL";
+    public static final String TR069_PARAM_ACSUSERNAME = "InternetGatewayDevice.ManagementServer.Username";
+    public static final String TR069_PARAM_ACSPASSWORD = "InternetGatewayDevice.ManagementServer.Password";
+    public static final String TR069_PARAM_CONNECTIONREQUEST_USERNAME = "InternetGatewayDevice.ManagementServer.ConnectionRequestUsername";
+    public static final String TR069_PARAM_CONNECTIONREQUEST_PASSWORD = "InternetGatewayDevice.ManagementServer.ConnectionRequestPassword";
 
 }

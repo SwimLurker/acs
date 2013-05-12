@@ -54,7 +54,7 @@
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:string">
-          <xs:attribute ref="soapenv:mustUnderstand" use="required" fixed="1"/>
+          <xs:attribute ref="soapenv:mustUnderstand" use="required" />
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
@@ -64,7 +64,7 @@
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:boolean">
-          <xs:attribute ref="soapenv:mustUnderstand" use="required" fixed="1"/>
+          <xs:attribute ref="soapenv:mustUnderstand" use="required" />
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>

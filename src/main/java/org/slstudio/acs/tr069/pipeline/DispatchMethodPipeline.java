@@ -3,6 +3,7 @@ package org.slstudio.acs.tr069.pipeline;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.exception.PipelineException;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.dispatcher.ITR069MethodDispatcher;
@@ -32,6 +33,10 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
 
     @Override
     protected void process(ITR069MessageContext context) throws PipelineException {
+        if(context.getSessionContext().getStatus()!= ACSConstants.SESSION_STATUS_CHECKED){
+            //not checked session
+            return;
+        }
         List<SOAPMessage> messages = context.getSoapMessageList();
         int maxReceiveEnvelopeCount = context.getTR069SessionContext().getMaxReceiveEnvelopeCount();
         log.debug("current message can send envelope:" + context.getCanSendEnvelopeCount() );
@@ -58,14 +63,19 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
                     }else{
                         try {
                             dealer.deal(context,message);
+                        }catch (TR069Fault fault){
+                            log.error("deal tr069 method failed with fault",fault);
+                            //for post deal message plugin ,because message has been dealed, so throw fault in plugin will not cause response fault
+                            //TODO: think if it is reasonable
+                            if(!message.isDealed()){
+                                dealMessageWithFault(message,fault);
+                            }
                         }catch (Exception exp){
                             log.error("deal tr069 method failed",exp);
-                            if(!message.isDealed()) {
-                                dealMessageWithFault(message, new TR069Fault(false,
-                                    TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
-                                    FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_INTERNAL_ERROR),
-                                    requestID));
-                            }
+                            dealMessageWithFault(message, new TR069Fault(false,
+                                TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
+                                FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_INTERNAL_ERROR),
+                                requestID));
                         }
                     }
                 }
@@ -91,7 +101,14 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
             try {
                 ITR069MethodDealer dealer= (ITR069MethodDealer)BeanLocator.getBean("EmptyMessageDealer");
                 dealer.deal(context,message);
-            } catch (Exception exp){
+            } catch (TR069Fault fault){
+                log.error("deal tr069 method failed with fault",fault);
+                //for post deal message plugin ,because message has been dealed, so throw fault in plugin will not cause response fault
+                //TODO: think if it is reasonable
+                if(message.isDealed()){
+                    dealMessageWithFault(message,fault);
+                }
+            }catch (Exception exp){
                 log.error("deal message failed",exp);
                 String requestID=SOAPUtil.getIDFromHeader(message.getEnvelope());
                 dealMessageWithFault(message, new TR069Fault(false,
@@ -122,16 +139,13 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
 
     private void dealMessageWithFault(SOAPMessage message, TR069Fault fault) {
         SOAPEnvelope envelope=message.getEnvelope();
-        if(envelope==null){
-            message.setDealed(true);
-        }else{
+        if(envelope!=null){
             String commandName= SOAPUtil.getCommandName(envelope);
             if(SOAPUtil.isRequest(commandName)){
-                message.setDealed(true);
                 message.addResponse(fault.toFault());
-            }else{
-                message.setDealed(true);
             }
         }
+        message.setDealed(true);
+        message.setFault(fault);
     }
 }

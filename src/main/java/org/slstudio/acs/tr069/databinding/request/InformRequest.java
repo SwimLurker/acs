@@ -4,6 +4,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.databinding.types.UnsignedInt;
 import org.apache.axis2.databinding.utils.ConverterUtil;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.DeviceIdStruct;
 import org.slstudio.acs.tr069.databinding.EventStruct;
@@ -20,6 +21,7 @@ import java.util.*;
  * Date: 13-5-1
  * Time: ионГ2:48
  */
+@JsonAutoDetect
 public class InformRequest extends TR069Message {
 
     private DeviceIdStruct deviceId ;

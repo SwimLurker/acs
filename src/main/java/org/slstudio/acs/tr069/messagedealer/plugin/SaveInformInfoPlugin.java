@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.tr069.databinding.DeviceIdStruct;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.databinding.request.InformRequest;
+import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.tr069.session.context.ITR069SessionContext;
 import org.slstudio.acs.tr069.soap.SOAPMessage;
@@ -19,7 +20,7 @@ import org.slstudio.acs.tr069.soap.SOAPMessage;
 public class SaveInformInfoPlugin implements IPreDealMessagePlugin {
     private static final Log log = LogFactory.getLog(SaveInformInfoPlugin.class);
 
-    public void execute(ITR069MessageContext context, SOAPMessage soapMessage, TR069Message tr069Message) {
+    public void execute(ITR069MessageContext context, SOAPMessage soapMessage, TR069Message tr069Message)  throws TR069Fault {
         if(tr069Message == null ||!(tr069Message instanceof InformRequest)){
             return;
         }

@@ -27,7 +27,6 @@ TODO: Try use other aop instead later.
 @Component
 public class MessagingLogInterceptor {
     private static final Log log = LogFactory.getLog(MessagingLogInterceptor.class);
-    private String targetName = null;
 
     @Before(value = "execution(* org.slstudio.acs.hms.messaging.sender.IMessageSender.sendMessage(java.lang.Object)) && args(message)",argNames = "jp, message")
     public void beforeSendMessage(JoinPoint jp, Object message){

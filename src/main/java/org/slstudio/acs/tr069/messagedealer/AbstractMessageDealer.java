@@ -77,28 +77,20 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         this.listeners = listeners;
     }
 
-    public void deal(ITR069MessageContext context, SOAPMessage message){
+    public void deal(ITR069MessageContext context, SOAPMessage message) throws TR069Fault{
         TR069Message tr069Message = null;
-        try{
-            tr069Message = convertMessage(message.getEnvelope());
-        }catch(TR069Fault fault){
-            log.error("convert soap message to tr069 message failed",fault);
-            dealMessageWithFault(message, fault);
-        }
+
+        tr069Message = convertMessage(message.getEnvelope());
+
         //call plugins before deal message
         callPreDealMessagePlugins(context, message, tr069Message);
 
 
         if(!message.isDealed()){
-            try{
-                String response = dealMessage(context, tr069Message);
-                message.setDealed(true);
-                if(response != null){
-                    message.addResponse(response);
-                }
-            }catch(TR069Fault fault){
-                log.error("convert soap message to tr069 message failed",fault);
-                dealMessageWithFault(message, fault);
+            String response = dealMessage(context, tr069Message);
+            message.setDealed(true);
+            if(response != null){
+                message.addResponse(response);
             }
         }
 
@@ -110,26 +102,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
 
     }
 
-    private void dealMessageWithFault(SOAPMessage message, TR069Fault fault) {
-        SOAPEnvelope envelope = message.getEnvelope();
-        if(envelope == null){
-            log.error("envelope is null");
-            message.setDealed(true);
-        }else{
-            String commandName = SOAPUtil.getCommandName(message.getEnvelope());
-            if(commandName == null){
-                log.error("instruction name is null");
-            }else if(SOAPUtil.isRequest(commandName)){
-                message.setDealed(true);
-                message.addResponse(fault.toFault());
-            }else if(SOAPUtil.isResponse(commandName)){
-                message.setDealed(true);
-            }
-            message.setDealed(true);
-        }
-    }
-
-    private void callPreDealMessagePlugins(ITR069MessageContext context, SOAPMessage soapMessage, TR069Message tr069Message) {
+    private void callPreDealMessagePlugins(ITR069MessageContext context, SOAPMessage soapMessage, TR069Message tr069Message) throws TR069Fault{
         for(IPreDealMessagePlugin plugin : prePlugins) {
             plugin.execute(context, soapMessage, tr069Message);
         }
@@ -153,7 +126,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         return request;
     }
 
-    private void callPostDealMessagePlugins(ITR069MessageContext context, SOAPMessage soapMessage, TR069Message tr069Message){
+    private void callPostDealMessagePlugins(ITR069MessageContext context, SOAPMessage soapMessage, TR069Message tr069Message) throws TR069Fault{
         for(IPostDealMessagePlugin plugin : postPlugins) {
             plugin.execute(context, soapMessage, tr069Message);
         }
