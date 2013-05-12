@@ -32,6 +32,12 @@ public class TR069Constants {
     public static final String SCHEMA_TR069_AM3 = "cwmp-1-2";
     public static final String SCHEMA_TR069_AM4 = "cwmp-1-3";
 
+    //constants for SOAP header
+    public static final String TR069_SOAP_HEADER_ID = "ID";
+    public static final String TR069_SOAP_HEADER_HOLDREQUESTS = "HoldRequests";
+    public static final String TR069_SOAP_HEADER_SESSIONTIMEOUT = "SessionTimeout";
+    public static final String TR069_SOAP_HEADER_NOMOREREQUESTS = "NoMoreRequests";
+
 
     //constants for SOAP/TR069 message
     public static final String TR069_SOAP_FAULTSTRING="CWMP fault";

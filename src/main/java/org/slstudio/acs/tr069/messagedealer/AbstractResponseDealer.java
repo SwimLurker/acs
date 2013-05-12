@@ -9,7 +9,6 @@ import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.job.IJob;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
-import org.slstudio.acs.tr069.soap.SOAPUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +21,7 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
 
     protected String dealMessage(ITR069MessageContext context,TR069Message response) throws TR069Fault {
         //get responseID
-        String responseID = SOAPUtil.getIDFromHeader(response.getEnvelope());
+        String responseID = response.getMessageID();
 
         //get device key
         String deviceKey = getDeviceKey(context.getTR069SessionContext());

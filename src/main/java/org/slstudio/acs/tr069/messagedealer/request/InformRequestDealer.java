@@ -3,12 +3,11 @@ package org.slstudio.acs.tr069.messagedealer.request;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.databinding.request.InformRequest;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.messagedealer.AbstractRequestDealer;
 import org.slstudio.acs.tr069.messagedealer.plugin.SaveInformInfoPlugin;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
-import org.slstudio.acs.tr069.soap.SOAPUtil;
+import org.slstudio.acs.tr069.util.DataBindingUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,13 +22,13 @@ public class InformRequestDealer extends AbstractRequestDealer {
 
     @Override
     protected TR069Message convertToTR069Message(SOAPEnvelope envelope) throws TR069Exception {
-        return new InformRequest(envelope);
+        return DataBindingUtil.toInformRequest(envelope);
     }
 
     @Override
     protected String getResponseString(ITR069MessageContext context, TR069Message request) {
         int maxEnvelopes = context.getTR069SessionContext().getMaxReceiveEnvelopeCount();
-        String requestID = SOAPUtil.getIDFromHeader(request.getEnvelope());
+        String requestID = request.getMessageID();
         return getInformResponse(requestID,maxEnvelopes);
     }
 

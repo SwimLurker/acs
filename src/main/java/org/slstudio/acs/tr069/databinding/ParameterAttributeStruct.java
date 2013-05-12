@@ -1,13 +1,7 @@
 package org.slstudio.acs.tr069.databinding;
 
-import org.apache.axiom.om.OMElement;
-import org.slstudio.acs.tr069.constant.TR069Constants;
-import org.slstudio.acs.tr069.exception.DataBindingException;
-
-import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -26,6 +20,8 @@ public class ParameterAttributeStruct implements Serializable {
     private String parameterName = null;
     private int notification = 0;
     private List<String> accessList = new ArrayList<String>();
+
+    public ParameterAttributeStruct() {}
 
     //	Properties
     public List<String> getAccessList() {
@@ -58,39 +54,4 @@ public class ParameterAttributeStruct implements Serializable {
     public boolean isNotificationActive() {
         return notification == TR069_PARAMETERATTRIBUTE_NOTIFICATIONACTIVE;
     }
-
-    //	Constructors
-    public ParameterAttributeStruct(OMElement element) throws DataBindingException {
-        Iterator nIt = element.getChildrenWithName(new QName("Name"));
-        if(nIt == null || !nIt.hasNext())
-            throw new DataBindingException(
-                    TR069Constants.ERROR_DATA_BINDING, "Name is null");
-
-        this.setParameterName(((OMElement)nIt.next()).getText());
-
-        Iterator wIt = element.getChildrenWithName(new QName("Notification"));
-        if(wIt == null || !wIt.hasNext())
-            throw new DataBindingException(
-                    TR069Constants.ERROR_DATA_BINDING,"Notification is null");
-        this.setNotification(
-                Integer.parseInt(((OMElement) wIt.next()).getText()));
-
-        Iterator aIt = element.getChildrenWithName(new QName("AccessList"));
-        if(aIt == null || !aIt.hasNext())
-            throw new DataBindingException(
-                    TR069Constants.ERROR_DATA_BINDING,"AccessList is null");
-        OMElement accessElement = (OMElement) aIt.next();
-        Iterator iter = accessElement.getChildElements();
-        while (iter != null && iter.hasNext()) {
-            this.addAccess(((OMElement) iter.next()).getText());
-        }
-    }
-
-    public ParameterAttributeStruct() {}
-
-    //	Methods
-    public void addAccess(String access) {
-        this.accessList.add(access);
-    }
-
 }

@@ -2,12 +2,11 @@ package org.slstudio.acs.tr069.job;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slstudio.acs.tr069.databinding.TR069Message;
+import org.slstudio.acs.tr069.exception.JobException;
 import org.slstudio.acs.tr069.instruction.*;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFatalErrorException;
 import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorException;
-import org.slstudio.acs.tr069.instruction.exception.TestGetPVsInstruction;
-import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.exception.JobException;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 

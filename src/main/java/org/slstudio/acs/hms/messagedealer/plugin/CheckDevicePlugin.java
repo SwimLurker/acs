@@ -12,7 +12,6 @@ import org.slstudio.acs.tr069.messagedealer.plugin.IPreDealMessagePlugin;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.tr069.session.context.ITR069SessionContext;
 import org.slstudio.acs.tr069.soap.SOAPMessage;
-import org.slstudio.acs.tr069.soap.SOAPUtil;
 import org.slstudio.acs.util.JSONUtil;
 
 import java.util.Date;
@@ -43,7 +42,7 @@ public class CheckDevicePlugin implements IPreDealMessagePlugin {
 
         ITR069SessionContext sessionContext = context.getTR069SessionContext();
 
-        String requestID = SOAPUtil.getIDFromHeader(tr069Message.getEnvelope());
+        String requestID = tr069Message.getMessageID();
 
         String deviceKey =sessionContext.getDeviceKey();
         if(deviceKey == null){

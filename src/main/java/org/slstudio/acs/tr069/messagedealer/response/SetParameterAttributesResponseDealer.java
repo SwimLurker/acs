@@ -2,9 +2,9 @@ package org.slstudio.acs.tr069.messagedealer.response;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.databinding.response.SetParameterAttributesResponse;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.messagedealer.AbstractResponseDealer;
+import org.slstudio.acs.tr069.util.DataBindingUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,6 +15,6 @@ import org.slstudio.acs.tr069.messagedealer.AbstractResponseDealer;
 public class SetParameterAttributesResponseDealer extends AbstractResponseDealer {
     @Override
     protected TR069Message convertToTR069Message(SOAPEnvelope envelope) throws TR069Exception {
-        return new SetParameterAttributesResponse(envelope);
+        return DataBindingUtil.toSetParameterAttributesResponse(envelope);
     }
 }

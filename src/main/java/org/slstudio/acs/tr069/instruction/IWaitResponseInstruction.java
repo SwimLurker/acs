@@ -1,8 +1,8 @@
 package org.slstudio.acs.tr069.instruction;
 
+import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFatalErrorException;
 import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorException;
-import org.slstudio.acs.tr069.databinding.TR069Message;
 
 /**
  * Created with IntelliJ IDEA.

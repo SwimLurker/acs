@@ -41,7 +41,7 @@ public class MessagingServiceServerListener extends DefaultACSServerLifecycleLis
 
     @Override
     public void onAfterStartServer(ACSServer server)  throws LifecycleException{
-        sendMockSyncDevicesMessage();
+        sendMockSyncDevicesStringMessage();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MessagingServiceServerListener extends DefaultACSServerLifecycleLis
     }
 
     private void sendMockSyncDevicesStringMessage() {
-       String msg = "{\"command\":0,\"deviceList\":[{\"deviceID\":\"0000000000\",\"deviceKey\":\"FF00000000\",\"authUsername\":\"admin\",\"authPassword\":\"admin\"},{\"deviceID\":\"0000000001\",\"deviceKey\":\"FF00000001\",\"authUsername\":\"admin\",\"authPassword\":\"admin\"}]}";
+       String msg = "{\"command\":0,\"deviceList\":[{\"deviceID\":\"0000000000\",\"deviceKey\":\"FC1234567890\",\"authUsername\":\"admin\",\"authPassword\":\"admin\"},{\"deviceID\":\"0000000001\",\"deviceKey\":\"FF00000001\",\"authUsername\":\"admin\",\"authPassword\":\"admin\"}]}";
         IMessageSender sender = (IMessageSender) BeanLocator.getBean("syncDevicesSender");
         try {
             sender.sendMessage(msg);

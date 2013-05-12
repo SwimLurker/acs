@@ -3,11 +3,10 @@ package org.slstudio.acs.tr069.messagedealer.request;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.databinding.request.TransferCompleteRequest;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.messagedealer.AbstractRequestDealer;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
-import org.slstudio.acs.tr069.soap.SOAPUtil;
+import org.slstudio.acs.tr069.util.DataBindingUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,12 +17,12 @@ import org.slstudio.acs.tr069.soap.SOAPUtil;
 public class TransferCompleteRequestDealer extends AbstractRequestDealer {
     @Override
     protected TR069Message convertToTR069Message(SOAPEnvelope envelope) throws TR069Exception {
-        return new TransferCompleteRequest(envelope);
+        return DataBindingUtil.toTransferCompleteRequest(envelope);
     }
 
     @Override
     protected String getResponseString(ITR069MessageContext context, TR069Message request) {
-        String requestID = SOAPUtil.getIDFromHeader(request.getEnvelope());
+        String requestID = request.getMessageID();
         return getTransferCompleteResponse(requestID);
     }
 
