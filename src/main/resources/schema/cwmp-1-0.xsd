@@ -770,7 +770,7 @@
     </xs:complexType>
   </xs:element>
 
-  <!-- GetParameterValuesResponse -->
+  <!-- GetParameterValuesRequest -->
   <xs:element name="GetParameterValuesResponse">
     <xs:annotation>
       <xs:documentation>GetParameterValuesResponse message - Annex A.3.2.2</xs:documentation>

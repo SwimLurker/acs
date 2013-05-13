@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.kernal.ACSConstants;
 import org.slstudio.acs.kernal.exception.PipelineException;
 import org.slstudio.acs.tr069.constant.TR069Constants;
+import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.dispatcher.ITR069MethodDispatcher;
 import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
@@ -80,8 +81,8 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
                     }
                 }
             }
-            for(String responseStr: message.getResponses()){
-                resultBuf.append(responseStr);
+            for(TR069Message response: message.getResponses()){
+                resultBuf.append(response.toSOAPString());
             }
             //set new can send envelopes count
             log.debug("first use can send envelope count is:" + context.getCanSendEnvelopeCount());
@@ -117,12 +118,12 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
                         requestID));
                 break;
             }
-            List<String> responseList = message.getResponses();
+            List<TR069Message> responseList = message.getResponses();
             if(responseList.size()==0){
                 break;
             }
-            for(String responseStr :responseList){
-                resultBuf.append(responseStr);
+            for(TR069Message response :responseList){
+                resultBuf.append(response.toSOAPString());
             }
             //set new can send envelopes count
             context.setCanSendEnvelopeCount(context.getCanSendEnvelopeCount()-responseList.size());
@@ -142,7 +143,7 @@ public class DispatchMethodPipeline extends AbstractTR069Pipeline {
         if(envelope!=null){
             String commandName= SOAPUtil.getCommandName(envelope);
             if(SOAPUtil.isRequest(commandName)){
-                message.addResponse(fault.toFault());
+                message.addResponse(fault.getFault());
             }
         }
         message.setDealed(true);

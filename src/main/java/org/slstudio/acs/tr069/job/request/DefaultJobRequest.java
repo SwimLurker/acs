@@ -1,5 +1,7 @@
 package org.slstudio.acs.tr069.job.request;
 
+import org.slstudio.acs.tr069.databinding.TR069Message;
+
 /**
  * Created with IntelliJ IDEA.
  * User: chandler
@@ -7,21 +9,17 @@ package org.slstudio.acs.tr069.job.request;
  * Time: ÉÏÎç1:15
  */
 public class DefaultJobRequest implements IJobRequest {
-    private String requestStr = null;
+    private TR069Message tr069Request = null;
 
-    public DefaultJobRequest(String requestStr) {
-        this.requestStr = requestStr;
+    public DefaultJobRequest(TR069Message tr069Request) {
+        this.tr069Request = tr069Request;
     }
 
-    public String getRequestStr() {
-        return requestStr;
+    public TR069Message getTr069Request() {
+        return tr069Request;
     }
 
-    public void setRequestStr(String requestStr) {
-        this.requestStr = requestStr;
-    }
-
-    public String toSOAPMessage() {
-        return requestStr;
+    public void setTr069Request(TR069Message tr069Request) {
+        this.tr069Request = tr069Request;
     }
 }

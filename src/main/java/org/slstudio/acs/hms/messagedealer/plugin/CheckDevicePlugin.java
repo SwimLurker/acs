@@ -38,7 +38,10 @@ public class CheckDevicePlugin implements IPreDealMessagePlugin {
         if(tr069Message == null ||!(tr069Message instanceof InformRequest)){
             return;
         }
+        System.out.println("---------------------------");
         System.out.println(JSONUtil.toJsonString(tr069Message));
+        System.out.println(tr069Message.toSOAPString());
+        System.out.println("---------------------------");
 
         ITR069SessionContext sessionContext = context.getTR069SessionContext();
 

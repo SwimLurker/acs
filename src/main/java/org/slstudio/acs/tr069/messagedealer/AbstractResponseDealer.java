@@ -19,7 +19,7 @@ import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 public abstract class AbstractResponseDealer extends AbstractMessageDealer {
     private static final Log log = LogFactory.getLog(AbstractResponseDealer.class);
 
-    protected String dealMessage(ITR069MessageContext context,TR069Message response) throws TR069Fault {
+    protected TR069Message dealMessage(ITR069MessageContext context,TR069Message response) throws TR069Fault {
         //get responseID
         String responseID = response.getMessageID();
 
@@ -87,7 +87,7 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
                 log.debug("after handle response:" + responseID +", job:"+ currentJob.getJobID() + " has finished");
                 getJobManager().removeJob(currentJob);
             }
-            log.debug("after handle response:" + responseID +"for job:"+ currentJob.getJobID() + ", get request:" + (request == null?"null":request.toSOAPMessage()));
+            log.debug("after handle response:" + responseID +"for job:"+ currentJob.getJobID() + ", get request:" + (request == null?"null":request.getTr069Request().toSOAPString()));
         }catch (Exception exp){
             log.error("when handle response:" + responseID + ",job:" + currentJob.getJobID() + " failed for execution",exp);
             currentJob.failOnError(exp);
@@ -101,8 +101,8 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
     }
 
     //method subclass can override to format request
-    protected String formatRequest(ITR069MessageContext context, TR069Message response, IJobRequest request){
-        return request == null? null: request.toSOAPMessage();
+    protected TR069Message formatRequest(ITR069MessageContext context, TR069Message response, IJobRequest request){
+        return request == null? null: request.getTr069Request();
     }
 
 }

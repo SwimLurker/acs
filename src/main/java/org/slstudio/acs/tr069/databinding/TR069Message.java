@@ -1,7 +1,15 @@
 package org.slstudio.acs.tr069.databinding;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.databinding.types.UnsignedInt;
+import org.apache.axis2.databinding.utils.ConverterUtil;
+import org.slstudio.acs.tr069.constant.TR069Constants;
+import org.slstudio.acs.tr069.soap.SOAPUtil;
 
+import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -12,10 +20,10 @@ import java.util.Map;
  */
 public abstract class TR069Message {
     private String messageID = null;
-    private boolean holdRequests = false;
-    private boolean noMoreRequests = false;
+    private Boolean holdRequests = null;
+    private Boolean noMoreRequests = null;
     private UnsignedInt sessionTimeout = null;
-    private Map<String, Object> headers = null;
+    private Map<String, Object> headers = new HashMap<String, Object>();
 
     public String getMessageID() {
         return messageID;
@@ -25,19 +33,19 @@ public abstract class TR069Message {
         this.messageID = messageID;
     }
 
-    public boolean isHoldRequests() {
+    public Boolean getHoldRequests() {
         return holdRequests;
     }
 
-    public void setHoldRequests(boolean holdRequests) {
+    public void setHoldRequests(Boolean holdRequests) {
         this.holdRequests = holdRequests;
     }
 
-    public boolean isNoMoreRequests() {
+    public Boolean getNoMoreRequests() {
         return noMoreRequests;
     }
 
-    public void setNoMoreRequests(boolean noMoreRequests) {
+    public void setNoMoreRequests(Boolean noMoreRequests) {
         this.noMoreRequests = noMoreRequests;
     }
 
@@ -57,5 +65,37 @@ public abstract class TR069Message {
         this.headers = headers;
     }
 
+    public String toSOAPString() {
+        StringBuilder result = new StringBuilder();
+        SOAPUtil.fillSOAPMessageHeader(getMessageID(), getHoldRequests(), getNoMoreRequests(), getSessionTimeout(), getHeaders(), result);
+        result.append(toTR069SOAPString());
+        SOAPUtil.fillSOAPMessageTailer(result);
+        return result.toString();
+    }
+
     public abstract String getMessageName();
+
+    protected  String toTR069SOAPString(){return null;}
+
+    public static void populateHeaderValues(TR069Message message, SOAPHeader header){
+        if (header != null) {
+            Iterator idIt = header.getChildrenWithName(new QName(TR069Constants.TR069_NAMESPACE, TR069Constants.TR069_SOAP_HEADER_ID));
+            while (idIt.hasNext()) {
+                message.setMessageID(((OMElement) idIt.next()).getText());
+            }
+            Iterator hrIt = header.getChildrenWithName(new QName(TR069Constants.TR069_NAMESPACE, TR069Constants.TR069_SOAP_HEADER_HOLDREQUESTS));
+            while (hrIt.hasNext()) {
+                message.setHoldRequests(ConverterUtil.convertToBoolean(((OMElement) hrIt.next()).getText()));
+            }
+            Iterator nmrIt = header.getChildrenWithName(new QName(TR069Constants.TR069_NAMESPACE, TR069Constants.TR069_SOAP_HEADER_NOMOREREQUESTS));
+            while (nmrIt.hasNext()) {
+                message.setHoldRequests(ConverterUtil.convertToBoolean(((OMElement) nmrIt.next()).getText()));
+            }
+            Iterator stIt = header.getChildrenWithName(new QName(TR069Constants.TR069_NAMESPACE, TR069Constants.TR069_SOAP_HEADER_SESSIONTIMEOUT));
+            while (stIt.hasNext()) {
+                message.setSessionTimeout(ConverterUtil.convertToUnsignedInt(((OMElement) stIt.next()).getText()));
+            }
+        }
+    }
+
 }

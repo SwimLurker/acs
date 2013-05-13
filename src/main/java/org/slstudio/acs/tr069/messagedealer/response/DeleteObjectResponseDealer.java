@@ -2,6 +2,7 @@ package org.slstudio.acs.tr069.messagedealer.response;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.slstudio.acs.tr069.databinding.TR069Message;
+import org.slstudio.acs.tr069.databinding.response.DeleteObjectResponse;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.messagedealer.AbstractResponseDealer;
 import org.slstudio.acs.tr069.util.DataBindingUtil;
@@ -15,6 +16,6 @@ import org.slstudio.acs.tr069.util.DataBindingUtil;
 public class DeleteObjectResponseDealer extends AbstractResponseDealer {
     @Override
     protected TR069Message convertToTR069Message(SOAPEnvelope envelope) throws TR069Exception {
-        return DataBindingUtil.toDeleteObjectResponse(envelope);
+        return DeleteObjectResponse.fromEnvelope(envelope);
     }
 }

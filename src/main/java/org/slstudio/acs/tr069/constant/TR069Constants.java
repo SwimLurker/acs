@@ -24,6 +24,7 @@ public class TR069Constants {
     public static final String TR069_NAMESPACE="urn:dslforum-org:cwmp-1-0";
     public static final String SOAP_XSD_NAMESPACE="http://www.w3.org/2001/XMLSchema";
     public static final String SOAP_XSI_NAMESPACE="http://www.w3.org/2001/XMLSchema-instance";
+    public static final String NAMESPACE_CWMP="cwmp";
 
     //constants for TR069 schema
     public static final String SCHEMA_TR069 = "cwmp-1-0";
@@ -48,8 +49,8 @@ public class TR069Constants {
     public static final String TRANSFERCOMPLETE_MESSAGE="TransferComplete";
     public static final String GETRPCMETHODS_MESSAGE="GetRPCMethods";
 
-    public static final String CLIENT_GETPARAMETERVALUE_MESSAGE="GetParameterValues";
-    public static final String CLIENT_SETPARAMETERVALUE_MESSAGE="SetParameterValues";
+    public static final String CLIENT_GETPARAMETERVALUES_MESSAGE="GetParameterValues";
+    public static final String CLIENT_SETPARAMETERVALUES_MESSAGE="SetParameterValues";
     public static final String CLIENT_DOWNLOAD_MESSAGE="Download";
     public static final String CLIENT_ADDOBJECT_MESSAGE="AddObject";
     public static final String CLIENT_DELETEOBJECT_MESSAGE="DeleteObject";
@@ -60,7 +61,7 @@ public class TR069Constants {
     public static final String CLIENT_FACTORYRESET_MESSAGE="FactoryReset";
     public static final String CLIENT_GETRPCMETHODS_MESSAGE="GetRPCMethods";
     public static final String CLIENT_REBOOT_MESSAGE="Reboot";
-    public static final String CLIENT_SCHEDULE_INFORM_MESSAGE="ScheduleInform";
+    public static final String CLIENT_SCHEDULEINFORM_MESSAGE="ScheduleInform";
 
     public static final String CLIENT_SETPROVISIONINGCODE_MESSAGE="SetProvisioningCode";
     public static final String CLIENT_GETPROVISIONINGCODE_MESSAGE="GetProvisioningCode";

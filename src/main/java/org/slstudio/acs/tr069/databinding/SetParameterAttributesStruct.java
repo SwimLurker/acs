@@ -17,43 +17,44 @@ public class SetParameterAttributesStruct implements Serializable {
     private boolean accessListChange;
     private List<String> accessList = new ArrayList<String>();
 
-    public List getAccessList() {
-        return accessList;
-    }
-
-    public void addAccess(String access) {
-        this.accessList.add(access);
-    }
-
-    public boolean isAccessListChange() {
-        return accessListChange;
-    }
-    public void setAccessListChange(boolean accessListChange) {
-        this.accessListChange = accessListChange;
-    }
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
-    public int getNotification() {
-        return notification;
-    }
-    public void setNotification(int notification) {
-        this.notification = notification;
-    }
-    public void setNotification(String  notification) {
-        this.notification = Integer.parseInt(notification);
-    }
-    public boolean isNotificationChange() {
+
+    public boolean getNotificationChange() {
         return notificationChange;
     }
+
     public void setNotificationChange(boolean notificationChange) {
         this.notificationChange = notificationChange;
     }
-    public void setNotificationChange(String  notificationChange) {
-        this.notificationChange = Boolean.valueOf(notificationChange);
+
+    public int getNotification() {
+        return notification;
+    }
+
+    public void setNotification(int notification) {
+        this.notification = notification;
+    }
+
+    public boolean getAccessListChange() {
+        return accessListChange;
+    }
+
+    public void setAccessListChange(boolean accessListChange) {
+        this.accessListChange = accessListChange;
+    }
+
+    public List<String> getAccessList() {
+        return accessList;
+    }
+
+    public void setAccessList(List<String> accessList) {
+        this.accessList = accessList;
     }
 
     public boolean equals(Object o) {
@@ -76,8 +77,8 @@ public class SetParameterAttributesStruct implements Serializable {
         sb.append("getName ").append(this.getName()).append("   ");
         sb.append("getNotification ").append(this.getNotification()).append("   ");
         sb.append("getAccessList ").append(this.getAccessList()).append("   ");
-        sb.append("isNotificationChange ").append(this.isNotificationChange()).append("   ");
-        sb.append("isAccessListChange ").append(this.isAccessListChange()).append("\n");
+        sb.append("isNotificationChange ").append(this.getNotificationChange()).append("   ");
+        sb.append("isAccessListChange ").append(this.getAccessListChange()).append("\n");
         return sb.toString();
     }
 }

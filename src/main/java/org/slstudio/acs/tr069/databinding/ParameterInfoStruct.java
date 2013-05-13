@@ -1,6 +1,13 @@
 package org.slstudio.acs.tr069.databinding;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axis2.databinding.utils.ConverterUtil;
+import org.slstudio.acs.tr069.constant.TR069Constants;
+import org.slstudio.acs.tr069.exception.DataBindingException;
+
+import javax.xml.namespace.QName;
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -45,4 +52,25 @@ public class ParameterInfoStruct implements Serializable {
         else
             return false;
     }
+
+    public static ParameterInfoStruct fromOMElement(OMElement element) throws DataBindingException {
+        ParameterInfoStruct pis = new ParameterInfoStruct();
+
+        Iterator nIt = element.getChildrenWithName(new QName("Name"));
+        if(nIt == null || !nIt.hasNext())
+            throw new DataBindingException(
+                    TR069Constants.ERROR_DATA_BINDING, "Name is null");
+
+        pis.setName(((OMElement) nIt.next()).getText());
+
+        Iterator wIt = element.getChildrenWithName(new QName("Writable"));
+        if(wIt == null || !wIt.hasNext())
+            throw new DataBindingException(
+                    TR069Constants.ERROR_DATA_BINDING,"Value is null");
+        pis.setWritable(
+                ConverterUtil.convertToBoolean(
+                        ((OMElement) wIt.next()).getText()));
+        return pis;
+    }
+
 }

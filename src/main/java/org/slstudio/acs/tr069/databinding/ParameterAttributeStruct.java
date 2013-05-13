@@ -1,7 +1,13 @@
 package org.slstudio.acs.tr069.databinding;
 
+import org.apache.axiom.om.OMElement;
+import org.slstudio.acs.tr069.constant.TR069Constants;
+import org.slstudio.acs.tr069.exception.DataBindingException;
+
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -17,7 +23,7 @@ public class ParameterAttributeStruct implements Serializable {
     public static final int TR069_PARAMETERATTRIBUTE_NOTIFICATIONACTIVE = 2;
 
     //	Fields
-    private String parameterName = null;
+    private String name = null;
     private int notification = 0;
     private List<String> accessList = new ArrayList<String>();
 
@@ -36,11 +42,13 @@ public class ParameterAttributeStruct implements Serializable {
     public void setNotification(int notification) {
         this.notification = notification;
     }
-    public String getParameterName() {
-        return parameterName;
+
+    public String getName() {
+        return name;
     }
-    public void setParameterName(String parameterName) {
-        this.parameterName = parameterName;
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isNotificationOff() {
@@ -54,4 +62,35 @@ public class ParameterAttributeStruct implements Serializable {
     public boolean isNotificationActive() {
         return notification == TR069_PARAMETERATTRIBUTE_NOTIFICATIONACTIVE;
     }
+
+    public static ParameterAttributeStruct fromOMElement(OMElement element) throws DataBindingException {
+        ParameterAttributeStruct pas = new ParameterAttributeStruct();
+
+        Iterator nIt = element.getChildrenWithName(new QName("Name"));
+        if(nIt == null || !nIt.hasNext())
+            throw new DataBindingException(
+                    TR069Constants.ERROR_DATA_BINDING, "Name is null");
+
+        pas.setName(((OMElement) nIt.next()).getText());
+
+        Iterator wIt = element.getChildrenWithName(new QName("Notification"));
+        if(wIt == null || !wIt.hasNext())
+            throw new DataBindingException(
+                    TR069Constants.ERROR_DATA_BINDING,"Notification is null");
+        pas.setNotification(
+                Integer.parseInt(((OMElement) wIt.next()).getText()));
+
+        Iterator aIt = element.getChildrenWithName(new QName("AccessList"));
+        if(aIt == null || !aIt.hasNext())
+            throw new DataBindingException(
+                    TR069Constants.ERROR_DATA_BINDING,"AccessList is null");
+        OMElement accessElement = (OMElement) aIt.next();
+        Iterator iter = accessElement.getChildElements();
+        while (iter != null && iter.hasNext()) {
+            pas.getAccessList().add(((OMElement) iter.next()).getText());
+        }
+
+        return pas;
+    }
+
 }

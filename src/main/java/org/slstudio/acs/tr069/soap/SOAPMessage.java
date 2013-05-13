@@ -1,6 +1,7 @@
 package org.slstudio.acs.tr069.soap;
 
 import org.apache.axiom.soap.SOAPEnvelope;
+import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.fault.TR069Fault;
 
 import java.util.ArrayList;
@@ -16,14 +17,14 @@ public class SOAPMessage implements java.io.Serializable{
     //TODO:maybe we should refact response to a vector of SOAPEnvelope,now we use a vector of String
 
     private SOAPEnvelope envelope=null;
-    private List<String> responses=null;
+    private List<TR069Message> responses=null;
     private TR069Fault fault = null;
     private boolean isDealed=false;
 
 
     public SOAPMessage(SOAPEnvelope envelope) {
         this.envelope = envelope;
-        this.responses = new ArrayList<String>();
+        this.responses = new ArrayList<TR069Message>();
         this.isDealed = false;
     }
 
@@ -35,14 +36,14 @@ public class SOAPMessage implements java.io.Serializable{
         this.envelope = envelope;
     }
 
-    public List<String> getResponses() {
+    public List<TR069Message> getResponses() {
         return responses;
     }
 
-    public void addResponse(String responseString) {
-        this.responses.add(responseString);
+    public void addResponse(TR069Message response) {
+        this.responses.add(response);
     }
-    public void setResponses(List<String> responses){
+    public void setResponses(List<TR069Message> responses){
         this.responses=responses;
     }
 

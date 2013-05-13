@@ -20,7 +20,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
 
 
     @Override
-    protected String dealMessage(ITR069MessageContext context,TR069Message request) throws TR069Fault{
+    protected TR069Message dealMessage(ITR069MessageContext context,TR069Message request) throws TR069Fault{
         //first get requestID
         String requestID = request.getMessageID();
 
@@ -48,7 +48,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
             log.debug("can not fetch job for device:" + deviceKey + " when handle request:" + requestID);
         }
 
-        return getResponseString(context, request);
+        return getResponse(context, request);
     }
 
     // handle ready job, call job's beginRunWithRequest job method
@@ -115,5 +115,5 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
 
 
     //abstract method need subclass to format request's response with job response
-    protected abstract String getResponseString(ITR069MessageContext context, TR069Message request);
+    protected abstract TR069Message getResponse(ITR069MessageContext context, TR069Message request);
 }

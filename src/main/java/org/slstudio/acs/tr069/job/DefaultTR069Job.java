@@ -113,7 +113,7 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         if(jobRequest !=null){
             cachedRequest = jobRequest;
             log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
-                    message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPMessage());
+                    message.getMessageName() + ", it cached request message:" + jobRequest.getTr069Request().toSOAPString());
             return;
         }
         //all instructions have finished execution -- job has completed, then return just return
@@ -143,7 +143,7 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         if(jobRequest !=null){
             cachedRequest = jobRequest;
             log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
-                    message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPMessage());
+                    message.getMessageName() + ", it cached request message:" + jobRequest.getTr069Request().toSOAPString());
         }
     }
 
@@ -221,7 +221,7 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         if(jobRequest !=null){
             cachedRequest = jobRequest;
             log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
-                    message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPMessage());
+                    message.getMessageName() + ", it cached request message:" + jobRequest.getTr069Request().toSOAPString());
         }
     }
 
@@ -314,7 +314,7 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
 
     private IJobRequest getCachedRequest(){
         if(cachedRequest != null){
-            log.debug("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): has cached request: " + cachedRequest.toSOAPMessage());
+            log.debug("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): has cached request: " + cachedRequest.getTr069Request().toSOAPString());
             IJobRequest result = cachedRequest;
             cachedRequest = null;
             return result;

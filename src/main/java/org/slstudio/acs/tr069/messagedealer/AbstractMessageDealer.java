@@ -87,7 +87,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
 
 
         if(!message.isDealed()){
-            String response = dealMessage(context, tr069Message);
+            TR069Message response = dealMessage(context, tr069Message);
             message.setDealed(true);
             if(response != null){
                 message.addResponse(response);
@@ -159,7 +159,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
 
     protected abstract TR069Message convertToTR069Message(SOAPEnvelope envelope) throws TR069Exception;
 
-    protected abstract String dealMessage(ITR069MessageContext context,TR069Message request) throws TR069Fault ;
+    protected abstract TR069Message dealMessage(ITR069MessageContext context,TR069Message request) throws TR069Fault ;
 
 
 }

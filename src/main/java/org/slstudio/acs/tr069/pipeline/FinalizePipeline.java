@@ -34,7 +34,7 @@ public class FinalizePipeline extends AbstractTR069Pipeline {
                 continue;
             }
 
-            if(TR069Constants.INFORM_MESSAGE.equals(commandName) && TR069Constants.SERVER_FAULT_RETRY_REQUEST.equals(fault.getFaultCode())){
+            if(TR069Constants.INFORM_MESSAGE.equals(commandName) && TR069Constants.SERVER_FAULT_RETRY_REQUEST.equals(fault.getFault().getFaultCode().toString())){
                 continue;
             }
             context.getSessionContext().setStatus(ACSConstants.SESSION_STATUS_CLOSED);

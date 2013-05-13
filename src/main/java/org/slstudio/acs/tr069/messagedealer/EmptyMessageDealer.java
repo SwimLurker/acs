@@ -27,7 +27,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
     }
 
     @Override
-    protected String dealMessage(ITR069MessageContext context, TR069Message request) throws TR069Fault {
+    protected TR069Message dealMessage(ITR069MessageContext context, TR069Message request) throws TR069Fault {
         //get device key
         String deviceKey = getDeviceKey(context.getTR069SessionContext());
 
@@ -151,7 +151,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
                 //impossible, should not happened
                 log.error("job:" + currentJob.getJobID() + "should not be finished status for device:" + deviceKey + " when handle empty message");
             }
-            log.debug("after handle empty message for job:"+ currentJob.getJobID() + ", get request:" + (result == null?"null":result.toSOAPMessage()));
+            log.debug("after handle empty message for job:"+ currentJob.getJobID() + ", get request:" + (result == null?"null":result.getTr069Request().toSOAPString()));
             if(currentJob.isFinished()){
                 log.debug("after handle empty message, job:" + currentJob.getJobID() + " has finished");
                 getJobManager().removeJob(currentJob);
@@ -174,7 +174,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
                 log.debug("after continue running, job:"+ job.getJobID() + " has finished");
                 getJobManager().removeJob(job);
             }
-            log.debug("after handle empty message,job:"+ job.getJobID() + " get request:" + (request == null?"null":request.toSOAPMessage()));
+            log.debug("after handle empty message,job:"+ job.getJobID() + " get request:" + (request == null?"null":request.getTr069Request().toSOAPString()));
         }catch(Exception exp){
             log.error("when handle empty message,job:" + job.getJobID() + " failed for execution", exp);
             job.failOnError(exp);
@@ -208,7 +208,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         }
     }
 
-    protected String formatRequest(ITR069MessageContext context, IJobRequest request){
-        return request.toSOAPMessage();
+    protected TR069Message formatRequest(ITR069MessageContext context, IJobRequest request){
+        return request == null?null:request.getTr069Request();
     }
 }

@@ -1,11 +1,15 @@
 package org.slstudio.acs.tr069.instruction;
 
 import org.slstudio.acs.tr069.databinding.TR069Message;
+import org.slstudio.acs.tr069.databinding.request.GetParameterValuesRequest;
 import org.slstudio.acs.tr069.databinding.response.GetParameterValuesResponse;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFatalErrorException;
 import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorException;
 import org.slstudio.acs.tr069.job.request.DefaultJobRequest;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,20 +48,11 @@ public class TestGetPVsInstruction implements IWaitResponseInstruction {
     }
 
     public IJobRequest execute(InstructionContext cmdContext) throws InstructionNormalErrorException, InstructionFatalErrorException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<SOAP-ENV:Envelope xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
-                "\t<SOAP-ENV:Header>\n" +
-                "\t\t<cwmp:ID SOAP-ENV:mustUnderstand=\"1\">ID:").append(jobID).append("_1234</cwmp:ID>\n" +
-                "\t\t<cwmp:NoMoreRequests>0</cwmp:NoMoreRequests>\n" +
-                "\t</SOAP-ENV:Header>\n" +
-                "\t<SOAP-ENV:Body>\n" +
-                "\t\t<cwmp:GetParameterValues xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n" +
-                "\t\t\t<ParameterNames SOAP-ENC:arrayType=\"xsd:string[1]\">\n" +
-                "\t\t\t\t<string>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</string>\n" +
-                "\t\t\t</ParameterNames>\n" +
-                "\t\t</cwmp:GetParameterValues>\n" +
-                "\t</SOAP-ENV:Body>\n" +
-                "</SOAP-ENV:Envelope>");
-        return new DefaultJobRequest(sb.toString());
+        GetParameterValuesRequest gpvr = new GetParameterValuesRequest();
+        List<String> parameterList = new ArrayList<String>();
+        parameterList.add("InternetGatewayDevice.ManagementServer.PeriodicInformInterval");
+        gpvr.setParameterNames(parameterList);
+
+        return new DefaultJobRequest(gpvr);
     }
 }
