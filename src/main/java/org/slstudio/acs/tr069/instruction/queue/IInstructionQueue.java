@@ -1,4 +1,6 @@
-package org.slstudio.acs.tr069.instruction;
+package org.slstudio.acs.tr069.instruction.queue;
+
+import org.slstudio.acs.tr069.instruction.IInstruction;
 
 /**
  * Created with IntelliJ IDEA.

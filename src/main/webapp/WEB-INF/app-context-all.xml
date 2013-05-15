@@ -33,5 +33,5 @@
         <property name="sessionIDManager" ref="sessionIDManager" />
     </bean>
     <bean name="deviceManager" class="org.slstudio.acs.hms.device.MemoryDeviceManager" />
-
+    <bean name="jobManager" class="org.slstudio.acs.tr069.job.manager.MemoryJobManager" />
 </beans>

@@ -6,7 +6,7 @@ import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
-import org.slstudio.acs.tr069.job.IJob;
+import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
 /**
@@ -28,7 +28,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
         String deviceKey = getDeviceKey(context.getTR069SessionContext());
 
         //first find a job for that device
-        IJob currentJob = fetchDeviceJob(deviceKey);
+        IDeviceJob currentJob = fetchDeviceJob(deviceKey);
 
         if(currentJob != null){
             log.debug("when handle request:" + requestID + ", fetch an job:" + currentJob.getJobID());
@@ -55,7 +55,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
     // The beginRunWithRequest method let job begin running
     // Sometime it will produce job request which cached in that job, which will then be send when message dealer(often the empty message dealer)
     // call that job's continueRun or continueRunWithRequest or continueRunWithResponse method.
-    private void handleReadyJob(IJob currentJob, ITR069MessageContext context, TR069Message request, String requestID)
+    private void handleReadyJob(IDeviceJob currentJob, ITR069MessageContext context, TR069Message request, String requestID)
             throws TR069Fault{
         try{
             log.debug("begin running job:" + currentJob.getJobID() + " with request:" + requestID);
@@ -66,7 +66,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
             }
         }catch(Exception exp){
             log.error("when handle request:" + requestID + ",job:" + currentJob.getJobID() + " failed for execution",exp);
-            currentJob.failOnError(exp);
+            currentJob.failOnException(exp);
             getJobManager().removeJob(currentJob);
             throw new TR069Fault(true,
                     TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
@@ -79,7 +79,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
     // The continueRunWithRequest method let job continue running (when job's cached request is not null, just sent them)
     // Sometime it will produce job request which cached in that job, which will then be send when message dealer(often the empty message dealer)
     // call that job's continueRun or continueRunWithRequest or continueRunWithResponse method.
-    private void handleRunningJob(IJob currentJob, ITR069MessageContext context, TR069Message request, String requestID)
+    private void handleRunningJob(IDeviceJob currentJob, ITR069MessageContext context, TR069Message request, String requestID)
             throws TR069Fault{
         try{
             log.debug("continue running job:" + currentJob.getJobID() + " with request:" + requestID);
@@ -90,7 +90,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
             }
         }catch(Exception exp){
             log.error("when handle request:" + requestID + ",job:" + currentJob.getJobID() + " failed for execution",exp);
-            currentJob.failOnError(exp);
+            currentJob.failOnException(exp);
             getJobManager().removeJob(currentJob);
 
             throw new TR069Fault(true,
@@ -101,11 +101,11 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
     }
 
     //fetch a job for give device key
-    private IJob fetchDeviceJob(String deviceKey) {
+    private IDeviceJob fetchDeviceJob(String deviceKey) {
         if(deviceKey == null){
             return null;
         }
-        IJob result = null;
+        IDeviceJob result = null;
         result = getJobManager().fetchSystemJob(deviceKey);
         if(result == null){
             result = getJobManager().fetchUserJob(deviceKey);

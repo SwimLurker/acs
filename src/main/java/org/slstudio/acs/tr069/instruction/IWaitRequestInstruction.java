@@ -1,8 +1,9 @@
 package org.slstudio.acs.tr069.instruction;
 
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.instruction.exception.InstructionFatalErrorException;
-import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorException;
+import org.slstudio.acs.tr069.instruction.context.InstructionContext;
+import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
+import org.slstudio.acs.tr069.instruction.exception.JobFailException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,6 +11,6 @@ import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorExcept
  * Date: 13-5-5
  * Time: ÏÂÎç9:19
  */
-public interface IWaitRequestInstruction extends IInstruction {
-    public boolean handleRequest(InstructionContext cmdContext, TR069Message request) throws InstructionNormalErrorException, InstructionFatalErrorException;
+public interface IWaitRequestInstruction extends ITR069Instruction {
+    public boolean handleRequest(InstructionContext cmdContext, TR069Message request) throws InstructionFailException, JobFailException;
 }

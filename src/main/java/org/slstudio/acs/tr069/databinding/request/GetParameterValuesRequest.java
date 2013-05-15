@@ -2,6 +2,7 @@ package org.slstudio.acs.tr069.databinding.request;
 
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
+import org.slstudio.acs.util.JSONUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,15 @@ public class GetParameterValuesRequest extends TR069Message {
         result.append("</ParameterNames>");
         result.append("</").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");
         return result.toString();
+    }
+
+    public static void main(String[] args) {
+        GetParameterValuesRequest gpvr = new GetParameterValuesRequest();
+        List<String> pList = new ArrayList<String>();
+        pList.add("InternetGatewayDevice.ManagementServer.PeriodicInformInterval");
+        gpvr.setParameterNames(pList);
+        System.out.println(JSONUtil.toJsonString(gpvr));
+
     }
 }
 

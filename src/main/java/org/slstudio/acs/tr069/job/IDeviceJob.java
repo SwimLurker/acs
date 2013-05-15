@@ -3,7 +3,11 @@ package org.slstudio.acs.tr069.job;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.JobException;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
+import org.slstudio.acs.tr069.job.result.IJobResultHandler;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,10 +15,45 @@ import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
  * Date: 13-5-1
  * Time: ÉÏÎç2:14
  */
-public interface IJob {
+public interface IDeviceJob {
     public String getDeviceKey();
 
+    public void setDeviceKey(String deviceKey);
+
     public String getJobID();
+
+    public void setJobID(String jobID);
+
+    public String getJobName();
+
+    public void setJobName(String jobName);
+
+    public Date getCreateTime();
+
+    public void setCreateTime(Date createTime);
+
+    public Date getCompleteTime();
+
+    public void setCompleteTime(Date completeTime);
+
+    public Object getResult();
+
+    public void setResult(Object result);
+
+    public int getErrorCode();
+
+    public void setErrorCode(int errorCode);
+
+    public String getErrorMsg();
+
+    public void setErrorMsg(String errorMsg);
+
+    public void addResultHandler(IJobResultHandler resultHandler);
+
+    public void removeResultHandler(IJobResultHandler resultHandler);
+
+    public List<IJobResultHandler> getResultHandlerList();
+
 
     public IJobRequest beginRun(ITR069MessageContext context) throws JobException;
 
@@ -26,13 +65,12 @@ public interface IJob {
 
     public void continueRunWithRequest(ITR069MessageContext context, TR069Message request) throws JobException;
 
-    public void failOnError(Exception exp);
+    public void failOnException(Exception exp);
 
     public boolean isReady();
 
     public boolean isRunning();
 
     public boolean isFinished();
-
 
 }

@@ -207,45 +207,64 @@
         </constructor-arg>
     </bean>
     <bean id="InformDealer" class="org.slstudio.acs.tr069.messagedealer.request.InformRequestDealer">
+        <property name="jobManager" ref="jobManager" />
         <property name="prePlugins" ref="informPrePluginList" />
     </bean>
     <bean id="TransferCompleteDealer" class="org.slstudio.acs.tr069.messagedealer.request.TransferCompleteRequestDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="GetRPCMethodsDealer" class="org.slstudio.acs.tr069.messagedealer.request.GetRPCMethodsRequestDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <!-- beans for response message dealer -->
     <bean id="AddObjectResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.AddObjectResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="DeleteObjectResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.DeleteObjectResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="DownloadResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.DownloadResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="FactoryResetResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.FactoryResetResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="GetParameterAttributesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.GetParameterAttributesResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="GetParameterNamesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.GetParameterNamesResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="GetParameterValuesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.GetParameterValuesResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="GetRPCMethodsResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.GetRPCMethodsResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="RebootResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.RebootResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="ScheduleInformResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.ScheduleInformResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="SetParameterAttributesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.SetParameterAttributesResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="SetParameterValuesResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.SetParameterValuesResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="UploadResponseDealer" class="org.slstudio.acs.tr069.messagedealer.response.UploadResponseDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <!-- beans for fault message dealer -->
     <bean id="FaultDealer" class="org.slstudio.acs.tr069.messagedealer.response.FaultDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <bean id="SetParameterValuesFaultDealer" class="org.slstudio.acs.tr069.messagedealer.response.SetParameterValuesFaultDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
     <!-- beans for empty message dealer -->
     <bean id="EmptyMessageDealer" class="org.slstudio.acs.tr069.messagedealer.EmptyMessageDealer">
+        <property name="jobManager" ref="jobManager" />
     </bean>
 </beans>

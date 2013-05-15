@@ -8,18 +8,16 @@ package org.slstudio.acs.tr069.instruction;
  */
 public abstract class InstructionBase implements IInstruction {
     private String instructionID = null;
-    private String jobID = null;
 
-    protected InstructionBase(String instructionID, String jobID) {
+    protected InstructionBase(String instructionID) {
         this.instructionID = instructionID;
-        this.jobID = jobID;
     }
 
     public String getInstructionID() {
         return instructionID;
     }
 
-    public String getJobID() {
-        return jobID;
+    public void setInstructionID(String instructionID) {
+        this.instructionID = instructionID;
     }
 }

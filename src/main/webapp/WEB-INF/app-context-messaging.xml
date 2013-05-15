@@ -30,9 +30,9 @@
             <value>${messaging.queue_name_syncdevice}</value>
         </constructor-arg>
     </bean>
-    <bean id="commandResultQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    <bean id="jobResultQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg index="0">
-            <value>${messaging.queue_name_commandresult}</value>
+            <value>${messaging.queue_name_jobresult}</value>
         </constructor-arg>
     </bean>
     <bean id="eventQueue" class="org.apache.activemq.command.ActiveMQQueue">
@@ -40,17 +40,19 @@
             <value>${messaging.queue_name_event}</value>
         </constructor-arg>
     </bean>
-    <bean id="commandQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    <bean id="jobQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg index="0">
-            <value>${messaging.queue_name_command}</value>
+            <value>${messaging.queue_name_job}</value>
         </constructor-arg>
     </bean>
     <bean id="jsonStringMapper" class="org.slstudio.acs.hms.messaging.mapper.JSONStringMapper" />
     <bean id="jsonSyncDeviceMapper" class="org.slstudio.acs.hms.messaging.mapper.JSONSyncDevicesMapper" />
+    <bean id="jsonDeviceJobMapper" class="org.slstudio.acs.hms.messaging.mapper.JSONDeviceJobMapper" />
+    <bean id="jsonDeviceJobResultMapper" class="org.slstudio.acs.hms.messaging.mapper.JSONDeviceJobResultMapper" />
     <!-- message senders -->
-    <bean id="commandResultSender" class="org.slstudio.acs.hms.messaging.sender.JMSMessageSender">
+    <bean id="deviceJobResultSender" class="org.slstudio.acs.hms.messaging.sender.JMSMessageSender">
         <property name="jmsTemplate" ref="jmsTemplate" />
-        <property name="destination" ref="commandResultQueue" />
+        <property name="destination" ref="jobResultQueue" />
         <property name="objectMapper" ref="jsonStringMapper" />
     </bean>
     <bean id="eventSender" class="org.slstudio.acs.hms.messaging.sender.JMSMessageSender">
@@ -59,10 +61,10 @@
         <property name="objectMapper" ref="jsonStringMapper" />
     </bean>
     <!-- message sender used for test message receiver -->
-    <bean id="commandSender" class="org.slstudio.acs.hms.messaging.sender.JMSMessageSender">
+    <bean id="deviceJobSender" class="org.slstudio.acs.hms.messaging.sender.JMSMessageSender">
         <property name="jmsTemplate" ref="jmsTemplate" />
-        <property name="destination" ref="deviceQueue" />
-        <property name="objectMapper" ref="jsonStringMapper" />
+        <property name="destination" ref="jobQueue" />
+        <property name="objectMapper" ref="jsonDeviceJobMapper" />
     </bean>
     <bean id="syncDevicesSender" class="org.slstudio.acs.hms.messaging.sender.JMSMessageSender">
         <property name="jmsTemplate" ref="jmsTemplate" />
@@ -75,28 +77,37 @@
     <bean name="syncDevicesMessageHandler" class="org.slstudio.acs.hms.messaging.handler.SyncDevicesMessageHandler">
         <property name="deviceManager" ref="deviceManager" />
     </bean>
+    <bean name="simpleScriptParser" class="org.slstudio.acs.tr069.script.SimpleScriptParser">
+    </bean>
+    <bean name="deviceJobMessageHandler" class="org.slstudio.acs.hms.messaging.handler.DeviceJobMessageHandler">
+        <property name="deviceManager" ref="deviceManager" />
+        <property name="jobManager" ref="jobManager" />
+        <property name="jobResultSender" ref="deviceJobResultSender" />
+        <property name="scriptParser" ref="simpleScriptParser" />
+    </bean>
 
     <!-- command message receiver -->
-    <bean name="comamndHandlerList" class="java.util.ArrayList">
+    <bean name="deviceJobHandlerList" class="java.util.ArrayList">
         <constructor-arg>
             <list>
                <ref bean="debugMessageHandler" />
+               <ref bean="deviceJobMessageHandler"/>
             </list>
         </constructor-arg>
     </bean>
-    <bean id="commandReceiver" class="org.slstudio.acs.hms.messaging.receiver.StringMessageReceiver">
-        <property name="objectMapper" ref="jsonStringMapper" />
-        <property name="sourceName" value="${messaging.queue_name_command}" />
-        <property name="handlers" ref="comamndHandlerList" />
+    <bean id="deviceJobReceiver" class="org.slstudio.acs.hms.messaging.receiver.StringMessageReceiver">
+        <property name="objectMapper" ref="jsonDeviceJobMapper" />
+        <property name="sourceName" value="${messaging.queue_name_job}" />
+        <property name="handlers" ref="deviceJobHandlerList" />
     </bean>
-    <bean id="commandListener" class="org.slstudio.acs.hms.messaging.listener.JMSTextMessageListener">
-        <property name="receiver" ref="commandReceiver" />
+    <bean id="deviceJobListener" class="org.slstudio.acs.hms.messaging.listener.JMSTextMessageListener">
+        <property name="receiver" ref="deviceJobReceiver" />
     </bean>
-    <bean id="commandListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer"  >
+    <bean id="deviceJobListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer"  >
         <property name="concurrentConsumers" value="10" />
         <property name="connectionFactory" ref="jmsFactory" />
-        <property name="destination" ref="commandQueue" />
-        <property name="messageListener" ref="commandListener" />
+        <property name="destination" ref="jobQueue" />
+        <property name="messageListener" ref="deviceJobListener" />
         <property name="pubSubNoLocal" value="false" />
         <property name="autoStartup" value="false" />
     </bean>
@@ -130,26 +141,26 @@
 
     <!-- message receiver used for test message sender -->
     <!-- command result message receiver -->
-    <bean name="commandResultHandlerList" class="java.util.ArrayList">
+    <bean name="deviceJobResultHandlerList" class="java.util.ArrayList">
         <constructor-arg>
             <list>
                 <ref bean="debugMessageHandler" />
             </list>
         </constructor-arg>
     </bean>
-    <bean id="commandResultReceiver" class="org.slstudio.acs.hms.messaging.receiver.StringMessageReceiver">
-        <property name="objectMapper" ref="jsonStringMapper" />
-        <property name="sourceName" value="${messaging.queue_name_commandresult}" />
-        <property name="handlers" ref="commandResultHandlerList" />
+    <bean id="deviceJobResultReceiver" class="org.slstudio.acs.hms.messaging.receiver.StringMessageReceiver">
+        <property name="objectMapper" ref="jsonDeviceJobResultMapper" />
+        <property name="sourceName" value="${messaging.queue_name_jobresult}" />
+        <property name="handlers" ref="deviceJobResultHandlerList" />
     </bean>
-    <bean id="commandResultListener" class="org.slstudio.acs.hms.messaging.listener.JMSTextMessageListener">
-        <property name="receiver" ref="commandResultReceiver" />
+    <bean id="deviceJobResultListener" class="org.slstudio.acs.hms.messaging.listener.JMSTextMessageListener">
+        <property name="receiver" ref="deviceJobResultReceiver" />
     </bean>
-    <bean id="commandResultListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer" >
+    <bean id="deviceJobResultListenerContainer"	class="org.springframework.jms.listener.DefaultMessageListenerContainer" >
         <property name="concurrentConsumers" value="10" />
         <property name="connectionFactory" ref="jmsFactory" />
-        <property name="destination" ref="commandResultQueue" />
-        <property name="messageListener" ref="commandResultListener" />
+        <property name="destination" ref="jobResultQueue" />
+        <property name="messageListener" ref="deviceJobResultListener" />
         <property name="pubSubNoLocal" value="false" />
         <property name="autoStartup" value="false" />
     </bean>

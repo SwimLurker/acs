@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.fault.TR069Fault;
-import org.slstudio.acs.tr069.job.IJob;
+import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.util.Tuple;
@@ -32,7 +32,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         String deviceKey = getDeviceKey(context.getTR069SessionContext());
 
         //first handing running job
-        IJob currentJob = findRunningJob(deviceKey);
+        IDeviceJob currentJob = findRunningJob(deviceKey);
 
         IJobRequest jobRequest = null;
         //handle running job
@@ -56,7 +56,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         //(notnull, null) means there is some job is running and waiting for some message(request) checking
         //(notnull, notnull) means there is some job is running and need send request for response
         //(null, notnull) means no job in dealing but has request to send, it is impossible
-        Tuple2<IJob, IJobRequest> result = fetchSystemJobAndExecute(context, deviceKey);
+        Tuple2<IDeviceJob, IJobRequest> result = fetchSystemJobAndExecute(context, deviceKey);
         currentJob = result._1();
         jobRequest = result._2();
 
@@ -73,7 +73,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         //(notnull, null) means there is some job is running and waiting for some message(request) checking
         //(notnull, notnull) means there is some job is running and need send request for response
         //(null, notnull) means no job in dealing but has request to send, it is impossible
-        Tuple2<IJob, IJobRequest> result2 = fetchUserJobAndExecute(context, deviceKey);
+        Tuple2<IDeviceJob, IJobRequest> result2 = fetchUserJobAndExecute(context, deviceKey);
         currentJob = result2._1();
         jobRequest = result2._2();
 
@@ -88,8 +88,8 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         return null;
     }
 
-    private Tuple2<IJob, IJobRequest> fetchSystemJobAndExecute(ITR069MessageContext context,String deviceKey) {
-        IJob currentJob = getJobManager().fetchSystemJob(deviceKey);
+    private Tuple2<IDeviceJob, IJobRequest> fetchSystemJobAndExecute(ITR069MessageContext context,String deviceKey) {
+        IDeviceJob currentJob = getJobManager().fetchSystemJob(deviceKey);
         //no job to exectue
         if(currentJob == null){
             return Tuple.tuple(null,null);
@@ -113,8 +113,8 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         return fetchSystemJobAndExecute(context, deviceKey);
     }
 
-    private Tuple2<IJob, IJobRequest> fetchUserJobAndExecute(ITR069MessageContext context,String deviceKey) {
-        IJob currentJob = getJobManager().fetchUserJob(deviceKey);
+    private Tuple2<IDeviceJob, IJobRequest> fetchUserJobAndExecute(ITR069MessageContext context,String deviceKey) {
+        IDeviceJob currentJob = getJobManager().fetchUserJob(deviceKey);
         //no job to exectue
         if(currentJob == null){
             return Tuple.tuple(null,null);
@@ -138,7 +138,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         return fetchUserJobAndExecute(context, deviceKey);
     }
 
-    private IJobRequest handleJob(IJob currentJob, ITR069MessageContext context, String deviceKey) {
+    private IJobRequest handleJob(IDeviceJob currentJob, ITR069MessageContext context, String deviceKey) {
         IJobRequest result = null;
         try{
             if(currentJob.isReady()){
@@ -147,7 +147,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
             }else if(currentJob.isRunning()){
                 log.debug("job:" + currentJob.getJobID() + " for device:" + deviceKey +" is running, continue run it");
                 result = currentJob.continueRun(context);
-            }else if(currentJob.isFinished()){
+            } if(currentJob.isFinished()){
                 //impossible, should not happened
                 log.error("job:" + currentJob.getJobID() + "should not be finished status for device:" + deviceKey + " when handle empty message");
             }
@@ -158,14 +158,14 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
             }
         }catch(Exception exp){
             log.error("when handle empty message,job:" + currentJob.getJobID() + " failed for execution",exp);
-            currentJob.failOnError(exp);
+            currentJob.failOnException(exp);
             getJobManager().removeJob(currentJob);
         }
         return result;
     }
 
     //handle running job , let it continue beginRun
-    private IJobRequest handleRunningJob(ITR069MessageContext context,IJob job) {
+    private IJobRequest handleRunningJob(ITR069MessageContext context,IDeviceJob job) {
         IJobRequest request = null;
         try{
             log.debug("continue running job:" + job.getJobID() + " with empty message");
@@ -177,7 +177,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
             log.debug("after handle empty message,job:"+ job.getJobID() + " get request:" + (request == null?"null":request.getTr069Request().toSOAPString()));
         }catch(Exception exp){
             log.error("when handle empty message,job:" + job.getJobID() + " failed for execution", exp);
-            job.failOnError(exp);
+            job.failOnException(exp);
             getJobManager().removeJob(job);
         }
         return request;
@@ -186,12 +186,12 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
     //first find running job, the priority is:
     // 1. running system job
     // 2. running user job
-    private IJob findRunningJob(String deviceKey) {
+    private IDeviceJob findRunningJob(String deviceKey) {
         if(deviceKey == null){
             return null;
         }
-        IJob currentSystemJob = getJobManager().fetchSystemJob(deviceKey);
-        IJob currentUserJob = getJobManager().fetchUserJob(deviceKey);
+        IDeviceJob currentSystemJob = getJobManager().fetchSystemJob(deviceKey);
+        IDeviceJob currentUserJob = getJobManager().fetchUserJob(deviceKey);
         if(currentSystemJob == null || currentSystemJob.isReady()){
             if(currentUserJob!=null && currentUserJob.isRunning()){
                 //no system job or system is not running

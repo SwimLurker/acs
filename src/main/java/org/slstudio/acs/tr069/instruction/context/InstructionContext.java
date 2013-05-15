@@ -1,4 +1,4 @@
-package org.slstudio.acs.tr069.instruction;
+package org.slstudio.acs.tr069.instruction.context;
 
 import java.util.Map;
 

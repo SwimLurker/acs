@@ -6,7 +6,7 @@ import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
-import org.slstudio.acs.tr069.job.IJob;
+import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
@@ -31,7 +31,7 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
 
         IJobRequest request = null;
         //find related job, first search system job then user job
-        IJob currentJob = findJob(deviceKey, jobID);
+        IDeviceJob currentJob = findJob(deviceKey, jobID);
         if(currentJob == null){
             // no job is running or can not find job for some reason, then just return null
             log.debug("can not find job:" + jobID + ", for device:" + deviceKey + " when handle response:" + responseID);
@@ -65,11 +65,11 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
         return jobID;
     }
 
-    private IJob findJob(String deviceKey, String jobID) {
+    private IDeviceJob findJob(String deviceKey, String jobID) {
         if(jobID == null || deviceKey == null){
             return null;
         }
-        IJob result = null;
+        IDeviceJob result = null;
         result = getJobManager().findSystemJob(deviceKey, jobID);
         if(result == null){
             result = getJobManager().findUserJob(deviceKey, jobID);
@@ -77,7 +77,7 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
         return result;
     }
 
-    private IJobRequest handleRunningJob(IJob currentJob, ITR069MessageContext context, TR069Message response, String responseID)
+    private IJobRequest handleRunningJob(IDeviceJob currentJob, ITR069MessageContext context, TR069Message response, String responseID)
             throws TR069Fault{
         IJobRequest request = null;
         try{
@@ -90,7 +90,7 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
             log.debug("after handle response:" + responseID +"for job:"+ currentJob.getJobID() + ", get request:" + (request == null?"null":request.getTr069Request().toSOAPString()));
         }catch (Exception exp){
             log.error("when handle response:" + responseID + ",job:" + currentJob.getJobID() + " failed for execution",exp);
-            currentJob.failOnError(exp);
+            currentJob.failOnException(exp);
             getJobManager().removeJob(currentJob);
             throw new TR069Fault(true,
                     TR069Constants.SERVER_FAULT_INTERNAL_ERROR,

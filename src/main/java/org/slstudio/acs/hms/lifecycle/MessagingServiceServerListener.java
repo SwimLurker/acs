@@ -6,6 +6,7 @@ import org.slstudio.acs.ACSServer;
 import org.slstudio.acs.DefaultACSServerLifecycleListener;
 import org.slstudio.acs.hms.device.DeviceInfo;
 import org.slstudio.acs.hms.exception.MessagingException;
+import org.slstudio.acs.hms.messaging.bean.DeviceJobBean;
 import org.slstudio.acs.hms.messaging.bean.SyncDevicesBean;
 import org.slstudio.acs.hms.messaging.sender.IMessageSender;
 import org.slstudio.acs.kernal.exception.LifecycleException;
@@ -37,11 +38,19 @@ public class MessagingServiceServerListener extends DefaultACSServerLifecycleLis
     public void onStartServer(ACSServer server)  throws LifecycleException{
         DefaultMessageListenerContainer dmlc = (DefaultMessageListenerContainer) BeanLocator.getBean("syncDeviceListenerContainer");
         dmlc.start();
+        DefaultMessageListenerContainer dmlc2 = (DefaultMessageListenerContainer) BeanLocator.getBean("deviceJobListenerContainer");
+        dmlc2.start();
     }
 
     @Override
     public void onAfterStartServer(ACSServer server)  throws LifecycleException{
         sendMockSyncDevicesStringMessage();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        sendMockDeviceJobMessage();
     }
 
     @Override
@@ -81,6 +90,23 @@ public class MessagingServiceServerListener extends DefaultACSServerLifecycleLis
         IMessageSender sender = (IMessageSender) BeanLocator.getBean("syncDevicesSender");
         try {
             sender.sendMessage(new SyncDevicesBean(SyncDevicesBean.COMMAND_SYNC, deviceList));
+        } catch (MessagingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    private void sendMockDeviceJobMessage() {
+        DeviceJobBean djb  = new DeviceJobBean();
+        djb.setJobID("1");
+        djb.setDeviceKey("FC1234567890");
+        djb.setJobName("test job");
+        StringBuilder text = new StringBuilder();
+        text.append("SET $a = \"bbb\"").append("\r\n").append("SET $c = $a").append("\r\n").
+                append("tr069 cmd getpv:{\"messageID\":\"1_1235\",\"parameterNames\":[\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\"]}").append("\r\n").append("RET");
+        djb.setJobScript(text.toString());
+        IMessageSender sender = (IMessageSender) BeanLocator.getBean("deviceJobSender");
+        try {
+            sender.sendMessage(djb);
         } catch (MessagingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

@@ -1,6 +1,6 @@
 package org.slstudio.acs.tr069.job.queue;
 
-import org.slstudio.acs.tr069.job.IJob;
+import org.slstudio.acs.tr069.job.IDeviceJob;
 
 import java.util.Vector;
 
@@ -10,7 +10,7 @@ import java.util.Vector;
  * Date: 13-5-2
  * Time: ионГ3:30
  */
-public class JobQueue<T extends IJob> {
+public class JobQueue<T extends IDeviceJob> {
     private Vector<T> queue = new Vector<T>();
     public void push(T job){
         queue.add(job);

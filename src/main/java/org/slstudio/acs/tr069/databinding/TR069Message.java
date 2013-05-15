@@ -4,6 +4,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.databinding.types.UnsignedInt;
 import org.apache.axis2.databinding.utils.ConverterUtil;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.soap.SOAPUtil;
 
@@ -73,6 +74,7 @@ public abstract class TR069Message {
         return result.toString();
     }
 
+    @JsonIgnore
     public abstract String getMessageName();
 
     protected  String toTR069SOAPString(){return null;}

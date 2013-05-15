@@ -5,13 +5,17 @@ import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.JobException;
 import org.slstudio.acs.tr069.instruction.*;
-import org.slstudio.acs.tr069.instruction.exception.InstructionFatalErrorException;
-import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorException;
+import org.slstudio.acs.tr069.instruction.context.InstructionContext;
+import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
+import org.slstudio.acs.tr069.instruction.exception.JobCompleteException;
+import org.slstudio.acs.tr069.instruction.exception.JobFailException;
+import org.slstudio.acs.tr069.instruction.queue.DefaultInstructionQueue;
+import org.slstudio.acs.tr069.instruction.queue.IInstructionQueue;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
+import org.slstudio.acs.tr069.job.result.IJobResultHandler;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,38 +23,35 @@ import java.util.Map;
  * Date: 13-5-4
  * Time: ÉÏÎç1:52
  */
-public class DefaultTR069Job implements ISystemJob, IUserJob{
+public class DefaultDeviceJob implements IDeviceJob {
     public static final int STATUS_READY = 0;
     public static final int STATUS_RUNNING = 1;
     public static final int STATUS_COMPLETE = 2;
     public static final int STATUS_FAILED = 3;
 
-    private static final Log log = LogFactory.getLog(DefaultTR069Job.class);
 
-    private String deviceKey = null;
+
+
+    private static final Log log = LogFactory.getLog(DefaultDeviceJob.class);
+
     private String jobID = null;
+    private String jobName = null;
+    private String deviceKey = null;
+    private Date createTime = null;
+    private Date completeTime = null;
     private int status = STATUS_READY;
+    private List<IJobResultHandler> resultHandlers = new ArrayList<IJobResultHandler>();
 
     private IInstructionQueue instructionQueue = new DefaultInstructionQueue();
     private IInstruction currentInstruction = null;
     private Map<String, Object> symbolTable = new HashMap<String, Object>();
-
     private IJobRequest cachedRequest = null;
 
 
-    public DefaultTR069Job(String deviceKey, String jobID) {
+    public DefaultDeviceJob(String deviceKey, String jobID) {
         this.deviceKey = deviceKey;
         this.jobID = jobID;
-        instructionQueue.push(new TestInstruction("abc", jobID));
-        instructionQueue.push(new TestGetPVsInstruction(jobID));
-    }
 
-    public String getDeviceKey() {
-        return deviceKey;
-    }
-
-    public void setDeviceKey(String deviceKey) {
-        this.deviceKey = deviceKey;
     }
 
     public String getJobID() {
@@ -61,12 +62,88 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         this.jobID = jobID;
     }
 
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getDeviceKey() {
+        return deviceKey;
+    }
+
+    public void setDeviceKey(String deviceKey) {
+        this.deviceKey = deviceKey;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getCompleteTime() {
+        return completeTime;
+    }
+
+    public void setCompleteTime(Date completeTime) {
+        this.completeTime = completeTime;
+    }
+
+    public void addResultHandler(IJobResultHandler resultHandler) {
+        resultHandlers.add(resultHandler);
+    }
+
+    public void removeResultHandler(IJobResultHandler resultHandler) {
+        resultHandlers.remove(resultHandler);
+    }
+
+    public List<IJobResultHandler> getResultHandlerList() {
+        return resultHandlers;
+    }
+
     public int getStatus() {
         return status;
     }
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public Object getResult(){
+        return symbolTable.get(DeviceJobConstants.SYMBOLNAME_RETURNVALUE);
+    }
+
+    public void setResult(Object result){
+        symbolTable.put(DeviceJobConstants.SYMBOLNAME_RETURNVALUE, result);
+    }
+
+    public int getErrorCode(){
+        return (Integer)symbolTable.get(DeviceJobConstants.SYMBOLNAME_ERRORCODE);
+    }
+
+    public void setErrorCode(int errorCode){
+        symbolTable.put(DeviceJobConstants.SYMBOLNAME_ERRORCODE, errorCode);
+    }
+
+    public String getErrorMsg(){
+        return (String)symbolTable.get(DeviceJobConstants.SYMBOLNAME_ERRORMSG);
+    }
+
+    public void setErrorMsg(String errorMsg){
+        symbolTable.put(DeviceJobConstants.SYMBOLNAME_ERRORMSG, errorMsg);
+    }
+
+    public IInstructionQueue getInstructionQueue() {
+        return instructionQueue;
+    }
+
+    public void setInstructionQueue(IInstructionQueue instructionQueue) {
+        this.instructionQueue = instructionQueue;
     }
 
     public boolean isReady() {
@@ -225,20 +302,29 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         }
     }
 
-    public void failOnError(Exception exp) {
+    public void failOnException(Exception exp) {
         setStatus(STATUS_FAILED);
         log.error("job:"+ jobID + " has failed for exception", exp);
+        for(IJobResultHandler handler: resultHandlers){
+            handler.onFailed(this);
+        }
     }
 
     private void fail(ITR069MessageContext context) {
         setStatus(STATUS_FAILED);
         log.info("job:" + jobID + " failed");
+        for(IJobResultHandler handler: resultHandlers){
+            handler.onFailed(this);
+        }
     }
 
     private void complete(ITR069MessageContext context) {
         setStatus(STATUS_COMPLETE);
         log.info("job:" + jobID + " completed");
         System.out.println("Job result:"+ symbolTable.get("test"));
+        for(IJobResultHandler handler: resultHandlers){
+            handler.onSucceed(this);
+        }
     }
 
 
@@ -259,12 +345,17 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
                     //instruction is waiting request or response, then return
                     break;
                 }
-            }catch(InstructionNormalErrorException cneExp){
-                log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() +") instruction execute failed, but can go on next instruction", cneExp);
-            }catch(InstructionFatalErrorException cfeExp){
-                log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") instruction execute failed with fatal error", cfeExp);
+            }catch(InstructionFailException ifExp){
+                log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() +") instruction execute failed, but can go on next instruction", ifExp);
+            }catch(JobFailException jfExp){
+                log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") instruction execute failed, make job fail", jfExp);
                 fail(context);
-                throw new JobException("instruction execute with fatal error, makes job failed", cfeExp);
+                throw new JobException("instruction execute failed makes job failed", jfExp);
+            }catch(JobCompleteException jcExp){
+                log.info("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") instruction execute make job complete", jcExp);
+                //set current instruction to null
+                currentInstruction = null;
+                break;
             }
         }
 
@@ -357,11 +448,11 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         InstructionContext instructionContext = new InstructionContext(symbolTable);
         try{
             return instruction.handleResponse(instructionContext, response);
-        }catch(InstructionNormalErrorException cneExp){
+        }catch(InstructionFailException cneExp){
             log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle response:" +
                     (response == null? "empty message":response.getMessageName()) + " failed, but can go on next instruction", cneExp);
             return true;
-        }catch(InstructionFatalErrorException cfeExp){
+        }catch(JobFailException cfeExp){
             log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle response:" +
                     (response == null? "empty message":response.getMessageName()) + " failed with fatal error, makes job failed", cfeExp);
             fail(context);
@@ -374,15 +465,15 @@ public class DefaultTR069Job implements ISystemJob, IUserJob{
         InstructionContext instructionContext = new InstructionContext(symbolTable);
         try{
             return instruction.handleRequest(instructionContext, request);
-        }catch(InstructionNormalErrorException cneExp){
+        }catch(InstructionFailException cneExp){
             log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle request:" +
                     (request == null? "empty message":request.getMessageName()) + " failed, but can go on next instruction", cneExp);
             return true;
-        }catch(InstructionFatalErrorException cfeExp){
+        }catch(JobFailException jfExp){
             log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle request:" +
-                    (request == null? "empty message":request.getMessageName()) + " failed with fatal error, makes job failed", cfeExp);
+                    (request == null? "empty message":request.getMessageName()) + " failed with fatal error, makes job failed", jfExp);
             fail(context);
-            throw new JobException("instruction execute with fatal error, makes job failed", cfeExp);
+            throw new JobException("instruction execute with fatal error, makes job failed", jfExp);
         }
     }
 

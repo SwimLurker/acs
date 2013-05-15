@@ -1,4 +1,7 @@
-package org.slstudio.acs.tr069.instruction;
+package org.slstudio.acs.tr069.instruction.queue;
+
+import org.slstudio.acs.tr069.instruction.IInstruction;
+import org.slstudio.acs.tr069.instruction.queue.IInstructionQueue;
 
 import java.util.Vector;
 

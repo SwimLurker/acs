@@ -5,7 +5,6 @@ import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.databinding.response.AddObjectResponse;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.messagedealer.AbstractResponseDealer;
-import org.slstudio.acs.tr069.util.DataBindingUtil;
 
 /**
  * Created with IntelliJ IDEA.

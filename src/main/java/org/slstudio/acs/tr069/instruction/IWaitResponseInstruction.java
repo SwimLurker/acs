@@ -1,8 +1,9 @@
 package org.slstudio.acs.tr069.instruction;
 
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.instruction.exception.InstructionFatalErrorException;
-import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorException;
+import org.slstudio.acs.tr069.instruction.context.InstructionContext;
+import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
+import org.slstudio.acs.tr069.instruction.exception.JobFailException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,5 +14,5 @@ import org.slstudio.acs.tr069.instruction.exception.InstructionNormalErrorExcept
 public interface IWaitResponseInstruction extends IInstruction {
     //return true if the instruction handled the response
     //return false if the instruction skip to handle the response
-    public boolean handleResponse(InstructionContext cmdContext, TR069Message response) throws InstructionNormalErrorException, InstructionFatalErrorException;
+    public boolean handleResponse(InstructionContext cmdContext, TR069Message response) throws InstructionFailException, JobFailException;
 }
