@@ -75,6 +75,7 @@ public class SOAPUtil {
         return sdf.format(date);
     }
 
+
     public static String encodeBASE64(byte[] data) {
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);

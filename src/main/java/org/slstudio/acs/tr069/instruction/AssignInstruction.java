@@ -39,6 +39,14 @@ public class AssignInstruction extends InstructionBase {
         this.variableValue = variableValue;
     }
 
+    public String getInstructionName() {
+        return "Assign Instruction";
+    }
+
+    public String toString() {
+        return variableName +" = " + variableValue;
+    }
+
     public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException, JobCompleteException {
         if(variableValue.startsWith(DeviceJobConstants.SYMBOLNAME_VARIABLE_PREFIX)){
             Object value = cmdContext.getSymbolTable().get(variableValue);

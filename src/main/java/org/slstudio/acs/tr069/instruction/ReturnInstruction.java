@@ -29,6 +29,14 @@ public class ReturnInstruction extends InstructionBase{
         this.returnValue = returnValue;
     }
 
+    public String getInstructionName() {
+        return "Return Instruction";
+    }
+
+    public String toString() {
+        return "return "+ (returnValue==null?"":returnValue);
+    }
+
     public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException ,JobCompleteException{
         if(returnValue == null){
             //set job return value to last instruction result;

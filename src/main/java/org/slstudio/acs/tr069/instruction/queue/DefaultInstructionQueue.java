@@ -1,8 +1,8 @@
 package org.slstudio.acs.tr069.instruction.queue;
 
 import org.slstudio.acs.tr069.instruction.IInstruction;
-import org.slstudio.acs.tr069.instruction.queue.IInstructionQueue;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -16,6 +16,11 @@ public class DefaultInstructionQueue implements IInstructionQueue {
     public void push(IInstruction instruction){
         queue.add(instruction);
     }
+
+    public List<IInstruction> getAllInstructions() {
+        return queue;
+    }
+
     public IInstruction pop(){
         if(queue.size()>0){
             return queue.remove(0);

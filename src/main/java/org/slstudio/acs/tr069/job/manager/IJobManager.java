@@ -4,6 +4,8 @@ import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.job.ISystemDeviceJob;
 import org.slstudio.acs.tr069.job.IUserDeviceJob;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: chandler
@@ -18,4 +20,14 @@ public interface IJobManager {
     public IUserDeviceJob fetchUserJob(String deviceKey);
     public void addSystemJob(ISystemDeviceJob job);
     public void addUserJob(IUserDeviceJob job);
+
+   public IDeviceJob findJob(String jobID);
+
+    List<ISystemDeviceJob> getAllSystemJobs();
+
+    List<IUserDeviceJob> getAllUserJobs();
+
+    List<ISystemDeviceJob> findSystemJobs(String deviceKey);
+
+    List<IUserDeviceJob> findUserJobs(String deviceKey);
 }

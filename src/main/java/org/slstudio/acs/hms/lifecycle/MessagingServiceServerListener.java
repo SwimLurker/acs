@@ -102,11 +102,25 @@ public class MessagingServiceServerListener extends DefaultACSServerLifecycleLis
         djb.setJobName("test job");
         StringBuilder text = new StringBuilder();
         text.append("SET $a = \"bbb\"").append("\r\n").append("SET $c = $a").append("\r\n").
-                append("tr069 cmd getpv:{\"messageID\":\"1_1235\",\"parameterNames\":[\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\"]}").append("\r\n").append("RET");
+                append("tr069 cmd getpv:{\"parameterNames\":[\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\"]}").append("\r\n").append("RET");
         djb.setJobScript(text.toString());
         IMessageSender sender = (IMessageSender) BeanLocator.getBean("deviceJobSender");
         try {
             sender.sendMessage(djb);
+        } catch (MessagingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        DeviceJobBean djb2  = new DeviceJobBean();
+        djb2.setJobID("2");
+        djb2.setDeviceKey("FC1234567890");
+        djb2.setJobName("test job2");
+        StringBuilder text2 = new StringBuilder();
+        text2.append("SET $a = \"bbb\"").append("\r\n").append("SET $c = $a").append("\r\n").
+                append("tr069 cmd getpv:{\"parameterNames\":[\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\"]}").append("\r\n").append("RET");
+        djb2.setJobScript(text2.toString());
+
+        try {
+            sender.sendMessage(djb2);
         } catch (MessagingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

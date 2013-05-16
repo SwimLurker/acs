@@ -14,5 +14,6 @@ import org.slstudio.acs.tr069.job.request.IJobRequest;
  */
 public interface IInstruction {
     public String getInstructionID();
+    public String getInstructionName();
     public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException, JobCompleteException;
 }

@@ -17,13 +17,7 @@
         "attributes":{
             "url":"/pages/view_sessions.html"
         }
-    },{
-		"id":22,
-        "text":"View Session/Device Mapping",
-        "attributes":{
-            "url":"/view_devices.html"
-        }
-	}]   
+    }]
 },{   
     "id":3,   
     "text":"Job Management",    
@@ -31,15 +25,9 @@
 		"id":31,
         "text":"View Jobs",
         "attributes":{
-            "url":"/view_devices.html"
+            "url":"/pages/view_jobs.html"
         }
-    },{
-		"id":32,
-        "text":"Add Job",
-        "attributes":{
-            "url":"/view_devices.html"
-        }
-	}]   
+    }]
 },{   
     "id":4,   
     "text":"Messaging Management",    

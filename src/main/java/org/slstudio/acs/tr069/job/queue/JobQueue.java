@@ -2,6 +2,7 @@ package org.slstudio.acs.tr069.job.queue;
 
 import org.slstudio.acs.tr069.job.IDeviceJob;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -38,5 +39,9 @@ public class JobQueue<T extends IDeviceJob> {
             }
         }
         return null;
+    }
+
+    public List<T> getAllJobs() {
+        return queue;
     }
 }

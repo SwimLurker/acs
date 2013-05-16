@@ -2,6 +2,10 @@ package org.slstudio.acs.tr069.job;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.JobException;
 import org.slstudio.acs.tr069.instruction.*;
@@ -14,6 +18,8 @@ import org.slstudio.acs.tr069.instruction.queue.IInstructionQueue;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.job.result.IJobResultHandler;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
+import org.slstudio.acs.util.CustomDateDeserializer;
+import org.slstudio.acs.util.CustomDateSerializer;
 
 import java.util.*;
 
@@ -23,35 +29,45 @@ import java.util.*;
  * Date: 13-5-4
  * Time: ÉÏÎç1:52
  */
+@JsonAutoDetect
 public class DefaultDeviceJob implements IDeviceJob {
     public static final int STATUS_READY = 0;
     public static final int STATUS_RUNNING = 1;
     public static final int STATUS_COMPLETE = 2;
     public static final int STATUS_FAILED = 3;
 
-
-
-
     private static final Log log = LogFactory.getLog(DefaultDeviceJob.class);
 
     private String jobID = null;
     private String jobName = null;
     private String deviceKey = null;
-    private Date createTime = null;
-    private Date completeTime = null;
-    private int status = STATUS_READY;
-    private List<IJobResultHandler> resultHandlers = new ArrayList<IJobResultHandler>();
 
+    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonDeserialize(using = CustomDateDeserializer.class)
+    private Date createTime;
+
+    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonDeserialize(using = CustomDateDeserializer.class)
+    private Date beginTime;
+
+    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonDeserialize(using = CustomDateDeserializer.class)
+    private Date completeTime;
+    private int status = STATUS_READY;
+
+    private List<IJobResultHandler> resultHandlerList = new ArrayList<IJobResultHandler>();
     private IInstructionQueue instructionQueue = new DefaultInstructionQueue();
     private IInstruction currentInstruction = null;
     private Map<String, Object> symbolTable = new HashMap<String, Object>();
     private IJobRequest cachedRequest = null;
 
 
+    public DefaultDeviceJob() {
+    }
+
     public DefaultDeviceJob(String deviceKey, String jobID) {
         this.deviceKey = deviceKey;
         this.jobID = jobID;
-
     }
 
     public String getJobID() {
@@ -86,6 +102,14 @@ public class DefaultDeviceJob implements IDeviceJob {
         this.createTime = createTime;
     }
 
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
     public Date getCompleteTime() {
         return completeTime;
     }
@@ -95,15 +119,36 @@ public class DefaultDeviceJob implements IDeviceJob {
     }
 
     public void addResultHandler(IJobResultHandler resultHandler) {
-        resultHandlers.add(resultHandler);
+        resultHandlerList.add(resultHandler);
     }
 
     public void removeResultHandler(IJobResultHandler resultHandler) {
-        resultHandlers.remove(resultHandler);
+        resultHandlerList.remove(resultHandler);
     }
 
+    @JsonIgnore
     public List<IJobResultHandler> getResultHandlerList() {
-        return resultHandlers;
+        return resultHandlerList;
+    }
+
+    public IInstruction getCurrentInstruction() {
+        return currentInstruction;
+    }
+
+    public void setCurrentInstruction(IInstruction currentInstruction) {
+        this.currentInstruction = currentInstruction;
+    }
+
+    public List<IInstruction> getInstructions() {
+        return getInstructionQueue().getAllInstructions();
+    }
+
+    public int getInstructionCount() {
+        return getInstructionQueue().getAllInstructions().size();
+    }
+
+    public void addInstruction(IInstruction instruction){
+        instructionQueue.push(instruction);
     }
 
     public int getStatus() {
@@ -123,7 +168,12 @@ public class DefaultDeviceJob implements IDeviceJob {
     }
 
     public int getErrorCode(){
-        return (Integer)symbolTable.get(DeviceJobConstants.SYMBOLNAME_ERRORCODE);
+        Object result = symbolTable.get(DeviceJobConstants.SYMBOLNAME_ERRORCODE);
+        if(result == null){
+            return DeviceJobConstants.ERRORCODE_NOERROR;
+        }else{
+            return (Integer)result;
+        }
     }
 
     public void setErrorCode(int errorCode){
@@ -138,6 +188,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         symbolTable.put(DeviceJobConstants.SYMBOLNAME_ERRORMSG, errorMsg);
     }
 
+    @JsonIgnore
     public IInstructionQueue getInstructionQueue() {
         return instructionQueue;
     }
@@ -146,14 +197,29 @@ public class DefaultDeviceJob implements IDeviceJob {
         this.instructionQueue = instructionQueue;
     }
 
+    public Map<String, Object> getSymbolTable() {
+        return symbolTable;
+    }
+
+    public void setSymbolTable(Map<String, Object> symbolTable) {
+        this.symbolTable = symbolTable;
+    }
+
+    public IJobRequest getCachedRequest(){
+        return cachedRequest;
+    }
+
+    @JsonIgnore
     public boolean isReady() {
         return status == STATUS_READY;
     }
 
+    @JsonIgnore
     public boolean isRunning() {
         return status == STATUS_RUNNING;
     }
 
+    @JsonIgnore
     public boolean isFinished() {
         return status == STATUS_COMPLETE || status == STATUS_FAILED;
     }
@@ -166,6 +232,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         //first set status to running
         if(isReady()){
             setStatus(STATUS_RUNNING);
+            setBeginTime(new Date());
         }
 
         //let job continue execute instruction
@@ -180,6 +247,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         //first set status to running
         if(isReady()){
             setStatus(STATUS_RUNNING);
+            setBeginTime(new Date());
         }
 
         //then let job execute instruction until some instruction is blocking or all instruction has finished execution
@@ -240,7 +308,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         checkCurrentInstructionBlocking();
 
         //send cached result
-        IJobRequest request = getCachedRequest();
+        IJobRequest request = fetchCachedRequest();
         if(request != null){
             return request;
         }
@@ -304,25 +372,27 @@ public class DefaultDeviceJob implements IDeviceJob {
 
     public void failOnException(Exception exp) {
         setStatus(STATUS_FAILED);
+        setCompleteTime(new Date());
         log.error("job:"+ jobID + " has failed for exception", exp);
-        for(IJobResultHandler handler: resultHandlers){
+        for(IJobResultHandler handler: resultHandlerList){
             handler.onFailed(this);
         }
     }
 
     private void fail(ITR069MessageContext context) {
         setStatus(STATUS_FAILED);
+        setCompleteTime(new Date());
         log.info("job:" + jobID + " failed");
-        for(IJobResultHandler handler: resultHandlers){
+        for(IJobResultHandler handler: resultHandlerList){
             handler.onFailed(this);
         }
     }
 
     private void complete(ITR069MessageContext context) {
         setStatus(STATUS_COMPLETE);
+        setCompleteTime(new Date());
         log.info("job:" + jobID + " completed");
-        System.out.println("Job result:"+ symbolTable.get("test"));
-        for(IJobResultHandler handler: resultHandlers){
+        for(IJobResultHandler handler: resultHandlerList){
             handler.onSucceed(this);
         }
     }
@@ -403,7 +473,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         }
     }
 
-    private IJobRequest getCachedRequest(){
+    private IJobRequest fetchCachedRequest(){
         if(cachedRequest != null){
             log.debug("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): has cached request: " + cachedRequest.getTr069Request().toSOAPString());
             IJobRequest result = cachedRequest;

@@ -5,7 +5,9 @@ import org.slstudio.acs.tr069.job.ISystemDeviceJob;
 import org.slstudio.acs.tr069.job.IUserDeviceJob;
 import org.slstudio.acs.tr069.job.queue.JobQueue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,12 +87,61 @@ public class MemoryJobManager implements IJobManager {
 
     }
 
-    public void addUserJob(IUserDeviceJob job){
+    public synchronized void addUserJob(IUserDeviceJob job){
+
         JobQueue<IUserDeviceJob> jobQueue = userJobQueueTable.get(job.getDeviceKey());
         if(jobQueue == null){
             jobQueue = new JobQueue<IUserDeviceJob>();
             userJobQueueTable.put(job.getDeviceKey(),jobQueue);
         }
         jobQueue.push(job);
+    }
+
+    public IDeviceJob findJob(String jobID) {
+        for(JobQueue<ISystemDeviceJob> jobQueue : systemJobQueueTable.values()){
+            ISystemDeviceJob job = jobQueue.find(jobID);
+            if(job != null){
+                return job;
+            }
+        }
+        for(JobQueue<IUserDeviceJob> jobQueue : userJobQueueTable.values()){
+            IUserDeviceJob job = jobQueue.find(jobID);
+            if(job != null){
+               return job;
+            }
+        }
+        return null;
+    }
+
+    public List<ISystemDeviceJob> getAllSystemJobs() {
+        List<ISystemDeviceJob> result = new ArrayList<ISystemDeviceJob>();
+        for(JobQueue<ISystemDeviceJob> jobQueue : systemJobQueueTable.values()){
+            result.addAll(jobQueue.getAllJobs());
+        }
+        return result;
+    }
+
+    public List<IUserDeviceJob> getAllUserJobs() {
+        List<IUserDeviceJob> result = new ArrayList<IUserDeviceJob>();
+        for(JobQueue<IUserDeviceJob> jobQueue : userJobQueueTable.values()){
+            result.addAll(jobQueue.getAllJobs());
+        }
+        return result;
+    }
+
+    public List<ISystemDeviceJob> findSystemJobs(String deviceKey) {
+        JobQueue<ISystemDeviceJob> jobQueue = systemJobQueueTable.get(deviceKey);
+        if(jobQueue!=null){
+            return jobQueue.getAllJobs();
+        }
+        return new ArrayList<ISystemDeviceJob>();
+    }
+
+    public List<IUserDeviceJob> findUserJobs(String deviceKey) {
+        JobQueue<IUserDeviceJob> jobQueue = userJobQueueTable.get(deviceKey);
+        if(jobQueue!=null){
+            return jobQueue.getAllJobs();
+        }
+        return new ArrayList<IUserDeviceJob>();
     }
 }

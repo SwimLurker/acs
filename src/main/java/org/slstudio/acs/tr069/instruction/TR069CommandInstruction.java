@@ -60,6 +60,14 @@ public class TR069CommandInstruction extends InstructionBase implements IWaitRes
         return true;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public String getInstructionName() {
+        return "TR069 Command Instruction";
+    }
+
+    public String toString() {
+        return request.toSOAPString();
+    }
+
     public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException {
         return new DefaultJobRequest(request);
     }

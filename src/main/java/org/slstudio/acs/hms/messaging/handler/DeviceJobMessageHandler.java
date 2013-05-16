@@ -5,20 +5,21 @@ import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.hms.device.DeviceInfo;
 import org.slstudio.acs.hms.device.IDeviceManager;
 import org.slstudio.acs.hms.exception.MessagingException;
+import org.slstudio.acs.hms.job.MessagingJobResultHandler;
 import org.slstudio.acs.hms.messaging.bean.DeviceJobBean;
 import org.slstudio.acs.hms.messaging.bean.DeviceJobResultBean;
 import org.slstudio.acs.hms.messaging.sender.IMessageSender;
 import org.slstudio.acs.tr069.exception.ParseScriptException;
 import org.slstudio.acs.tr069.instruction.IInstruction;
-import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.job.UserDeviceJob;
 import org.slstudio.acs.tr069.job.manager.IJobManager;
 import org.slstudio.acs.tr069.job.result.DebugJobResultHandler;
-import org.slstudio.acs.tr069.job.result.IJobResultHandler;
 import org.slstudio.acs.tr069.script.IScriptParser;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -87,7 +88,11 @@ public class DeviceJobMessageHandler implements IMessageHandler{
 
         List<IInstruction> instructionList = null;
         try{
-            instructionList = scriptParser.parse(jobBean.getJobScript());
+            Map<String, Object> context = new HashMap<String, Object>();
+            context.put("jobID", jobBean.getJobID());
+            context.put("jobName", jobBean.getJobName());
+            context.put("deviceKey", jobBean.getDeviceKey());
+            instructionList = scriptParser.newInstance().parse(jobBean.getJobScript(), context);
         }catch(ParseScriptException pse){
             sendJobFailResult(jobBean, -2, "can not understanding job instruction");
             pse.printStackTrace();
@@ -97,31 +102,7 @@ public class DeviceJobMessageHandler implements IMessageHandler{
             job.getInstructionQueue().push(instruction);
         }
 
-        job.addResultHandler(new IJobResultHandler(){
-            public void onFailed(IDeviceJob job){
-                DeviceJobResultBean result = new DeviceJobResultBean();
-                result.setJobID(job.getJobID());
-                result.setJobName(job.getJobName());
-                result.setErrorCode(job.getErrorCode());
-                result.setErrorMsg(job.getErrorMsg());
-                try {
-                    jobResultSender.sendMessage(result);
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                }
-            }
-            public void onSucceed(IDeviceJob job){
-                DeviceJobResultBean result = new DeviceJobResultBean();
-                result.setJobID(job.getJobID());
-                result.setJobName(job.getJobName());
-                result.setJobResult(job.getResult());
-                try {
-                    jobResultSender.sendMessage(result);
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        job.addResultHandler(new MessagingJobResultHandler(jobResultSender));
         job.addResultHandler(new DebugJobResultHandler());
         jobManager.addUserJob(job);
         log.debug("handle job message successfully");

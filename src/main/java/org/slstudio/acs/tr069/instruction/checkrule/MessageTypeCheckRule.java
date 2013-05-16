@@ -30,4 +30,8 @@ public class MessageTypeCheckRule implements ITR069MessageCheckRule{
         }
         return request.getMessageName().equalsIgnoreCase(targetMessageType);
     }
+
+    public String toString(){
+        return "Check message type rule( targetMessgeType = " + targetMessageType +")";
+    }
 }

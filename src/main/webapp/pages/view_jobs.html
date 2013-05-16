@@ -1,0 +1,240 @@
+<div id="search_devicekey" style="padding:5px;height:auto">
+    <div style="margin-bottom:5px">
+            <label style="width:150px;">Device Key:</label>
+            <input type="text" id="sDeviceKey" />
+            <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript: searchDeviceJobs();">Search</a>
+    </div>
+</div>
+<hr style="margin-top:20px; margin-bottom: 0px">
+<div class="caption">System Job List</div>
+<table id="dg_systemjob" class="easyui-datagrid" style="height:auto;padding: 10px;" border="true">
+</table>
+<hr style="margin-top:20px; margin-bottom: 0px">
+<div class="caption">User Job List</div>
+<table id="dg_userjob" class="easyui-datagrid" style="height:auto;padding: 10px;" border="true">
+</table>
+<div id="toolbar_userjob" style="padding:5px;height:auto">
+    <div style="margin-bottom:5px">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript: removeUserJob();">Remove Job</a>
+        <input type="text" id="sUserJobID" />
+        <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript: searchUserJob();">Search</a>
+    </div>
+</div>
+<div id="toolbar_systemjob" style="padding:5px;height:auto">
+    <div style="margin-bottom:5px">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript: removeSystemJob();">Remove Job</a>
+        <input type="text" id="sSystemJobID" />
+        <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript: searchSystemJob();">Search</a>
+    </div>
+</div>
+<div id="jobDetailDlg" class="easyui-dialog" title="Job Detail Info" style="width:500px;height:600px;padding:10px 20px" closed="true" buttons="#jobDetailDlg-buttons">
+    <div class="ftitle">Job Detail Information</div>
+    <form id="fm_job_detail" method="post">
+        <div class="fitem">
+            <label style="width:150px;">Job ID:</label>
+            <input name="jobID"  style="width:240px;" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Job Name:</label>
+            <input name="jobName" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Device Key:</label>
+            <input name="deviceKey" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Instruction Count</label>
+            <input name="instructionCount" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Current Instruction</label>
+            <textarea name="currentInstruction" readonly style="width:250px" cols="30" rows="5"> </textarea>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Status:</label>
+            <input name="status" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Create Time:</label>
+            <input name="createTime" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Begin Time:</label>
+            <input name="beginTime" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Complete Time:</label>
+            <input name="completeTime" readonly>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Cached Request:</label>
+            <textarea name="cachedRequest" readonly style="width:250px" cols="30" rows="5"> </textarea>
+        </div>
+        <div class="fitem">
+            <label style="width:150px;">Symbol Table:</label>
+            <table id="pg_symboltable" class="easyui-propertygrid" style="width:300px"
+                   data-options="url:'../json/symboltable.json',showGroup:false,scrollbarSize:1"></table>
+            <textarea name="symbolTable" readonly style="width:250px" cols="30" rows="5"> </textarea>
+        </div>
+    </form>
+</div>
+<div id="jobDetailDlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-close" onclick="javascript:$('#jobDetailDlg').dialog('close')">Close</a>
+</div>
+
+<script type="text/javascript" >
+    function searchDeviceJobs(){
+        $('#dg_systemjob').datagrid('load',{
+            deviceKey:$('#sDeviceKey').val()
+        });
+        $('#dg_userjob').datagrid('load',{
+            deviceKey:$('#sDeviceKey').val()
+        });
+    }
+    function removeSystemJob(){
+        var row = $('#dg_systemjob').datagrid('getSelected');
+        if (row){
+            $.messager.confirm('Confirm','Are you sure you want to remove this job?',
+                    function(r){
+                        if (r){
+                            $.ajax({ url:'/webconsole/rest/jobs/'+ row.jobID,
+                                type:'DELETE',
+                                success: function(result){
+                                    if (result.success){
+                                        $('#dg_systemjob').datagrid('reload'); // reload the data
+                                    } else {
+                                        $.messager.show({ // show error message
+                                            title: 'Error',
+                                            msg: result.msg
+                                        });
+                                    }
+                                }});
+                        }
+                    });
+        }
+    }
+    function searchSystemJob(){
+        $('#dg_systemjob').datagrid('load',{
+            jobID:$('#sSystemJobID').val(),
+            deviceKey:$('#sDeviceKey').val()
+        });
+    }
+    function removeUserJob(){
+        var row = $('#dg_userjob').datagrid('getSelected');
+        if (row){
+            $.messager.confirm('Confirm','Are you sure you want to remove this job?',
+                    function(r){
+                        if (r){
+                            $.ajax({ url:'/webconsole/rest/jobs/'+ row.jobID,
+                                type:'DELETE',
+                                success: function(result){
+                                    if (result.success){
+                                        $('#dg_userjob').datagrid('reload'); // reload the data
+                                    } else {
+                                        $.messager.show({ // show error message
+                                            title: 'Error',
+                                            msg: result.msg
+                                        });
+                                    }
+                                }});
+                        }
+                    });
+        }
+    }
+    function searchUserJob(){
+        $('#dg_userjob').datagrid('load',{
+            jobID:$('#sUserJobID').val(),
+            deviceKey:$('#sDeviceKey').val()
+        });
+    }
+    function jobDetail(rowIndex, row){
+        $('#jobDetailDlg').dialog('open').dialog('setTitle', 'Show Job Detail Info');
+        $('#fm_job_detail').form('load', {
+            jobID: row.jobID,
+            jobName: row.jobName,
+            deviceKey: row.deviceKey,
+            instructionCount: row.instructionCount,
+            currentInstruction: JSON.stringify(row.currentInstruction),
+            status: row.status,
+            createTime: row.createTime,
+            beginTime: row.beginTime,
+            completeTime: row.completeTime,
+            cachedRequest: JSON.stringify(row.cachedRequest),
+            symbolTable: JSON.stringify(row.symbolTable)});
+    }
+    $(function(){
+        $('#dg_systemjob').datagrid({
+            singleSelect:true,
+            url:'/webconsole/rest/jobs/?jobType=system',
+            method:'GET',
+            toolbar:'#toolbar_systemjob',
+            pagination:true,
+            sortName:'jobID',
+            sortOrder:'asc',
+            idField:'jobID',
+            onDblClickRow: jobDetail,
+            columns:[[
+                {field:'jobID',title:'Job ID',width:100, sortable:true},
+                {field:'jobName',title:'Job Name',width:100, sortable:true},
+                {field:'deviceKey',title:'Device Key',width:100, sortable:true},
+                {field:'status',title:'Status',width:100, sortable:true},
+                {field:'createTime',title:'Create Time',width:200, sortable:true},
+                {field:'beginTime',title:'Begin Time',width:200, sortable:true},
+                {field:'completeTime',title:'Complete Time',width:200, sortable:true}
+            ]],
+            view: detailview,
+            detailFormatter:function(index,row){
+                return '<div id="ddvsystemjob-' + index + '" style="padding:5px 0"></div>';
+            },
+            onExpandRow: function(index,row){
+                $('#ddvsystemjob-'+index).panel({
+                    height:150,
+                    border:false,
+                    cache:false,
+                    href:'/pages/view_job_instructions.jsp?jobID='+row.jobID,
+                    onLoad:function(){
+                        $('#dg_systemjob').datagrid('fixDetailRowHeight',index);
+                    }
+                });
+                $('#dg_systemjob').datagrid('fixDetailRowHeight',index);
+            }
+        });
+        $('#dg_userjob').datagrid({
+            singleSelect:true,
+            url:'/webconsole/rest/jobs/?jobType=user',
+            method:'GET',
+            toolbar:'#toolbar_userjob',
+            pagination:true,
+            sortName:'jobID',
+            sortOrder:'asc',
+            idField:'jobID',
+            onDblClickRow: jobDetail,
+            columns:[[
+                {field:'jobID',title:'Job ID',width:100, sortable:true},
+                {field:'jobName',title:'Job Name',width:100, sortable:true},
+                {field:'deviceKey',title:'Device Key',width:100, sortable:true},
+                {field:'status',title:'Status',width:100, sortable:true},
+                {field:'createTime',title:'Create Time',width:200, sortable:true},
+                {field:'beginTime',title:'Begin Time',width:200, sortable:true},
+                {field:'completeTime',title:'Complete Time',width:200, sortable:true}
+            ]],
+            view: detailview,
+            detailFormatter:function(index,row){
+                return '<div id="ddvuserjob-' + index + '" style="padding:5px 0"></div>';
+            },
+            onExpandRow: function(index,row){
+                $('#ddvuserjob-'+index).panel({
+                    height:150,
+                    border:false,
+                    cache:false,
+                    href:'/pages/view_job_instructions.jsp?jobID='+row.jobID,
+                    onLoad:function(){
+                       $('#dg_userjob').datagrid('fixDetailRowHeight',index);
+                    }
+                });
+                $('#dg_userjob').datagrid('fixDetailRowHeight',index);
+            }
+        });
+    });
+
+</script>

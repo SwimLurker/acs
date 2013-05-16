@@ -2,6 +2,7 @@ package org.slstudio.acs.tr069.job;
 
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.JobException;
+import org.slstudio.acs.tr069.instruction.IInstruction;
 import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.job.result.IJobResultHandler;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
@@ -32,9 +33,17 @@ public interface IDeviceJob {
 
     public void setCreateTime(Date createTime);
 
+    public Date getBeginTime();
+
+    public void setBeginTime(Date beginTime);
+
     public Date getCompleteTime();
 
     public void setCompleteTime(Date completeTime);
+
+    public int getStatus();
+
+    public void setStatus(int status);
 
     public Object getResult();
 
@@ -54,7 +63,6 @@ public interface IDeviceJob {
 
     public List<IJobResultHandler> getResultHandlerList();
 
-
     public IJobRequest beginRun(ITR069MessageContext context) throws JobException;
 
     public void beginRunWithRequest(ITR069MessageContext context, TR069Message request) throws JobException;
@@ -73,4 +81,5 @@ public interface IDeviceJob {
 
     public boolean isFinished();
 
+    public List<IInstruction> getInstructions();
 }

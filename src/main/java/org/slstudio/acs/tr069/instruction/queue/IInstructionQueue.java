@@ -2,6 +2,8 @@ package org.slstudio.acs.tr069.instruction.queue;
 
 import org.slstudio.acs.tr069.instruction.IInstruction;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: chandler
@@ -11,4 +13,5 @@ import org.slstudio.acs.tr069.instruction.IInstruction;
 public interface IInstructionQueue {
     public IInstruction pop();
     public void push(IInstruction command);
+    public List<IInstruction> getAllInstructions();
 }

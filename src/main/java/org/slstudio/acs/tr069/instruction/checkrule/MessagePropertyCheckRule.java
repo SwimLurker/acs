@@ -15,20 +15,20 @@ import java.util.List;
  * Time: ÉÏÎç1:59
  */
 public class MessagePropertyCheckRule implements ITR069MessageCheckRule {
-    private String targetPropetyName = null;
+    private String targetPropertyName = null;
     private String targetPropertyValue = null;
 
     public MessagePropertyCheckRule(String targetPropetyName, String targetPropertyValue) {
-        this.targetPropetyName = targetPropetyName;
+        this.targetPropertyName = targetPropetyName;
         this.targetPropertyValue = targetPropertyValue;
     }
 
-    public String getTargetPropetyName() {
-        return targetPropetyName;
+    public String getTargetPropertyName() {
+        return targetPropertyName;
     }
 
-    public void setTargetPropetyName(String targetPropetyName) {
-        this.targetPropetyName = targetPropetyName;
+    public void setTargetPropertyName(String targetPropertyName) {
+        this.targetPropertyName = targetPropertyName;
     }
 
     public String getTargetPropertyValue() {
@@ -40,20 +40,20 @@ public class MessagePropertyCheckRule implements ITR069MessageCheckRule {
     }
 
     public boolean check(TR069Message request) {
-        if(targetPropetyName.equalsIgnoreCase("ID")){
+        if(targetPropertyName.equalsIgnoreCase("ID")){
             return targetPropertyValue.equalsIgnoreCase(request.getMessageID());
         }
         if(request instanceof InformRequest){
             InformRequest ir = (InformRequest)request;
-            if(targetPropetyName.equalsIgnoreCase("deviceID.manufacturer")){
+            if(targetPropertyName.equalsIgnoreCase("deviceID.manufacturer")){
                 return targetPropertyValue.equalsIgnoreCase(ir.getDeviceId().getManufacturer());
-            }else if(targetPropetyName.equalsIgnoreCase("deviceID.OUI")){
+            }else if(targetPropertyName.equalsIgnoreCase("deviceID.OUI")){
                 return targetPropertyValue.equalsIgnoreCase(ir.getDeviceId().getOUI());
-            }else if(targetPropetyName.equalsIgnoreCase("deviceID.productClass")){
+            }else if(targetPropertyName.equalsIgnoreCase("deviceID.productClass")){
                 return targetPropertyValue.equalsIgnoreCase(ir.getDeviceId().getProductClass());
-            }else if(targetPropetyName.equalsIgnoreCase("deviceID.serialNumber")){
+            }else if(targetPropertyName.equalsIgnoreCase("deviceID.serialNumber")){
                 return targetPropertyValue.equalsIgnoreCase(ir.getDeviceId().getSerialNumber());
-            }else if(targetPropetyName.equalsIgnoreCase("eventList.eventCode")){
+            }else if(targetPropertyName.equalsIgnoreCase("eventList.eventCode")){
                 List<EventStruct>  eventList =  ir.getEventList();
                 for(EventStruct event: eventList){
                     if(targetPropertyValue.equalsIgnoreCase(event.getEventCode())){
@@ -61,7 +61,7 @@ public class MessagePropertyCheckRule implements ITR069MessageCheckRule {
                     }
                 }
                 return false;
-            } else if(targetPropetyName.equalsIgnoreCase("eventList.commandKey")){
+            } else if(targetPropertyName.equalsIgnoreCase("eventList.commandKey")){
                 List<EventStruct>  eventList =  ir.getEventList();
                 for(EventStruct event: eventList){
                     if(targetPropertyValue.equalsIgnoreCase(event.getCommandKey())){
@@ -69,14 +69,14 @@ public class MessagePropertyCheckRule implements ITR069MessageCheckRule {
                     }
                 }
                 return false;
-            }else if(targetPropetyName.equalsIgnoreCase("retryCount")){
+            }else if(targetPropertyName.equalsIgnoreCase("retryCount")){
                 return targetPropertyValue.equalsIgnoreCase(ir.getRetryCount().toString());
-            }else if(targetPropetyName.equalsIgnoreCase("maxEnvelopes")){
+            }else if(targetPropertyName.equalsIgnoreCase("maxEnvelopes")){
                 return targetPropertyValue.equalsIgnoreCase(ir.getMaxEnvelopes().toString());
             }else{
                 List<ParameterValueStruct>  pvsList =  ir.getParameterList();
                 for(ParameterValueStruct pvs: pvsList){
-                    if(targetPropetyName.equalsIgnoreCase(pvs.getName()) && targetPropertyValue.equalsIgnoreCase(pvs.getName())) {
+                    if(targetPropertyName.equalsIgnoreCase(pvs.getName()) && targetPropertyValue.equalsIgnoreCase(pvs.getName())) {
                         return true;
                     }
                 }
@@ -84,14 +84,18 @@ public class MessagePropertyCheckRule implements ITR069MessageCheckRule {
             }
         }else if( request instanceof TransferCompleteRequest){
             TransferCompleteRequest tcr = (TransferCompleteRequest)request;
-            if(targetPropetyName.equalsIgnoreCase("commandKey")){
+            if(targetPropertyName.equalsIgnoreCase("commandKey")){
                 return targetPropertyValue.equalsIgnoreCase(tcr.getCommandKey());
-            }else if(targetPropetyName.equalsIgnoreCase("faultCode")){
+            }else if(targetPropertyName.equalsIgnoreCase("faultCode")){
                 return targetPropertyValue.equalsIgnoreCase(tcr.getFaultStruct().getFaultCode().toString());
-            }else if(targetPropetyName.equalsIgnoreCase("faultString")){
+            }else if(targetPropertyName.equalsIgnoreCase("faultString")){
                 return targetPropertyValue.equalsIgnoreCase(tcr.getFaultStruct().getFaultString());
             }
         }
         return false;
+    }
+
+    public String toString(){
+        return "Check property rule("+ targetPropertyName + " = " + targetPropertyValue +")";
     }
 }

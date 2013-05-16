@@ -30,6 +30,14 @@ public class TestInstruction implements IInstruction {
         return "c1";
     }
 
+    public String getInstructionName() {
+        return "Test Instruction";
+    }
+
+    public String toString() {
+        return someValue;
+    }
+
     public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException {
         cmdContext.getSymbolTable().put("test", someValue+"_test");
         return null;  //To change body of implemented methods use File | Settings | File Templates.

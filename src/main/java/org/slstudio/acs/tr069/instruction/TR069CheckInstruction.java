@@ -67,6 +67,19 @@ public class TR069CheckInstruction extends InstructionBase implements IWaitReque
         throw new JobFailException("Check TR069 Message Failed");
 }
 
+    public String getInstructionName() {
+        return "Check TR069 Message Instruction";
+    }
+
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        for(ITR069MessageCheckRule rule : checkRuleList){
+            result.append("Rule:").append(rule.toString()).append(",");
+        }
+        result.append("SkipCount:").append(skipCheckCount);
+        return result.toString();
+    }
+
     public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException {
         return null;
 
