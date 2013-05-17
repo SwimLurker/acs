@@ -5,6 +5,7 @@ import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.job.manager.IJobManager;
 import org.slstudio.acs.util.JSONUtil;
 import org.slstudio.acs.web.bean.InstructionBean;
+import org.slstudio.acs.web.bean.PropertyGridRowBean;
 import org.slstudio.acs.web.util.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -115,6 +116,33 @@ public class JobController {
 
         result.put("total",instructions.size());
         result.put("rows", instructions);
+        System.out.println(JSONUtil.toJsonString(result));
+        return result;
+    }
+
+    @RequestMapping(value="/{jobID}/symboltable", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> getJobSymbolTable(@PathVariable String jobID) {
+        List<PropertyGridRowBean> rows = new ArrayList<PropertyGridRowBean>();
+        if(jobID != null){
+            IDeviceJob job = jobManager.findJob(jobID);
+            if(job != null){
+                Set<String> keys = job.getSymbolTable().keySet();
+                for(String key:keys){
+                    PropertyGridRowBean row = new PropertyGridRowBean();
+                    row.setName(key);
+                    Object value = job.getSymbolTable().get(key);
+                    row.setValue(value == null?"":JSONUtil.toJsonString(value));
+                    rows.add(row);
+                }
+            }
+        }
+
+
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("total",rows.size());
+        result.put("rows", rows);
         System.out.println(JSONUtil.toJsonString(result));
         return result;
     }

@@ -1,0 +1,21 @@
+[{
+    "id":1,
+    "text":"Messaging Utilities",
+    "children":[{
+        "id":11,
+        "text":"Messaging Sender",
+        "attributes":{
+            "url":"/pages/messaging_sender.html"
+        }
+    }]
+},{
+    "id":2,
+    "text":"TR069 Client Simulator",
+    "children":[{
+        "id":21,
+        "text":"tr069 message sender",
+        "attributes":{
+            "url":"/pages/tr069message_sender.html"
+        }
+    }]
+}]

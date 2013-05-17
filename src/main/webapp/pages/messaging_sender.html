@@ -1,0 +1,109 @@
+<div class="easyui-panel" title="Messaging Sending Tool" style="width:600px; height:450px;" >
+    <div style="padding:10px 0 10px 60px">
+        <form id = "ff_messaging_sender" method="post" >
+            <table>
+                <tr>
+                    <td>Target:</td>
+                    <td><select class="easyui-combobox" name="target" id="target" data-options="onSelect:function(rec){onChangeTarget(rec);}" >
+                        <option value="syncDevices" selected="selected">Device Queue</option>
+                        <option value="deviceJob" >Job Queue</option>
+                        <option value="deviceJobResult" >Job Result Queue</option>
+                        <option value="event" >Event Queue</option></select></td>
+                </tr>
+                <tr>
+                    <td>Message Template:</td>
+                    <td><select class="easyui-combobox" id="message_template" style="width: 250px" data-options="panelHeight:'auto',onSelect:function(rec){onChangeTemplate(rec)}" >
+                        <option value="sync" selected="selected">Sync Devices Message</option>
+                        <option value="add" >Add Device(s) Message</option>
+                        <option value="delete" >Delete Device(s) Message</option>
+                        <option value="clear" >Clear Devices Message</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Message:</td>
+                    <td><textarea id="message" name="message" cols="60" rows="20"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Message:</td>
+                    <td><input type="text" id="ssss" value="Submit"></input></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Submit"></input></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="sendMessage()">Send</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
+    </div>
+</div>
+
+<script>
+    var target_template_array = new Array();
+    target_template_array["syncDevices"] = '[{"value":"sync","text":"Sync Devices Message","selected":true},{"value":"add","text":"Add Device(s) Message"},{"value":"delete","text":"Delete Device(s) Message"},{"value":"clear","text":"Clear Devices Message"}]';
+    target_template_array["deviceJob"] = '[{"value":"getpv","text":"GetParameterValues Message","selected":true},{"value":"setpv","text":"SetParameterValues Message"}]';
+    target_template_array["deviceJobResult"] = '[{"value":"getpvresult","text":"GetParameterValues Result Message","selected":true},{"value":"setpvresult","text":"SetParameterValues Result Message"}]';
+    target_template_array["event"]='';
+
+    var template_text_array = new Array();
+    template_text_array["sync"]='{"command":0,"deviceList":[{"deviceID":"0000000000","deviceKey":"FC1234567890","authUsername":"admin","authPassword":"admin"}]}';
+    template_text_array["add"]='{"command":1,"deviceList":[{"deviceID":"0000000000","deviceKey":"FC1234567890","authUsername":"admin","authPassword":"admin"}]}';
+    template_text_array["delete"]='{"command":2,"deviceList":[{"deviceKey":"FC1234567890"}]}';
+    template_text_array["clear"]='{"command":3,"deviceList":[]}';
+    template_text_array["getpv"]='{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","jobScript":"tr069 cmd getpv:{\\"parameterNames\\":[\\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\\"]}\\r\\nRET"}';
+    template_text_array["setpv"]='{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","jobScript":"SET $variable = \\"value\\"\\r\\ntr069 cmd getpv:{\\"parameterNames\\":[\\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\\"]}\\r\\nRET"}';
+    template_text_array["getpvresult"]='{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","errorCode":0,"errorMsg":null,"jobResult":{"messageID":"1_3","parameterList":[{"name":"InternetGatewayDevice.ManagementServer.PeriodicInformInterval","value":160}]}}';
+    template_text_array["setpvresult"]='{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","errorCode":0,"errorMsg":null,"jobResult":{"messageID":"1_3","parameterList":[{"name":"InternetGatewayDevice.ManagementServer.PeriodicInformInterval","value":160}]}}';
+    template_text_array["event"]="ssss4";
+
+    function sendMessage(){
+        $('#ff_messaging_sender').form('submit');
+    }
+    function clearForm(){
+        $('#target').combobox('select',"syncDevices");
+    }
+    function onChangeTarget(rec){
+        var obj = JSON.parse(target_template_array[rec.value]);
+        $('#message_template').combobox('loadData',obj);
+        onChangeTemplate(obj[0]);
+    }
+
+    function onChangeTemplate(rec){
+        $('#message').val(template_text_array[rec.value]);
+    }
+
+    $(function(){
+        $('#message').text(template_text_array['sync']);
+        $('#ff_messaging_sender').form({
+            url:"/webconsole/rest/messaging/sendmessage",
+            method: "POST",
+            onSubmit: function(){
+                if($('#message').val()== ""){
+                    alert('Please input message text');
+                    return false;
+                }
+                return true;
+            },
+            success: function(data){
+                var result = JSON.parse(data);
+                if(result.success){
+                    $.messager.show({
+                        title: 'Success',
+                        msg: 'Send Message Success'
+                    });
+                }else{
+                    $.messager.show({ // show error message
+                        title: 'Error',
+                        msg: data.msg
+                    });
+                }
+            }
+
+        });
+//        $('#message').text(template_text_array["sync"]);
+    });
+
+
+</script>

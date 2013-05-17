@@ -27,55 +27,56 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript: searchSystemJob();">Search</a>
     </div>
 </div>
-<div id="jobDetailDlg" class="easyui-dialog" title="Job Detail Info" style="width:500px;height:600px;padding:10px 20px" closed="true" buttons="#jobDetailDlg-buttons">
+<div id="jobDetailDlg" class="easyui-dialog" title="Job Detail Info" style="width:500px;height:640px;padding:10px 20px" closed="true" buttons="#jobDetailDlg-buttons">
     <div class="ftitle">Job Detail Information</div>
     <form id="fm_job_detail" method="post">
-        <div class="fitem">
-            <label style="width:150px;">Job ID:</label>
-            <input name="jobID"  style="width:240px;" readonly>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Job Name:</label>
-            <input name="jobName" readonly>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Device Key:</label>
-            <input name="deviceKey" readonly>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Instruction Count</label>
-            <input name="instructionCount" readonly>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Current Instruction</label>
-            <textarea name="currentInstruction" readonly style="width:250px" cols="30" rows="5"> </textarea>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Status:</label>
-            <input name="status" readonly>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Create Time:</label>
-            <input name="createTime" readonly>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Begin Time:</label>
-            <input name="beginTime" readonly>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Complete Time:</label>
-            <input name="completeTime" readonly>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Cached Request:</label>
-            <textarea name="cachedRequest" readonly style="width:250px" cols="30" rows="5"> </textarea>
-        </div>
-        <div class="fitem">
-            <label style="width:150px;">Symbol Table:</label>
-            <table id="pg_symboltable" class="easyui-propertygrid" style="width:300px"
-                   data-options="url:'../json/symboltable.json',showGroup:false,scrollbarSize:1"></table>
-            <textarea name="symbolTable" readonly style="width:250px" cols="30" rows="5"> </textarea>
-        </div>
+    <table style="padding: 0px; border: 0px;">
+        <tr class="fitem">
+            <td style="width:150px;">Job ID:</td>
+            <td><input name="jobID"   readonly></td>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Job Name:</td>
+            <td><input name="jobName" readonly></td>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Device Key:</td>
+            <td><input name="deviceKey" readonly></td>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Instruction Count</td>
+            <td><input name="instructionCount" readonly>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Current Instruction</td>
+            <td><textarea name="currentInstruction" readonly style="width:290px;height:80px;"> </textarea>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Status:</td>
+            <td><input name="status" readonly>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Create Time:</td>
+            <td><input name="createTime" readonly></td>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Begin Time:</td>
+            <td><input name="beginTime" readonly></td>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Complete Time:</td>
+            <td><input name="completeTime" readonly> </td>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Cached Request:</td>
+            <td><textarea name="cachedRequest" readonly style="width:290px;height:80px;"> </textarea></td>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Symbol Table:</td>
+            <td><table id="pg_symboltable" class="easyui-propertygrid" style="width:300px;"></table></td>
+        </tr>
+
+</table>
     </form>
 </div>
 <div id="jobDetailDlg-buttons">
@@ -159,8 +160,15 @@
             createTime: row.createTime,
             beginTime: row.beginTime,
             completeTime: row.completeTime,
-            cachedRequest: JSON.stringify(row.cachedRequest),
-            symbolTable: JSON.stringify(row.symbolTable)});
+            cachedRequest: JSON.stringify(row.cachedRequest)});
+        $('#pg_symboltable').propertygrid('loadData',{total:0,rows:[]});
+        for(var item in row.symbolTable){
+            var newrow = {
+                name:item,
+                value:row.symbolTable[item]
+            };
+            $('#pg_symboltable').propertygrid('appendRow',newrow);
+        }
     }
     $(function(){
         $('#dg_systemjob').datagrid({

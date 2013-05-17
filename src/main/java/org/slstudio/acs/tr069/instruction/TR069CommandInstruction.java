@@ -33,6 +33,12 @@ public class TR069CommandInstruction extends InstructionBase implements IWaitRes
 
     public boolean handleResponse(InstructionContext cmdContext, TR069Message response) throws InstructionFailException, JobFailException {
         cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + getInstructionID(), response);
+        if(response == null){
+            cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_RETURNVALUE, null);
+            cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_ERRORCODE, DeviceJobConstants.ERRORCODE_MESSAGECHECKFAILED);
+            cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_ERRORMSG,  "Message response is null");
+            throw new JobFailException("Handle TR069 Response error, null message");
+        }
         if(response instanceof FaultResponse){
             FaultResponse fault = (FaultResponse)response;
             cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_RETURNVALUE, fault);

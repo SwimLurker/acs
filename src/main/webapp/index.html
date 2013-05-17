@@ -104,6 +104,12 @@
                 opentab(node.text, node.attributes.url);  // alert node text property when clicked
             }
 		});
+        $('#menu2').tree({
+            url:'./json/menu2_tree.json',
+            onClick: function(node){
+                opentab(node.text, node.attributes.url);  // alert node text property when clicked
+            }
+        });
 		$('#portal').portal({
 			border:false,
 			fit:true

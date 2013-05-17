@@ -9,6 +9,7 @@ import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -82,4 +83,6 @@ public interface IDeviceJob {
     public boolean isFinished();
 
     public List<IInstruction> getInstructions();
+
+    public Map<String, Object> getSymbolTable();
 }

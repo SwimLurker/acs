@@ -33,9 +33,12 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
         //find related job, first search system job then user job
         IDeviceJob currentJob = findJob(deviceKey, jobID);
         if(currentJob == null){
-            // no job is running or can not find job for some reason, then just return null
-            log.debug("can not find job:" + jobID + ", for device:" + deviceKey + " when handle response:" + responseID);
-            return null;
+            // no job is running or can not find job for some reason, then fetch a running job
+            currentJob = findRunningJob(deviceKey);
+            if(currentJob == null) {
+                log.debug("can not find job:" + jobID + ", for device:" + deviceKey + " when handle response:" + responseID);
+                return null;
+            }
         }
         if(currentJob.isRunning()){
              request = handleRunningJob(currentJob, context, response, responseID);
@@ -49,6 +52,32 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
         }
         return formatRequest(context, response, request);
     }
+
+    //first find running job, the priority is:
+    // 1. running system job
+    // 2. running user job
+    private IDeviceJob findRunningJob(String deviceKey) {
+        if(deviceKey == null){
+            return null;
+        }
+        IDeviceJob currentSystemJob = getJobManager().fetchSystemJob(deviceKey);
+        IDeviceJob currentUserJob = getJobManager().fetchUserJob(deviceKey);
+        if(currentSystemJob == null || currentSystemJob.isReady()){
+            if(currentUserJob!=null && currentUserJob.isRunning()){
+                //no system job or system is not running
+                //current job is running
+                return currentUserJob;
+            }else{
+                //no system job or system is not running
+                // no user job or user job is not running
+                return null;
+            }
+        }else{
+            //system job is running, no matter user job status
+            return currentSystemJob;
+        }
+    }
+
 
     private String getJobIDByResponseID(String responseID) {
         if(responseID == null){
