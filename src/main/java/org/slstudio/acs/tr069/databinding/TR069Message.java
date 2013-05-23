@@ -74,11 +74,6 @@ public abstract class TR069Message {
         return result.toString();
     }
 
-    @JsonIgnore
-    public abstract String getMessageName();
-
-    protected  String toTR069SOAPString(){return null;}
-
     public static void populateHeaderValues(TR069Message message, SOAPHeader header){
         if (header != null) {
             Iterator idIt = header.getChildrenWithName(new QName(TR069Constants.TR069_NAMESPACE, TR069Constants.TR069_SOAP_HEADER_ID));
@@ -99,5 +94,11 @@ public abstract class TR069Message {
             }
         }
     }
+
+    @JsonIgnore
+    public abstract String getMessageName();
+
+    protected  abstract String toTR069SOAPString();
+
 
 }

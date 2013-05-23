@@ -1,8 +1,7 @@
 package org.slstudio.acs.tr069.instruction;
 
-import org.codehaus.jackson.type.TypeReference;
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.databinding.request.*;
+import org.slstudio.acs.tr069.databinding.TR069MessageFactory;
 import org.slstudio.acs.tr069.databinding.response.FaultResponse;
 import org.slstudio.acs.tr069.instruction.context.InstructionContext;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
@@ -130,37 +129,7 @@ public class TR069CommandInstruction extends InstructionBase implements IWaitTR0
     }
 
     private TR069Message getTR069Message(String instructionText) throws IOException {
-        TR069Message result = null;
-        String[] s1 = instructionText.split(":" , 2);
-
-        TypeReference tr = null;
-        if(s1[0].trim().equalsIgnoreCase("getpv")){
-            tr = new TypeReference<GetParameterValuesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("setpv")){
-            tr = new TypeReference<SetParameterValuesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("getpn")){
-            tr = new TypeReference<GetParameterNamesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("getpa")){
-            tr = new TypeReference<GetParameterAttributesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("setpa")){
-            tr = new TypeReference<SetParameterAttributesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("addobj")){
-            tr = new TypeReference<AddObjectRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("deleteobj")){
-            tr = new TypeReference<DeleteObjectRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("download")){
-            tr = new TypeReference<DownloadRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("upload")){
-            tr = new TypeReference<UploadRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("reboot")){
-            tr = new TypeReference<RebootRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("factoryreset")){
-            tr = new TypeReference<FactoryResetRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("getmethod")){
-            tr = new TypeReference<GetRPCMethodsRequest>(){};
-        } else if(s1[0].trim().equalsIgnoreCase("scheduleinform")){
-            tr = new TypeReference<ScheduleInformRequest>(){};
-        }
-        return (TR069Message)JSONUtil.fromJsonString(s1[1], tr);
+        String[] s = instructionText.split(":" , 2);
+        return TR069MessageFactory.fromJSONString(s[1], s[0]);
     }
 }
