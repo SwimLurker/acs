@@ -1,21 +1,12 @@
 package org.slstudio.acs.tr069.script;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.type.TypeReference;
-import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.databinding.request.*;
 import org.slstudio.acs.tr069.exception.ParseScriptException;
 import org.slstudio.acs.tr069.instruction.*;
 import org.slstudio.acs.tr069.instruction.checkrule.ITR069MessageCheckRule;
 import org.slstudio.acs.tr069.instruction.checkrule.TR069MessageCheckRuleFactory;
 import org.slstudio.acs.tr069.instruction.extension.IInstructionExtension;
 import org.slstudio.acs.tr069.instruction.extension.InstructionExtensionFactory;
-import org.slstudio.acs.tr069.job.DeviceJobConstants;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,13 +19,6 @@ import java.util.Map;
  * Time: ÉÏÎç3:31
  */
 public class SimpleScriptParser implements IScriptParser {
-
-    public static final String INSTRUCTION_TYPE_RETURN = "RET";
-    public static final String INSTRUCTION_TYPE_ASSIGN = "SET";
-    public static final String INSTRUCTION_TYPE_TR069 = "TR069";
-    public static final String INSTRUCTION_TYPE_EXEC = "EXEC";
-    public static final String INSTRUCTION_SUBTYPE_TR069_CMD = "CMD";
-    public static final String INSTRUCTION_SUBTYPE_TR069_CHECK = "CHECK";
 
     private int currentInstructionID = 0;
     private String jobID = null;
@@ -89,7 +73,7 @@ public class SimpleScriptParser implements IScriptParser {
         if(r.length>=2){
             args = r[1].trim();
         }
-        if(INSTRUCTION_TYPE_RETURN.equalsIgnoreCase(type) || INSTRUCTION_TYPE_ASSIGN.equalsIgnoreCase(type)){
+        if(InstructionConstants.INSTRUCTION_TYPE_RETURN.equalsIgnoreCase(type) || InstructionConstants.INSTRUCTION_TYPE_ASSIGN.equalsIgnoreCase(type)){
             return constructComplexInstructions(type, args);
         }else{
             List<IInstruction> result = new ArrayList<IInstruction>();
@@ -99,9 +83,9 @@ public class SimpleScriptParser implements IScriptParser {
     }
 
     private List<IInstruction> constructComplexInstructions(String type, String args) throws ParseScriptException{
-        if(INSTRUCTION_TYPE_RETURN.equalsIgnoreCase(type)){
+        if(InstructionConstants.INSTRUCTION_TYPE_RETURN.equalsIgnoreCase(type)){
             return constructReturnInstructions(args);
-        }else if(INSTRUCTION_TYPE_ASSIGN.equalsIgnoreCase(type)){
+        }else if(InstructionConstants.INSTRUCTION_TYPE_ASSIGN.equalsIgnoreCase(type)){
             return constructAssignInstructions(args);
         }else{
             throw new ParseScriptException("Unknown Instruction");
@@ -109,9 +93,9 @@ public class SimpleScriptParser implements IScriptParser {
     }
 
     private IInstruction constructSingleInstruction(String type, String args) throws ParseScriptException{
-        if(INSTRUCTION_TYPE_TR069.equalsIgnoreCase(type)){
+        if(InstructionConstants.INSTRUCTION_TYPE_TR069.equalsIgnoreCase(type)){
             return constructTR069Instruction(args);
-        }else if(INSTRUCTION_TYPE_EXEC.equalsIgnoreCase(type)){
+        }else if(InstructionConstants.INSTRUCTION_TYPE_EXEC.equalsIgnoreCase(type)){
             return constructExecuteInstruction(args);
         }else{
             throw new ParseScriptException("Unknown Instruction");
@@ -124,15 +108,12 @@ public class SimpleScriptParser implements IScriptParser {
         if(valueText == null){
             result.add(new ReturnInstruction(Integer.toString(currentInstructionID), valueText));
             currentInstructionID++;
-        }else if(valueText.startsWith("(") && valueText.endsWith(")")){
+        }else if(valueText.startsWith(InstructionConstants.SYMBOLNAME_SUBINSTRUCTION_PREFIX) && valueText.endsWith(InstructionConstants.SYMBOLNAME_SUBINSTRUCTION_POSTFIX)){
             String r[] = valueText.split(" ", 2);
             String type = r[0];
             String args = r[1].trim();
             result.add(constructSingleInstruction(type, args));
-            result.add(new ReturnInstruction(Integer.toString(currentInstructionID),DeviceJobConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + Integer.toString(currentInstructionID-1)));
-            currentInstructionID++;
-        }else if(valueText.startsWith(DeviceJobConstants.SYMBOLNAME_VARIABLE_PREFIX)){
-            result.add(new ReturnInstruction(Integer.toString(currentInstructionID), valueText));
+            result.add(new ReturnInstruction(Integer.toString(currentInstructionID), constructInstructionResultReference(currentInstructionID-1)));
             currentInstructionID++;
         }else{
             result.add(new ReturnInstruction(Integer.toString(currentInstructionID), valueText));
@@ -141,24 +122,29 @@ public class SimpleScriptParser implements IScriptParser {
         return result;
     }
 
+    private String constructInstructionResultReference(int instructionID) {
+        return InstructionConstants.SYMBOLNAME_VARIABLEREF_PREFIX +
+                InstructionConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX +
+                Integer.toString(instructionID) +
+                InstructionConstants.SYMBOLNAME_VARIABLEREF_POSTFIX;
+    }
+
     private List<IInstruction> constructAssignInstructions(String instructionText) throws ParseScriptException{
         // retrive assign left value(variable, start from $) and right value(can be constant--json format or variable, or another instruction which enclosed by "()": such as $A = ["some text"] or $A = $B or $A = (TR069 setpv ...)
         List<IInstruction> result = new ArrayList<IInstruction>();
         String[] s = instructionText.split("=", 0);
         String leftText = s[0].trim();
         String rightText = s[1].trim();
-        if(!leftText.startsWith(DeviceJobConstants.SYMBOLNAME_VARIABLE_PREFIX)){
+        if(!leftText.startsWith(InstructionConstants.SYMBOLNAME_VARIABLE_PREFIX)){
             throw new ParseScriptException("assign instruction left value should be variable which begin with '$'");
         }
-        if(rightText.startsWith("(") && rightText.endsWith(")")){
-            String r[] = instructionText.split(" ", 2);
+        if(rightText.startsWith(InstructionConstants.SYMBOLNAME_SUBINSTRUCTION_PREFIX) && rightText.endsWith(InstructionConstants.SYMBOLNAME_SUBINSTRUCTION_POSTFIX)){
+            String subInstructionText = rightText.substring(1,rightText.length()-1);
+            String r[] = subInstructionText.split(" ", 2);
             String type = r[0];
             String args = r[1].trim();
             result.add(constructSingleInstruction(type, args));
-            result.add(new AssignInstruction(Integer.toString(currentInstructionID),leftText, DeviceJobConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + Integer.toString(currentInstructionID-1)));
-            currentInstructionID++;
-        }else if(rightText.startsWith(DeviceJobConstants.SYMBOLNAME_VARIABLE_PREFIX)){
-            result.add(new AssignInstruction(Integer.toString(currentInstructionID), leftText, rightText));
+            result.add(new AssignInstruction(Integer.toString(currentInstructionID),leftText, InstructionConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + Integer.toString(currentInstructionID-1)));
             currentInstructionID++;
         }else{
             result.add(new AssignInstruction(Integer.toString(currentInstructionID), leftText, rightText));
@@ -171,9 +157,9 @@ public class SimpleScriptParser implements IScriptParser {
         String r[] = instructionText.split(" ", 2);
         String type = r[0];
         String args = r[1].trim();
-        if(INSTRUCTION_SUBTYPE_TR069_CMD.equalsIgnoreCase(type)){
+        if(InstructionConstants.INSTRUCTION_SUBTYPE_TR069_CMD.equalsIgnoreCase(type)){
             return constructTR069CommandInstruction(args);
-        }else if(INSTRUCTION_SUBTYPE_TR069_CHECK.equalsIgnoreCase(type)){
+        }else if(InstructionConstants.INSTRUCTION_SUBTYPE_TR069_CHECK.equalsIgnoreCase(type)){
             return constructTR069CheckInstruction(args);
         }else{
             throw new ParseScriptException("Unknown tr069 Instruction");
@@ -190,55 +176,10 @@ public class SimpleScriptParser implements IScriptParser {
     }
 
     private IInstruction constructTR069CommandInstruction(String instructionText) throws ParseScriptException{
-        TR069Message request = getTR069Message(instructionText);
-        request.setMessageID(jobID+"_"+Integer.toString(currentInstructionID));
-        TR069CommandInstruction  commandInstruction = new TR069CommandInstruction(Integer.toString(currentInstructionID), request);
+        String messageID = jobID+"_"+Integer.toString(currentInstructionID);
+        TR069CommandInstruction  commandInstruction = new TR069CommandInstruction(Integer.toString(currentInstructionID), messageID, instructionText);
         currentInstructionID++;
         return commandInstruction;
-    }
-
-    private TR069Message getTR069Message(String instructionText) throws ParseScriptException{
-        TR069Message result = null;
-        String[] s1 = instructionText.split(":" , 2);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibility(JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
-        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, false);
-        TypeReference tr = null;
-        if(s1[0].trim().equalsIgnoreCase("getpv")){
-            tr = new TypeReference<GetParameterValuesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("setpv")){
-            tr = new TypeReference<SetParameterValuesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("getpn")){
-            tr = new TypeReference<GetParameterNamesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("getpa")){
-            tr = new TypeReference<GetParameterAttributesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("setpa")){
-            tr = new TypeReference<SetParameterAttributesRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("addobj")){
-            tr = new TypeReference<AddObjectRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("deleteobj")){
-            tr = new TypeReference<DeleteObjectRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("download")){
-            tr = new TypeReference<DownloadRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("upload")){
-            tr = new TypeReference<UploadRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("reboot")){
-            tr = new TypeReference<RebootRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("factoryreset")){
-            tr = new TypeReference<FactoryResetRequest>(){};
-        }else if(s1[0].trim().equalsIgnoreCase("getmethod")){
-            tr = new TypeReference<GetRPCMethodsRequest>(){};
-        } else if(s1[0].trim().equalsIgnoreCase("scheduleinform")){
-            tr = new TypeReference<ScheduleInformRequest>(){};
-        }
-        try {
-            result = mapper.readValue(s1[1].trim(), tr);
-        } catch (IOException exp) {
-            exp.printStackTrace();
-            throw new ParseScriptException("parse tr069 command instruction failed", exp);
-        }
-        return result;
     }
 
     private IInstruction constructExecuteInstruction(String instructionText) throws ParseScriptException{
@@ -256,7 +197,7 @@ public class SimpleScriptParser implements IScriptParser {
 
     public static void main(String[] args) throws ParseScriptException {
         StringBuilder text = new StringBuilder();
-        text.append("SET $a = \"bbb\"").append("\r\n").append("SET $c = $a").append("\r\n").
+        text.append("SET $a = \"bbb\"").append("\r\n").append("SET $c = {$a}").append("\r\n").
                 append("tr069 cmd getpv:{\"messageID\":\"1_1235\",\"parameterNames\":[\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\"]}").append("\r\n").append("RET");
         SimpleScriptParser parser  = new SimpleScriptParser();
         Map<String, Object> map = new HashMap<String, Object>();

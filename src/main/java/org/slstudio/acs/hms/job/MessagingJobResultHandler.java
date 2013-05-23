@@ -4,7 +4,7 @@ import org.slstudio.acs.hms.exception.MessagingException;
 import org.slstudio.acs.hms.messaging.bean.DeviceJobResultBean;
 import org.slstudio.acs.hms.messaging.sender.IMessageSender;
 import org.slstudio.acs.tr069.job.IDeviceJob;
-import org.slstudio.acs.tr069.job.result.IJobResultHandler;
+import org.slstudio.acs.tr069.job.resulthandler.IJobResultHandler;
 
 /**
  * Created with IntelliJ IDEA.
@@ -47,7 +47,7 @@ public class MessagingJobResultHandler implements IJobResultHandler {
         result.setJobResult(job.getResult());
         try {
             sender.sendMessage(result);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

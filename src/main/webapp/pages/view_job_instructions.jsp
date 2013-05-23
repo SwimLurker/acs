@@ -18,7 +18,7 @@
             columns:[[
                 {field:'instructionID',title:'ID',width:100},
                 {field:'instructionName',title:'Name',width:200},
-                {field:'content',title:'Content',width:600,formatter: function(value,row,index){return '<textarea cols=\'80\' rows=\'1\' readonly>'+value+'</textarea>' } }
+                {field:'content',title:'Content',width:600,formatter: function(value,row,index){return '<textarea cols=\'80\' rows=\'2\' readonly>'+value+'</textarea>' } }
             ]]
         });
     });

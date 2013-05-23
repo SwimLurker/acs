@@ -68,7 +68,7 @@ public class DebugACSServlet extends HttpServlet {
         StringBuilder result = new StringBuilder();
         result.append("<html><body><table width=\"800\" border=\"0\">");
         result.append(getRequestForm(req));
-        result.append("<tr valign=\"top\"><td>Response:</td><td><textarea name=\"result\" rows=\"20\" cols=\"80\" >");
+        result.append("<tr valign=\"top\"><td>Response:</td><td><textarea name=\"resulthandler\" rows=\"20\" cols=\"80\" >");
         result.append(responseOS.toString());
         result.append("</textarea></td></tr>");
         result.append("</table></body></html>");

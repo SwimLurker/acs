@@ -4,6 +4,7 @@ import org.apache.axis2.databinding.types.UnsignedInt;
 import org.apache.axis2.databinding.utils.ConverterUtil;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
+import org.slstudio.acs.util.JSONUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -125,5 +126,19 @@ public class DownloadRequest extends TR069Message {
         result.append("</").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");
         return result.toString();
     }
+
+    public static void main(String[] args) {
+        DownloadRequest dr = new DownloadRequest();
+        dr.setURL("http://localhost/fileupload/firmware.bin");
+        dr.setUsername("testuser");
+        dr.setPassword("testpass");
+        dr.setFileType("1 Firmware Upgrade Image");
+        dr.setDelaySeconds(new UnsignedInt(0));
+        dr.setFileSize(new UnsignedInt(1024));
+        dr.setTargetFileName("firmware.bin");
+        System.out.println(JSONUtil.toJsonString(dr));
+        System.out.println(dr.toSOAPString());
+    }
+
 
 }

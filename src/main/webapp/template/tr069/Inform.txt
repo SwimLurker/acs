@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:cwmp="urn:dslforum-org:cwmp-1-0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<SOAP-ENV:Header>
+    		<cwmp:ID SOAP-ENV:mustUnderstand='1'>9999</cwmp:ID>
+    </SOAP-ENV:Header>
+    <SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+		<cwmp:Inform>
+			<DeviceId>
+				<Manufacturer>FishCore</Manufacturer>
+				<OUI>00A00D</OUI>
+				<ProductClass>FishCore IGD Device</ProductClass>
+				<SerialNumber>FC1234567890</SerialNumber>
+			</DeviceId>
+			<Event xsi:type="SOAP-ENC:Array" SOAP-ENC:arrayType="cwmp:EventStruct[1]">
+				<EventStruct>
+					<EventCode>0 BOOTSTRAP</EventCode>
+					<CommandKey></CommandKey>
+				</EventStruct>
+			</Event>
+			<MaxEnvelopes>1</MaxEnvelopes>
+			<CurrentTime>2012-08-15T01:43:47</CurrentTime>
+			<RetryCount>0</RetryCount>
+			<ParameterList xsi:type="SOAP-ENC:Array" SOAP-ENC:arrayType="cwmp:ParameterValueStruct[6]">
+				<ParameterValueStruct>
+					<Name>InternetGatewayDevice.DeviceSummary</Name>
+					<Value xsi:type="xsd:string">InternetGatewayDevice:1.1[](Baseline:1, UDPConnReq:1, Time:1, EthernetLAN:1, USBLAN:1, WiFiLAN:1, ADSLWAN:1, IPPing:1)</Value>
+				</ParameterValueStruct>
+				<ParameterValueStruct>
+					<Name>InternetGatewayDevice.DeviceInfo.HardwareVersion</Name>
+					<Value xsi:type="xsd:string">1.0</Value>
+				</ParameterValueStruct>
+				<ParameterValueStruct>
+					<Name>InternetGatewayDevice.DeviceInfo.SoftwareVersion</Name>
+					<Value xsi:type="xsd:string">1.0.0</Value>
+				</ParameterValueStruct>
+				<ParameterValueStruct>
+					<Name>InternetGatewayDevice.DeviceInfo.ProvisioningCode</Name>
+					<Value xsi:type="xsd:string">code</Value>
+				</ParameterValueStruct>
+				<ParameterValueStruct>
+					<Name>InternetGatewayDevice.ManagementServer.ParameterKey</Name>
+					<Value xsi:type="xsd:string"></Value>
+				</ParameterValueStruct>
+				<ParameterValueStruct>
+					<Name>InternetGatewayDevice.ManagementServer.ConnectionRequestURL</Name>
+					<Value xsi:type="xsd:string">http://192.168.1.115:9892/acscall</Value>
+				</ParameterValueStruct>
+			</ParameterList>
+		</cwmp:Inform>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

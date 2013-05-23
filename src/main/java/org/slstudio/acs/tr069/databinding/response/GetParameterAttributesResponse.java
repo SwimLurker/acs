@@ -41,6 +41,7 @@ public class GetParameterAttributesResponse extends TR069Message {
         result.append("<").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");
         result.append("<ParameterList xsi:type=\"SOAP-ENC:Array\" SOAP-ENC:arrayType=\"").append(TR069Constants.NAMESPACE_CWMP).append(":ParameterAttributeStruct[").append(parameterList.size()).append("]\">");
         for(ParameterAttributeStruct pas: parameterList) {
+            result.append("<ParameterAttributeStruct>");
             result.append("<Name>").append(pas.getName()==null?"":pas.getName()).append("</Name>");
             result.append("<Notification>").append(ConverterUtil.convertToString(pas.getNotification())).append("</Notification>");
             result.append("<AccessList xsi:type=\"SOAP-ENC:Array\" SOAP-ENC:arrayType=\"xsd:string[").append(pas.getAccessList().size()).append("]\">");
@@ -48,6 +49,7 @@ public class GetParameterAttributesResponse extends TR069Message {
                 result.append("<string>").append(access==null?"":access).append("</string>");
             }
             result.append("</AccessList>");
+            result.append("</ParameterAttributeStruct>");
         }
         result.append("</ParameterList>");
         result.append("</").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");

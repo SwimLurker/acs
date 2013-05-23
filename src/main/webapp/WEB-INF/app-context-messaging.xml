@@ -140,7 +140,7 @@
 
 
     <!-- message receiver used for test message sender -->
-    <!-- command result message receiver -->
+    <!-- command resulthandler message receiver -->
     <bean name="deviceJobResultHandlerList" class="java.util.ArrayList">
         <constructor-arg>
             <list>

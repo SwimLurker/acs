@@ -1,4 +1,4 @@
-package org.slstudio.acs.tr069.job.result;
+package org.slstudio.acs.tr069.job.resulthandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,11 +17,11 @@ public class DebugJobResultHandler implements IJobResultHandler {
         Object result = job.getResult();
         int errorCode = job.getErrorCode();
         String errorMsg = job.getErrorMsg();
-        log.debug("Job(" + job.getJobID() +") for Device(" + job.getDeviceKey() + ") failed with errorCode(" + errorCode +"),errorMsg(" + errorMsg +"), result:" + result);
+        log.debug("Job(" + job.getJobID() +") for Device(" + job.getDeviceKey() + ") failed with errorCode(" + errorCode +"),errorMsg(" + errorMsg +"), resulthandler:" + result);
     }
 
     public void onSucceed(IDeviceJob job) {
         Object result = job.getResult();
-        log.debug("Job(" + job.getJobID() +") for Device(" + job.getDeviceKey() + ") completed with result:" + result);
+        log.debug("Job(" + job.getJobID() +") for Device(" + job.getDeviceKey() + ") completed with resulthandler:" + result);
     }
 }

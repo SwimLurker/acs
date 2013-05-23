@@ -1,0 +1,1 @@
+{"command":0,"deviceList":[{"deviceID":"0000000000","deviceKey":"FC1234567890","authUsername":"admin","authPassword":"admin"}]}

@@ -1,0 +1,1 @@
+{"jobID":"1009","jobName":"upload job","deviceKey":"FC1234567890","jobScript":"tr069 cmd upload:{\"fileType\":\"1 Vendor Configuration File\",\"url\":\"http://localhost/fileupload/\",\"username\":\"testuser\",\"password\":\"testpass\",\"delaySeconds\":0}\r\nRET"}

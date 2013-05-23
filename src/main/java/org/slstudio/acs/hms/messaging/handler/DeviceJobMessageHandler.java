@@ -13,7 +13,7 @@ import org.slstudio.acs.tr069.exception.ParseScriptException;
 import org.slstudio.acs.tr069.instruction.IInstruction;
 import org.slstudio.acs.tr069.job.UserDeviceJob;
 import org.slstudio.acs.tr069.job.manager.IJobManager;
-import org.slstudio.acs.tr069.job.result.DebugJobResultHandler;
+import org.slstudio.acs.tr069.job.resulthandler.DebugJobResultHandler;
 import org.slstudio.acs.tr069.script.IScriptParser;
 
 import java.util.Date;

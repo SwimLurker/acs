@@ -1,0 +1,1 @@
+{"jobID":"1008","jobName":"download job","deviceKey":"FC1234567890","jobScript":"tr069 cmd download:{\"fileType\":\"1 Firmware Upgrade Image\",\"username\":\"testuser\",\"password\":\"testpass\",\"fileSize\":1024,\"targetFileName\":\"firmware.bin\",\"delaySeconds\":0,\"successURL\":null,\"failureURL\":null,\"url\":\"http://localhost/filedownload/firmware.bin\"}\r\nRET"}

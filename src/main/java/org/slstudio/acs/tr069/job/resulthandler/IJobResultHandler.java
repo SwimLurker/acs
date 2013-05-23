@@ -1,4 +1,4 @@
-package org.slstudio.acs.tr069.job.result;
+package org.slstudio.acs.tr069.job.resulthandler;
 
 import org.slstudio.acs.tr069.job.IDeviceJob;
 

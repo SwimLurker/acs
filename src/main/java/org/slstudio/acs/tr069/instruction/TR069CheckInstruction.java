@@ -6,7 +6,6 @@ import org.slstudio.acs.tr069.instruction.context.InstructionContext;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
 import org.slstudio.acs.tr069.instruction.exception.JobFailException;
 import org.slstudio.acs.tr069.job.DeviceJobConstants;
-import org.slstudio.acs.tr069.job.request.IJobRequest;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Date: 13-5-14
  * Time: ÉÏÎç3:41
  */
-public class TR069CheckInstruction extends InstructionBase implements IWaitRequestInstruction{
+public class TR069CheckInstruction extends InstructionBase implements IWaitTR069RequestInstruction {
     private List<ITR069MessageCheckRule> checkRuleList = null;
     private int skipCheckCount = 0;
 
@@ -50,7 +49,7 @@ public class TR069CheckInstruction extends InstructionBase implements IWaitReque
         }
         if(passed){
             //deal and instruction execute succeed
-            cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + getInstructionID(), passed);
+            cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + getInstructionID(), "true");
             return true;
         }
 
@@ -61,9 +60,9 @@ public class TR069CheckInstruction extends InstructionBase implements IWaitReque
         }
 
         //deal but instruction execute failed , throw exception to make job failed
-        cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_RETURNVALUE, false);
-        cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_ERRORCODE, DeviceJobConstants.ERRORCODE_MESSAGECHECKFAILED);
-        cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_ERRORMSG, "TR069 Message check failed");
+        cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_RETURNVALUE, "false");
+        cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_ERRORCODE, DeviceJobConstants.ERRORCODE_MESSAGECHECKFAILED);
+        cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_ERRORMSG, "TR069 Message check failed");
         throw new JobFailException("Check TR069 Message Failed");
 }
 
@@ -80,9 +79,11 @@ public class TR069CheckInstruction extends InstructionBase implements IWaitReque
         return result.toString();
     }
 
-    public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException {
-        return null;
+    public void execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException {
+    }
 
+    public TR069Message getTR069Message() {
+        return null;
     }
 }
 

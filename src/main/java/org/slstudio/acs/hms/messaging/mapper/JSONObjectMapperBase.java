@@ -46,8 +46,8 @@ public abstract class JSONObjectMapperBase<T> implements IObjectMapper {
         try {
             jsonString = mapper.writeValueAsString(obj);
             log.debug("convert json object type:" + obj.getClass().getName() + " to string:" + jsonString);
-        } catch (IOException e) {
-            throw new MessagingException("convert json object to string error");
+        } catch (IOException exp) {
+            throw new MessagingException("convert json object to string error", exp);
         }
         return jsonString;
     }

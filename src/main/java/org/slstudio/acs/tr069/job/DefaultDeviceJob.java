@@ -15,8 +15,7 @@ import org.slstudio.acs.tr069.instruction.exception.JobCompleteException;
 import org.slstudio.acs.tr069.instruction.exception.JobFailException;
 import org.slstudio.acs.tr069.instruction.queue.DefaultInstructionQueue;
 import org.slstudio.acs.tr069.instruction.queue.IInstructionQueue;
-import org.slstudio.acs.tr069.job.request.IJobRequest;
-import org.slstudio.acs.tr069.job.result.IJobResultHandler;
+import org.slstudio.acs.tr069.job.resulthandler.IJobResultHandler;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.util.CustomDateDeserializer;
 import org.slstudio.acs.util.CustomDateSerializer;
@@ -59,7 +58,7 @@ public class DefaultDeviceJob implements IDeviceJob {
     private IInstructionQueue instructionQueue = new DefaultInstructionQueue();
     private IInstruction currentInstruction = null;
     private Map<String, Object> symbolTable = new HashMap<String, Object>();
-    private IJobRequest cachedRequest = null;
+    private TR069Message cachedRequest = null;
 
 
     public DefaultDeviceJob() {
@@ -160,15 +159,15 @@ public class DefaultDeviceJob implements IDeviceJob {
     }
 
     public Object getResult(){
-        return symbolTable.get(DeviceJobConstants.SYMBOLNAME_RETURNVALUE);
+        return symbolTable.get(InstructionConstants.SYMBOLNAME_RETURNVALUE);
     }
 
     public void setResult(Object result){
-        symbolTable.put(DeviceJobConstants.SYMBOLNAME_RETURNVALUE, result);
+        symbolTable.put(InstructionConstants.SYMBOLNAME_RETURNVALUE, result);
     }
 
     public int getErrorCode(){
-        Object result = symbolTable.get(DeviceJobConstants.SYMBOLNAME_ERRORCODE);
+        Object result = symbolTable.get(InstructionConstants.SYMBOLNAME_ERRORCODE);
         if(result == null){
             return DeviceJobConstants.ERRORCODE_NOERROR;
         }else{
@@ -177,15 +176,15 @@ public class DefaultDeviceJob implements IDeviceJob {
     }
 
     public void setErrorCode(int errorCode){
-        symbolTable.put(DeviceJobConstants.SYMBOLNAME_ERRORCODE, errorCode);
+        symbolTable.put(InstructionConstants.SYMBOLNAME_ERRORCODE, errorCode);
     }
 
     public String getErrorMsg(){
-        return (String)symbolTable.get(DeviceJobConstants.SYMBOLNAME_ERRORMSG);
+        return (String)symbolTable.get(InstructionConstants.SYMBOLNAME_ERRORMSG);
     }
 
     public void setErrorMsg(String errorMsg){
-        symbolTable.put(DeviceJobConstants.SYMBOLNAME_ERRORMSG, errorMsg);
+        symbolTable.put(InstructionConstants.SYMBOLNAME_ERRORMSG, errorMsg);
     }
 
     @JsonIgnore
@@ -205,7 +204,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         this.symbolTable = symbolTable;
     }
 
-    public IJobRequest getCachedRequest(){
+    public TR069Message getCachedRequest(){
         return cachedRequest;
     }
 
@@ -224,7 +223,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         return status == STATUS_COMPLETE || status == STATUS_FAILED;
     }
 
-    public IJobRequest beginRun(ITR069MessageContext context) throws JobException{
+    public TR069Message beginRun(ITR069MessageContext context) throws JobException{
         //job can not be finished
         checkJobNotFinished();
         //job can not be running
@@ -236,7 +235,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         }
 
         //let job continue execute instruction
-        return executeTillBlockingOrNoInstruction(context);
+        return executeTillBlockingOrJobFinished(context);
     }
 
     public void beginRunWithRequest(ITR069MessageContext context, TR069Message message) throws JobException{
@@ -250,21 +249,21 @@ public class DefaultDeviceJob implements IDeviceJob {
             setBeginTime(new Date());
         }
 
-        //then let job execute instruction until some instruction is blocking or all instruction has finished execution
-        IJobRequest jobRequest = executeTillBlockingOrNoInstruction(context);
+        //then let job execute instruction until some instruction is blocking or job completed or failed
+        TR069Message jobRequest = executeTillBlockingOrJobFinished(context);
 
         //if jobRequest not null, then means there is some instruction is waiting response, then cache the jobRequest and
         // return to let current instruction handle future response
         if(jobRequest !=null){
             cachedRequest = jobRequest;
             log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
-                    message.getMessageName() + ", it cached request message:" + jobRequest.getTr069Request().toSOAPString());
+                    message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPString());
             return;
         }
-        //all instructions have finished execution -- job has completed, then return just return
+        //all instructions have finished execution -- job has completed/failed, then return just return
         if(currentInstruction == null){
             log.debug("(job:" + jobID + ") begin with request:" +
-                    message.getMessageName() + ", all instructions has been finished execution, job has completed");
+                    message.getMessageName() + ", job has finished");
             return;
         }
         //jobRequest is null and current instruction is not null ,means there is some instruction is waiting request
@@ -273,7 +272,7 @@ public class DefaultDeviceJob implements IDeviceJob {
             throw new JobException("impossible instruction type for dealing request");
         }
 
-        IWaitRequestInstruction waitRequestInstruction = (IWaitRequestInstruction) currentInstruction;
+        IWaitTR069RequestInstruction waitRequestInstruction = (IWaitTR069RequestInstruction) currentInstruction;
         boolean bHandled = handleInstructionWithRequest(waitRequestInstruction, message, context);
         if(!bHandled){
             //not handled by current instruction, return null to skip for future request
@@ -282,21 +281,28 @@ public class DefaultDeviceJob implements IDeviceJob {
             return;
         }
 
-        //let job continue execute instruction till some instruction is blocking or all instruction has been executed
-        jobRequest = executeTillBlockingOrNoInstruction(context);
+        // job has completed/failed, then return just return
+        if(currentInstruction == null){
+            log.debug("(job:" + jobID + ") begin with request:" +
+                    message.getMessageName() + ", job has finished");
+            return;
+        }
+
+        //let job continue execute instruction till some instruction is blocking or job completed or failed
+        jobRequest = executeTillBlockingOrJobFinished(context);
         //cache the job Request if it is not null, then return to let current instruction handle future request or response
         if(jobRequest !=null){
             cachedRequest = jobRequest;
             log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
-                    message.getMessageName() + ", it cached request message:" + jobRequest.getTr069Request().toSOAPString());
+                    message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPString());
         }
     }
 
-    public IJobRequest continueRun(ITR069MessageContext context) throws JobException{
+    public TR069Message continueRun(ITR069MessageContext context) throws JobException{
         return continueRunWithResponse(context, null);
     }
 
-    public IJobRequest continueRunWithResponse(ITR069MessageContext context, TR069Message message) throws JobException{
+    public TR069Message continueRunWithResponse(ITR069MessageContext context, TR069Message message) throws JobException{
         //job can not be finished
         checkJobNotFinished();
         //job can not be ready
@@ -307,8 +313,8 @@ public class DefaultDeviceJob implements IDeviceJob {
         //current instruction should not be non-blocking
         checkCurrentInstructionBlocking();
 
-        //send cached result
-        IJobRequest request = fetchCachedRequest();
+        //send cached resulthandler
+        TR069Message request = fetchCachedRequest();
         if(request != null){
             return request;
         }
@@ -321,7 +327,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         }
 
         //let current instruction handle response
-        IWaitResponseInstruction waitResponseInstruction = (IWaitResponseInstruction) currentInstruction;
+        IWaitTR069ResponseInstruction waitResponseInstruction = (IWaitTR069ResponseInstruction) currentInstruction;
         boolean bHandled = handleInstructionWithResponse(waitResponseInstruction, message, context);
         if(!bHandled){
             //response not handled by current instruction, return null to skip for future response
@@ -329,8 +335,14 @@ public class DefaultDeviceJob implements IDeviceJob {
                     (message == null? "empty message":message.getMessageName()));
             return null;
         }
+        // job has completed/failed, then return just return
+        if(currentInstruction == null){
+            log.debug("(job:" + jobID + ") begin with request:" +
+                    message.getMessageName() + ", job has finished");
+            return null;
+        }
         //response has been handled, continue execute to get some request
-        return executeTillBlockingOrNoInstruction(context);
+        return executeTillBlockingOrJobFinished(context);
     }
 
     public void continueRunWithRequest(ITR069MessageContext context, TR069Message message) throws JobException {
@@ -352,7 +364,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         }
 
         //let current instruction handle request
-        IWaitRequestInstruction waitRequestInstruction = (IWaitRequestInstruction) currentInstruction;
+        IWaitTR069RequestInstruction waitRequestInstruction = (IWaitTR069RequestInstruction) currentInstruction;
         boolean bHandled = handleInstructionWithRequest(waitRequestInstruction, message, context);
         if(!bHandled){
             //request not handled by current instruction, return to skip for future request
@@ -360,13 +372,19 @@ public class DefaultDeviceJob implements IDeviceJob {
                     (message == null? "empty message":message.getMessageName()));
             return;
         }
+        // job has completed/failed, then return just return
+        if(currentInstruction == null){
+            log.debug("(job:" + jobID + ") begin with request:" +
+                    message.getMessageName() + ", job has finished");
+            return;
+        }
         //request has been handled, continue to get some request
-        IJobRequest jobRequest = executeTillBlockingOrNoInstruction(context);
+        TR069Message jobRequest = executeTillBlockingOrJobFinished(context);
         //cache the job Request if it is not null, then return to let current instruction handle future request or response
         if(jobRequest !=null){
             cachedRequest = jobRequest;
             log.debug("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") begin with request:" +
-                    message.getMessageName() + ", it cached request message:" + jobRequest.getTr069Request().toSOAPString());
+                    message.getMessageName() + ", it cached request message:" + jobRequest.toSOAPString());
         }
     }
 
@@ -382,6 +400,7 @@ public class DefaultDeviceJob implements IDeviceJob {
     private void fail(ITR069MessageContext context) {
         setStatus(STATUS_FAILED);
         setCompleteTime(new Date());
+        setCurrentInstruction(null);
         log.info("job:" + jobID + " failed");
         for(IJobResultHandler handler: resultHandlerList){
             handler.onFailed(this);
@@ -391,6 +410,7 @@ public class DefaultDeviceJob implements IDeviceJob {
     private void complete(ITR069MessageContext context) {
         setStatus(STATUS_COMPLETE);
         setCompleteTime(new Date());
+        setCurrentInstruction(null);
         log.info("job:" + jobID + " completed");
         for(IJobResultHandler handler: resultHandlerList){
             handler.onSucceed(this);
@@ -400,8 +420,8 @@ public class DefaultDeviceJob implements IDeviceJob {
 
     //return null means all instruction has finished execution(current instruction is null) or there is some instruction waiting request (current instruction is not null)
     //return not null means there is some instruction waiting response (current instruction is not null)
-    private IJobRequest executeTillBlockingOrNoInstruction(ITR069MessageContext context) throws JobException{
-        IJobRequest request = null;
+    private TR069Message executeTillBlockingOrJobFinished(ITR069MessageContext context){
+        TR069Message request = null;
         boolean bContinue = true;
         //fetch one instruction from queue
 
@@ -409,10 +429,11 @@ public class DefaultDeviceJob implements IDeviceJob {
         while((currentInstruction = instructionQueue.pop()) != null){
             try{
                 InstructionContext cmdContext = new InstructionContext(symbolTable);
-                //execute instruction to get result
-                request = currentInstruction.execute(cmdContext);
-                if(isBlockingInstruction(currentInstruction)){
-                    //instruction is waiting request or response, then return
+                //execute instruction to get resulthandler
+                currentInstruction.execute(cmdContext);
+                if(currentInstruction instanceof ITR069Instruction){
+                    //instruction is waiting request or response, get message then return
+                    request = ((ITR069Instruction)currentInstruction).getTR069Message();
                     break;
                 }
             }catch(InstructionFailException ifExp){
@@ -420,12 +441,13 @@ public class DefaultDeviceJob implements IDeviceJob {
             }catch(JobFailException jfExp){
                 log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") instruction execute failed, make job fail", jfExp);
                 fail(context);
-                throw new JobException("instruction execute failed makes job failed", jfExp);
+                //job failed, should return no request
+                return null;
             }catch(JobCompleteException jcExp){
-                log.info("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") instruction execute make job complete", jcExp);
-                //set current instruction to null
-                currentInstruction = null;
-                break;
+                log.info("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") instruction execute make job complete");
+                complete(context);
+                //job failed, should return no request
+                return null;
             }
         }
 
@@ -473,10 +495,10 @@ public class DefaultDeviceJob implements IDeviceJob {
         }
     }
 
-    private IJobRequest fetchCachedRequest(){
+    private TR069Message fetchCachedRequest(){
         if(cachedRequest != null){
-            log.debug("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): has cached request: " + cachedRequest.getTr069Request().toSOAPString());
-            IJobRequest result = cachedRequest;
+            log.debug("(job:" + jobID + ",instruction:" + (currentInstruction == null ? "null" : currentInstruction.getInstructionID()) + "): has cached request: " + cachedRequest.toSOAPString());
+            TR069Message result = cachedRequest;
             cachedRequest = null;
             return result;
         }
@@ -485,7 +507,7 @@ public class DefaultDeviceJob implements IDeviceJob {
 
     private boolean isWaitingResponse(IInstruction instruction) {
         if(instruction != null){
-            if(instruction instanceof IWaitResponseInstruction){
+            if(instruction instanceof IWaitTR069ResponseInstruction){
                 log.debug("(job:" + jobID + ",instruction:" + instruction.getInstructionID() + "): instruction is waiting response");
                 return true;
             }
@@ -495,7 +517,7 @@ public class DefaultDeviceJob implements IDeviceJob {
 
     private boolean isWaitingRequest(IInstruction instruction) {
         if(instruction != null){
-            if(instruction instanceof IWaitRequestInstruction){
+            if(instruction instanceof IWaitTR069RequestInstruction){
                 log.debug("(job:" + jobID + ",instruction:" + instruction.getInstructionID() + "): instruction is waiting request");
                 return true;
             }
@@ -505,7 +527,7 @@ public class DefaultDeviceJob implements IDeviceJob {
 
     private boolean isBlockingInstruction(IInstruction instruction) {
         if(instruction != null){
-            if(instruction instanceof IWaitResponseInstruction || instruction instanceof IWaitRequestInstruction){
+            if(instruction instanceof ITR069Instruction){
                 log.debug("(job:" + jobID + ",instruction:" + instruction.getInstructionID() + "): instruction is blocking");
                 return true;
             }
@@ -513,7 +535,7 @@ public class DefaultDeviceJob implements IDeviceJob {
         return false;
     }
 
-    private boolean handleInstructionWithResponse(IWaitResponseInstruction instruction, TR069Message response, ITR069MessageContext context)
+    private boolean handleInstructionWithResponse(IWaitTR069ResponseInstruction instruction, TR069Message response, ITR069MessageContext context)
             throws JobException{
         InstructionContext instructionContext = new InstructionContext(symbolTable);
         try{
@@ -526,11 +548,11 @@ public class DefaultDeviceJob implements IDeviceJob {
             log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle response:" +
                     (response == null? "empty message":response.getMessageName()) + " failed with fatal error, makes job failed", cfeExp);
             fail(context);
-            throw new JobException("instruction execute with fatal error, makes job failed", cfeExp);
+            return true;
         }
     }
 
-    private boolean handleInstructionWithRequest(IWaitRequestInstruction instruction, TR069Message request, ITR069MessageContext context)
+    private boolean handleInstructionWithRequest(IWaitTR069RequestInstruction instruction, TR069Message request, ITR069MessageContext context)
             throws JobException{
         InstructionContext instructionContext = new InstructionContext(symbolTable);
         try{
@@ -543,7 +565,7 @@ public class DefaultDeviceJob implements IDeviceJob {
             log.warn("(Job:" + jobID + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle request:" +
                     (request == null? "empty message":request.getMessageName()) + " failed with fatal error, makes job failed", jfExp);
             fail(context);
-            throw new JobException("instruction execute with fatal error, makes job failed", jfExp);
+            return true;
         }
     }
 

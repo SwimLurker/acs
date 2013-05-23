@@ -1,0 +1,1 @@
+{"jobID":"1006","jobName":"get parameter attributes job","deviceKey":"FC1234567890","jobScript":"tr069 cmd getpa:{\"parameterNames\":[\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\"]}\r\nRET"}

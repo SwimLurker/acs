@@ -46,6 +46,11 @@ public class DeviceJobBean {
         this.jobScript = jobScript;
     }
 
+    @Override
+    public String toString(){
+        return JSONUtil.toJsonString(this);
+    }
+
     public static void main(String[] args) {
         StringBuilder text = new StringBuilder();
         text.append("SET $a = \"bbb\"").append("\r\n").append("SET $c = $a").append("\r\n").append("RET");

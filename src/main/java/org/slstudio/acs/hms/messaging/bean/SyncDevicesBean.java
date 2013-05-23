@@ -44,6 +44,7 @@ public class SyncDevicesBean {
         this.deviceList = deviceList;
     }
 
+    @Override
     public String toString(){
         return JSONUtil.toJsonString(this);
     }

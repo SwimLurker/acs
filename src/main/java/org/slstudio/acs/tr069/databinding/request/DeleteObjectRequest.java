@@ -2,6 +2,7 @@ package org.slstudio.acs.tr069.databinding.request;
 
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
+import org.slstudio.acs.util.JSONUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,6 +43,13 @@ public class DeleteObjectRequest extends TR069Message {
         result.append("<ParameterKey>").append(parameterKey==null?"":parameterKey).append("</ParameterKey>");
         result.append("</").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");
         return result.toString();
+    }
+
+    public static void main(String[] args) {
+        DeleteObjectRequest dor = new DeleteObjectRequest();
+        dor.setObjectName("InternetGateway.LANDevice.1.");
+        System.out.println(JSONUtil.toJsonString(dor));
+        System.out.println(dor.toSOAPString());
     }
 
 }

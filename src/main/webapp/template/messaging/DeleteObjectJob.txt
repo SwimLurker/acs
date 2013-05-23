@@ -1,0 +1,1 @@
+{"jobID":"1002","jobName":"delete object job","deviceKey":"FC1234567890","jobScript":"tr069 cmd deleteobj:{\"objectName\":\"InternetGatewayDevice.LANDevice.1.\"}\r\nRET"}

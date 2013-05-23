@@ -7,6 +7,7 @@ import org.apache.axis2.databinding.utils.ConverterUtil;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.DataBindingException;
+import org.slstudio.acs.util.JSONUtil;
 
 import javax.xml.namespace.QName;
 import java.util.Iterator;
@@ -74,6 +75,13 @@ public class AddObjectResponse extends TR069Message {
         }
         aor.setStatus(ConverterUtil.convertToInt(((OMElement) statusKeyIt.next()).getText()));
         return aor;
+    }
+
+    public static void main(String[] args) {
+        AddObjectResponse aor = new AddObjectResponse();
+        aor.setInstanceNumber(new UnsignedInt(1));
+        aor.setStatus(0);
+        System.out.println(JSONUtil.toJsonString(aor));
     }
 
 }

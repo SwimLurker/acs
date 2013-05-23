@@ -1,0 +1,1 @@
+{"jobID":"1005","jobName":"set parameter values job","deviceKey":"FC1234567890","jobScript":"tr069 cmd setpv:{\"parameterList\":[{\"name\":\"InternetGatewayDevice.LANDevice.1.Hosts.Host.1.IPAddress\",\"value\":\"192.168.1.100\"}]}\r\nRET"}

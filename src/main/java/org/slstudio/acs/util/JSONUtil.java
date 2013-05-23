@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 
@@ -17,10 +18,11 @@ public class JSONUtil {
     private static ObjectMapper mapper = null;
     static {
         mapper = new ObjectMapper();
-        mapper.setVisibility(JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.setVisibility(JsonMethod.GETTER, JsonAutoDetect.Visibility.ANY);
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, false);
     }
     public static String toJsonString(Object obj){
+        if(obj == null) return null;
         String jsonString = null;
         try {
             jsonString = mapper.writeValueAsString(obj);
@@ -28,5 +30,14 @@ public class JSONUtil {
             e.printStackTrace();
         }
         return jsonString;
+    }
+
+    public static Object fromJsonString(String jsonStr, TypeReference tr){
+        try {
+            return mapper.readValue(jsonStr, tr);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -40,7 +40,7 @@ public class CheckSessionPipeline extends AbstractTR069Pipeline {
                 //empty envelope
                 throw new CheckSessionException("Empty envelope when check inform");
             }else if(messages.size()!=1){
-                //multiple envelopes,then deal each messages and save result to TR069_RESPONSE_KEY
+                //multiple envelopes,then deal each messages and save resulthandler to TR069_RESPONSE_KEY
                 throw new CheckSessionException("Multiple envelopes when check inform");
             }else {
                 //message size is ok, then check if it is inform

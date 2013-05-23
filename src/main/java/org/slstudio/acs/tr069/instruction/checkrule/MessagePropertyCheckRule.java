@@ -76,7 +76,7 @@ public class MessagePropertyCheckRule implements ITR069MessageCheckRule {
             }else{
                 List<ParameterValueStruct>  pvsList =  ir.getParameterList();
                 for(ParameterValueStruct pvs: pvsList){
-                    if(targetPropertyName.equalsIgnoreCase(pvs.getName()) && targetPropertyValue.equalsIgnoreCase(pvs.getName())) {
+                    if(targetPropertyName.equalsIgnoreCase(pvs.getName()) && targetPropertyValue.equalsIgnoreCase(pvs.getValue().toString())) {
                         return true;
                     }
                 }

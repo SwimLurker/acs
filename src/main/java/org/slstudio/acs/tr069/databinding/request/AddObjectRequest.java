@@ -48,6 +48,7 @@ public class AddObjectRequest extends TR069Message {
 
     public static void main(String[] args) {
         AddObjectRequest aor = new AddObjectRequest();
+        aor.setObjectName("InternetGatewayDevice.LANDevice.");
         System.out.println(JSONUtil.toJsonString(aor));
         System.out.println(aor.toSOAPString());
     }

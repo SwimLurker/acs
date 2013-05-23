@@ -1,0 +1,132 @@
+<div class="easyui-panel" title="TR069 Message Sending Tool" style="width:700px; height:550px;" >
+    <div style="padding:10px 0 10px 60px">
+        <form id = "ff_tr069_sender" method="post" >
+            <table>
+                <tr>
+                    <td>Protocol Version:</td>
+                    <td>
+                        <select name="engine" style="width: 250px" >
+                            <option value="tr069">tr069</option>
+                            <option value="tr069am1">tr069 amendment 1</option>
+                            <option value="tr069am2" selected>tr069 amendment 2</option>
+                            <option value="tr069am3">tr069 amendment 3</option>
+                            <option value="tr069am4">tr069 amendment 4</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Message Template:</td>
+                    <td><select class="easyui-combobox" id="trmsg_template" style="width: 250px" data-options="panelHeight:'auto',onSelect:function(rec){onChangeTRTemplate(rec)}" >
+                        <option value="inform" selected="selected">Inform</option>
+                        <option value="tc" >TransferComplete</option>
+                        <option value="getrpc" >GetRPCMethods</option>
+                        <option value="getpnr" >GetParameterNamesResponse</option>
+                        <option value="getpvr" >GetParameterValuesResponse</option>
+                        <option value="setpvr" >SetParameterValuesResponse</option>
+                        <option value="getpar" >GetParameterAttributesResponse</option>
+                        <option value="setpar" >SetParameterAttributesResponse</option>
+                        <option value="aor" >AddObjectResponse</option>
+                        <option value="dor" >DeleteObjectResponse</option>
+                        <option value="dr" >DownloadResponse</option>
+                        <option value="ur" >UploadResponse</option>
+                        <option value="rr" >RebootResponse</option>
+                        <option value="frr" >FactoryResetResponse</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Message:</td>
+                    <td><textarea id="trmessage" name="trmessage" style="width:450px; height:200px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Properties:</td>
+                    <td><textarea name="propertystring" id="propertystring" style="width:450px; height:80px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Submit"><input type="button" value="Clear" onclick="clearTRMessage();"></td>
+                </tr>
+                <tr>
+                    <td>Message Response:</td>
+                    <td><textarea id="trmessageresponse" name="trmessageresponse" style="width:450px; height:200px;"></textarea></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script>
+    var template_url_array = new Array();
+    template_url_array['inform'] = './template/tr069/Inform.txt';
+    template_url_array['tc'] = './template/tr069/TransferComplete.txt';
+    template_url_array['getrpc'] = './template/tr069/GetRPCMethods.txt';
+    template_url_array['getrpcr'] = './template/tr069/GetRPCMethodsResponse.txt';
+    template_url_array['getpnr'] = './template/tr069/GetParameterNamesResponse.txt';
+    template_url_array['getpvr'] = './template/tr069/GetParameterValuesResponse.txt';
+    template_url_array['setpvr'] = './template/tr069/SetParameterValuesResponse.txt';
+    template_url_array['getpar'] = './template/tr069/GetParameterAttributesResponse.txt';
+    template_url_array['setpar'] = './template/tr069/SetParameterAttributesResponse.txt';
+    template_url_array['aor'] = './template/tr069/AddObjectResponse.txt';
+    template_url_array['dor'] = './template/tr069/DeleteObjectResponse.txt';
+    template_url_array['dr'] = './template/tr069/DownloadResponse.txt';
+    template_url_array['ur'] = './template/tr069/UploadResponse.txt';
+    template_url_array['rr'] = './template/tr069/RebootResponse.txt';
+    template_url_array['frr'] = './template/tr069/FactoryResetResponse.txt';
+
+    function onChangeTRTemplate(rec){
+        $.get(template_url_array[rec.value],{stamp: Math.random()}, function(d){
+            $('#trmessage').val(d);
+        });
+
+    }
+
+    function clearTRMessage(){
+        $('#trmessage').val("");
+    }
+
+    $(function(){
+        $.get(template_url_array['inform'],{stamp: Math.random()}, function(d){
+            $('#trmessage').val(d);
+        });
+        $('#propertystring').val("SessionContext_Key_ClientIP=127.0.0.1\r\nSessionContext_Key_ClientID=10000");
+        $('#ff_tr069_sender').form({
+            url:"/webconsole/rest/tr069/sendmessage",
+            method: "POST",
+            onSubmit: function(){
+                return true;
+            },
+            success: function(data){
+                var result = JSON.parse(data);
+                if(result.success){
+                    $.messager.show({
+                        title: 'Success',
+                        msg: 'Send Message Success'
+                    });
+                    //alert(result.msg);
+                    //alert(html_decode(result.msg));
+                    $('#trmessageresponse').val(html_decode(result.msg));
+                }else{
+                    $.messager.show({ // show error message
+                        title: 'Error',
+                        msg: data.msg
+                    });
+                }
+            }
+
+        });
+//        $('#message').text(template_text_array["sync"]);
+    });
+    function html_decode(str)
+    {
+        var s = "";
+        if (str.length == 0) return "";
+        s = str.replace(/&amp;/g, "&");
+        s = s.replace(/&lt;/g, "<");
+        s = s.replace(/&gt;/g, ">");
+        s = s.replace(/&nbsp;/g, " ");
+        s = s.replace(/&#39;/g, "\'");
+        s = s.replace(/&quot;/g, "\"");
+        s = s.replace(/<br>/g, "\n");
+        return s;
+    }
+</script>

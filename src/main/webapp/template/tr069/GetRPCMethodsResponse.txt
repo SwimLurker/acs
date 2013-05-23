@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:cwmp="urn:dslforum-org:cwmp-1-0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<SOAP-ENV:Header>
+		<cwmp:ID SOAP-ENV:mustUnderstand="1">1012_1</cwmp:ID>
+	</SOAP-ENV:Header>
+	<SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+		<cwmp:GetRPCMethodsResponse>
+			<cwmp:MethodList xsi:type="SOAP-ENC:Array" SOAP-ENC:arrayType="xsd:string[14]">
+				<string>GetRPCMethods</string>
+				<string>Download</string>
+				<string>Reboot</string>
+				<string>SetParameterValues</string>
+				<string>GetParameterValues</string>
+				<string>GetParameterNames</string>
+				<string>SetParameterAttributes</string>
+				<string>GetParameterAttributes</string>
+				<string>AddObject</string>
+				<string>DeleteObject</string>
+				<string>SetVouchers</string>
+				<string>GetOptions</string>
+				<string>Upload</string>
+				<string>FactoryReset</string>
+			</cwmp:MethodList>
+		</cwmp:GetRPCMethodsResponse>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

@@ -40,7 +40,7 @@ public class MultipleXMLParser {
                 result=new ArrayList<Reader>();
             }else if(event==IMultipleXMLStreamConstants.START_SINGLE_DOCUMENT){
                 //reader.recycle();
-                //result.add(new StringReader(reader.getCurrentXML()));
+                //resulthandler.add(new StringReader(reader.getCurrentXML()));
             }else if(event==IMultipleXMLStreamConstants.END_SINGLE_DOCUMENT){
                 result.add(new StringReader(reader.getCurrentXML()));
                 //reader.recycle();

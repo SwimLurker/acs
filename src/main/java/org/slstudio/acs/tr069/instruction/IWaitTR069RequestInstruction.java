@@ -11,6 +11,6 @@ import org.slstudio.acs.tr069.instruction.exception.JobFailException;
  * Date: 13-5-5
  * Time: обнГ9:19
  */
-public interface IWaitRequestInstruction extends ITR069Instruction {
+public interface IWaitTR069RequestInstruction extends ITR069Instruction {
     public boolean handleRequest(InstructionContext cmdContext, TR069Message request) throws InstructionFailException, JobFailException;
 }

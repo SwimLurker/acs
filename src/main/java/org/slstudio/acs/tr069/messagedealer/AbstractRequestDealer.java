@@ -2,9 +2,7 @@ package org.slstudio.acs.tr069.messagedealer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
@@ -32,17 +30,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
 
         if(currentJob != null){
             log.debug("when handle request:" + requestID + ", fetch an job:" + currentJob.getJobID());
-            if(currentJob.isRunning()){
-                //handle running job
-                handleRunningJob(currentJob, context, request, requestID);
-            }else if(currentJob.isReady()){
-                //handle ready job
-                handleReadyJob(currentJob, context, request, requestID);
-            }else if(currentJob.isFinished()){
-                //impossible, should not happen
-                log.error("when handle request:" + requestID + ", fetch an finished job:" + currentJob.getJobID());
-                getJobManager().removeJob(currentJob);
-            }
+            handleJob(currentJob, context, request);
         }else{
             // no job is running or can not find job for some reason, then will use default response
             log.debug("can not fetch job for device:" + deviceKey + " when handle request:" + requestID);
@@ -51,52 +39,35 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
         return getResponse(context, request);
     }
 
-    // handle ready job, call job's beginRunWithRequest job method
-    // The beginRunWithRequest method let job begin running
-    // Sometime it will produce job request which cached in that job, which will then be send when message dealer(often the empty message dealer)
-    // call that job's continueRun or continueRunWithRequest or continueRunWithResponse method.
-    private void handleReadyJob(IDeviceJob currentJob, ITR069MessageContext context, TR069Message request, String requestID)
-            throws TR069Fault{
+    private void handleJob(IDeviceJob job, ITR069MessageContext context, TR069Message request) {
         try{
-            log.debug("begin running job:" + currentJob.getJobID() + " with request:" + requestID);
-            currentJob.beginRunWithRequest(context, request);
-            if(currentJob.isFinished()){
-                log.debug("after handle request:" + requestID +", job:"+ currentJob.getJobID() + " has finished");
-                getJobManager().removeJob(currentJob);
+            if(job.isRunning()){
+                // handle running job, call job's continueRunWithRequest job method
+                // The continueRunWithRequest method let job continue running (when job's cached request is not null, just sent them)
+                // Sometime it will produce job request which cached in that job, which will then be send when message dealer(often the empty message dealer)
+                // call that job's continueRun or continueRunWithRequest or continueRunWithResponse method.
+                log.debug("job:" + job.getJobID() + "for device:" + job.getDeviceKey() + " continue run with request:" + request.getMessageID());
+                job.continueRunWithRequest(context, request);
+            }else if(job.isReady()){
+                // handle ready job, call job's beginRunWithRequest job method
+                // The beginRunWithRequest method let job begin running
+                // Sometime it will produce job request which cached in that job, which will then be send when message dealer(often the empty message dealer)
+                // call that job's continueRun or continueRunWithRequest or continueRunWithResponse method.
+                log.debug("job:" + job.getJobID() + "for device:" + job.getDeviceKey() + " begin run with request:" + request.getMessageID());
+                job.beginRunWithRequest(context, request);
+            }else if(job.isFinished()){
+                //impossible, should not happen
+                log.error("job:" + job.getJobID() + "should not be finished status for device:" + job.getDeviceKey() + " when handle request:" + request.getMessageID());
+            }
+
+            if(job.isFinished()){
+                log.debug("after handle request:" + request.getMessageID() +", job:"+ job.getJobID() + " for device:" + job.getDeviceKey() + " has finished");
+                getJobManager().removeJob(job);
             }
         }catch(Exception exp){
-            log.error("when handle request:" + requestID + ",job:" + currentJob.getJobID() + " failed for execution",exp);
-            currentJob.failOnException(exp);
-            getJobManager().removeJob(currentJob);
-            throw new TR069Fault(true,
-                    TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
-                    FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_INTERNAL_ERROR),
-                    requestID);
-        }
-    }
-
-    // handle running job, call job's continueRunWithRequest job method
-    // The continueRunWithRequest method let job continue running (when job's cached request is not null, just sent them)
-    // Sometime it will produce job request which cached in that job, which will then be send when message dealer(often the empty message dealer)
-    // call that job's continueRun or continueRunWithRequest or continueRunWithResponse method.
-    private void handleRunningJob(IDeviceJob currentJob, ITR069MessageContext context, TR069Message request, String requestID)
-            throws TR069Fault{
-        try{
-            log.debug("continue running job:" + currentJob.getJobID() + " with request:" + requestID);
-            currentJob.continueRunWithRequest(context, request);
-            if(currentJob.isFinished()){
-                log.debug("after handle request:" + requestID +", job:"+ currentJob.getJobID() + " has finished");
-                getJobManager().removeJob(currentJob);
-            }
-        }catch(Exception exp){
-            log.error("when handle request:" + requestID + ",job:" + currentJob.getJobID() + " failed for execution",exp);
-            currentJob.failOnException(exp);
-            getJobManager().removeJob(currentJob);
-
-            throw new TR069Fault(true,
-                    TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
-                    FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_INTERNAL_ERROR),
-                    requestID);
+            log.error("when handle request,job:" + job.getJobID() + " failed for execution",exp);
+            job.failOnException(exp);
+            getJobManager().removeJob(job);
         }
     }
 

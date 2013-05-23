@@ -42,10 +42,12 @@ public class GetParameterValuesResponse  extends TR069Message {
         result.append("<").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");
         result.append("<ParameterList xsi:type=\"SOAP-ENC:Array\" SOAP-ENC:arrayType=\"").append(TR069Constants.NAMESPACE_CWMP).append(":ParameterValueStruct[").append(parameterList.size()).append("]\">");
         for(ParameterValueStruct pvs: parameterList) {
+            result.append("<ParameterValueStruct>");
             result.append("<Name>").append(pvs.getName()==null?"":pvs.getName()).append("</Name>");
             Object value = pvs.getValue();
             Tuple.Tuple2<String, String> t = SOAPUtil.getObjectTypeAndValue(value);
             result.append("<Value xsi:type=\"xsd:").append(t._1()).append("\" >").append(t._2()==null?"":t._2()).append("</Value>");
+            result.append("</ParameterValueStruct>");
         }
         result.append("</ParameterList>");
         result.append("</").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");

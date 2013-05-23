@@ -3,8 +3,7 @@ package org.slstudio.acs.tr069.job;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.JobException;
 import org.slstudio.acs.tr069.instruction.IInstruction;
-import org.slstudio.acs.tr069.job.request.IJobRequest;
-import org.slstudio.acs.tr069.job.result.IJobResultHandler;
+import org.slstudio.acs.tr069.job.resulthandler.IJobResultHandler;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
 import java.util.Date;
@@ -64,13 +63,13 @@ public interface IDeviceJob {
 
     public List<IJobResultHandler> getResultHandlerList();
 
-    public IJobRequest beginRun(ITR069MessageContext context) throws JobException;
+    public TR069Message beginRun(ITR069MessageContext context) throws JobException;
 
     public void beginRunWithRequest(ITR069MessageContext context, TR069Message request) throws JobException;
 
-    public IJobRequest continueRun(ITR069MessageContext context) throws JobException;
+    public TR069Message continueRun(ITR069MessageContext context) throws JobException;
 
-    public IJobRequest continueRunWithResponse(ITR069MessageContext context, TR069Message response) throws JobException;
+    public TR069Message continueRunWithResponse(ITR069MessageContext context, TR069Message response) throws JobException;
 
     public void continueRunWithRequest(ITR069MessageContext context, TR069Message request) throws JobException;
 

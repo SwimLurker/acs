@@ -24,46 +24,59 @@
                     <td><textarea id="message" name="message" cols="60" rows="20"></textarea></td>
                 </tr>
                 <tr>
-                    <td>Message:</td>
-                    <td><input type="text" id="ssss" value="Submit"></input></td>
-                </tr>
-                <tr>
                     <td></td>
-                    <td><input type="submit" value="Submit"></input></td>
+                    <td><input type="submit" value="Submit"><input type="button" value="Clear" onclick="clearMessage();"></td>
                 </tr>
             </table>
         </form>
-    </div>
-    <div style="text-align:center;padding:5px">
-        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="sendMessage()">Send</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
     </div>
 </div>
 
 <script>
     var target_template_array = new Array();
     target_template_array["syncDevices"] = '[{"value":"sync","text":"Sync Devices Message","selected":true},{"value":"add","text":"Add Device(s) Message"},{"value":"delete","text":"Delete Device(s) Message"},{"value":"clear","text":"Clear Devices Message"}]';
-    target_template_array["deviceJob"] = '[{"value":"getpv","text":"GetParameterValues Message","selected":true},{"value":"setpv","text":"SetParameterValues Message"}]';
+    target_template_array["deviceJob"] = '[{"value":"addobj","text":"AddObject Job","selected":true},{"value":"deleteobj","text":"DeleteObject Job"},{"value":"getpn","text":"GetParameterNames Job"},' +
+            '{"value":"getpv","text":"GetParameterValues Job"},{"value":"setpv","text":"SetParameterValues Job"},{"value":"getpa","text":"GetParameterAttributes Job"},' +
+            '{"value":"setpa","text":"SetParameterAttributes Job"},{"value":"download","text":"Download Job"},{"value":"upload","text":"Upload Job"},' +
+            '{"value":"reboot","text":"Reboot Job"},{"value":"factoryreset","text":"FactoryReset Job"},{"value":"getmethod","text":"GetRPCMethods Job"},' +
+            '{"value":"scheduleinform","text":"ScheduleInform Job"},{"value":"checkinform","text":"Check Inform Job"},{"value":"checktc","text":"Check TransferComplete Job"},' +
+            '{"value":"set","text":"Assignment Job"},{"value":"return","text":"Return Job"}]';
     target_template_array["deviceJobResult"] = '[{"value":"getpvresult","text":"GetParameterValues Result Message","selected":true},{"value":"setpvresult","text":"SetParameterValues Result Message"}]';
     target_template_array["event"]='';
 
-    var template_text_array = new Array();
-    template_text_array["sync"]='{"command":0,"deviceList":[{"deviceID":"0000000000","deviceKey":"FC1234567890","authUsername":"admin","authPassword":"admin"}]}';
-    template_text_array["add"]='{"command":1,"deviceList":[{"deviceID":"0000000000","deviceKey":"FC1234567890","authUsername":"admin","authPassword":"admin"}]}';
-    template_text_array["delete"]='{"command":2,"deviceList":[{"deviceKey":"FC1234567890"}]}';
-    template_text_array["clear"]='{"command":3,"deviceList":[]}';
-    template_text_array["getpv"]='{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","jobScript":"tr069 cmd getpv:{\\"parameterNames\\":[\\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\\"]}\\r\\nRET"}';
-    template_text_array["setpv"]='{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","jobScript":"SET $variable = \\"value\\"\\r\\ntr069 cmd getpv:{\\"parameterNames\\":[\\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\\"]}\\r\\nRET"}';
-    template_text_array["getpvresult"]='{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","errorCode":0,"errorMsg":null,"jobResult":{"messageID":"1_3","parameterList":[{"name":"InternetGatewayDevice.ManagementServer.PeriodicInformInterval","value":160}]}}';
-    template_text_array["setpvresult"]='{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","errorCode":0,"errorMsg":null,"jobResult":{"messageID":"1_3","parameterList":[{"name":"InternetGatewayDevice.ManagementServer.PeriodicInformInterval","value":160}]}}';
-    template_text_array["event"]="ssss4";
+    var template_url_array = new Array();
+    template_url_array["sync"]='./template/messaging/SyncDevices.txt';
+    template_url_array["add"]='./template/messaging/AddDevice.txt';
+    template_url_array["delete"]='./template/messaging/DeleteDevice.txt';
+    template_url_array["clear"]='./template/messaging/ClearDevices.txt';
 
-    function sendMessage(){
-        $('#ff_messaging_sender').form('submit');
+    template_url_array["addobj"]='./template/messaging/AddObjectJob.txt';
+    template_url_array["deleteobj"]='./template/messaging/DeleteObjectJob.txt';
+    template_url_array["getpn"]='./template/messaging/GetParameterNamesJob.txt';
+    template_url_array["getpv"]='./template/messaging/GetParameterValuesJob.txt';
+    template_url_array["setpv"]='./template/messaging/SetParameterValuesJob.txt';
+    template_url_array["getpa"]='./template/messaging/GetParameterAttributesJob.txt';
+    template_url_array["setpa"]='./template/messaging/SetParameterAttributesJob.txt';
+    template_url_array["download"]='./template/messaging/DownloadJob.txt';
+    template_url_array["upload"]='./template/messaging/UploadJob.txt';
+    template_url_array["reboot"]='./template/messaging/RebootJob.txt';
+    template_url_array["factoryreset"]='./template/messaging/FactoryResetJob.txt';
+    template_url_array["getmethod"]='./template/messaging/GetRPCMethodsJob.txt';
+    template_url_array["scheduleinform"]='./template/messaging/ScheduleInformJob.txt';
+    template_url_array["checkinform"]='./template/messaging/CheckInformJob.txt';
+    template_url_array["checktc"]='./template/messaging/CheckTransferCompleteJob.txt';
+    template_url_array["set"]='./template/messaging/AssignmentJob.txt';
+    template_url_array["return"]='./template/messaging/ReturnJob.txt';
+
+    template_url_array["getpvresult"]='./template/messaging/GetParametrValuesJobResult.txt';
+    template_url_array["setpvresult"]='./template/messaging/SetParametrValuesJobResult.txt';
+    template_url_array["event"]='./template/messaging/Event.txt';
+
+
+    function clearMessage(){
+        $('#message').val("");
     }
-    function clearForm(){
-        $('#target').combobox('select',"syncDevices");
-    }
+
     function onChangeTarget(rec){
         var obj = JSON.parse(target_template_array[rec.value]);
         $('#message_template').combobox('loadData',obj);
@@ -71,11 +84,15 @@
     }
 
     function onChangeTemplate(rec){
-        $('#message').val(template_text_array[rec.value]);
+        $.get(template_url_array[rec.value],{stamp: Math.random()}, function(d){
+            $('#message').val(d);
+        });
     }
 
     $(function(){
-        $('#message').text(template_text_array['sync']);
+        $.get(template_url_array['sync'],{stamp: Math.random()}, function(d){
+            $('#message').val(d);
+        });
         $('#ff_messaging_sender').form({
             url:"/webconsole/rest/messaging/sendmessage",
             method: "POST",

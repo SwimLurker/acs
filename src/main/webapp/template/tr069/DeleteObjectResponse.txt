@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:cwmp="urn:dslforum-org:cwmp-1-0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<SOAP-ENV:Header>
+		<cwmp:ID SOAP-ENV:mustUnderstand="1">1002_1</cwmp:ID>
+	</SOAP-ENV:Header>
+	<SOAP-ENV:Body>
+		<cwmp:DeleteObjectResponse>
+			<Status>0</Status>
+		</cwmp:DeleteObjectResponse>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

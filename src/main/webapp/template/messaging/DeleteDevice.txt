@@ -1,0 +1,1 @@
+{"command":1002,"deviceList":[{"deviceKey":"FC1234567890"}]}

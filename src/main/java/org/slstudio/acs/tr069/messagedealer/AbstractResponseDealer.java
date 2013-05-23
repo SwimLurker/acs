@@ -2,12 +2,9 @@ package org.slstudio.acs.tr069.messagedealer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.job.IDeviceJob;
-import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 
 /**
@@ -29,7 +26,6 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
         //get job id from response id
         String jobID = getJobIDByResponseID(responseID);
 
-        IJobRequest request = null;
         //find related job, first search system job then user job
         IDeviceJob currentJob = findJob(deviceKey, jobID);
         if(currentJob == null){
@@ -40,17 +36,33 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
                 return null;
             }
         }
-        if(currentJob.isRunning()){
-             request = handleRunningJob(currentJob, context, response, responseID);
-        }else if(currentJob.isReady()){
-            //impossible, should not happened, just return null to let further message deal
-            log.error("job:" + jobID + "should not be ready status for device:" + deviceKey + " when handle response:" + responseID);
-        }else if(currentJob.isFinished()){
-            //impossible, should not happened, just return null to let further message deal
-            log.error("job:" + jobID + "should not be finished status for device:" + deviceKey + " when handle response:" + responseID);
-            getJobManager().removeJob(currentJob);
+        return handleJob(currentJob,context, response);
+    }
+
+    private TR069Message handleJob(IDeviceJob job, ITR069MessageContext context, TR069Message response) {
+        TR069Message result = null;
+        try{
+            if(job.isRunning()){
+                log.debug("job:" + job.getJobID() + "for device:" + job.getDeviceKey() + " continue run with response:" + response.getMessageID());
+                result = job.continueRunWithResponse(context, response);
+            }else if(job.isReady()){
+                //impossible, should not happened, just return null to let further message deal
+                log.error("job:" + job.getJobID() + "should not be ready status for device:" + job.getDeviceKey() + " when handle response:" + response.getMessageID());
+            }else if(job.isFinished()){
+                //impossible, should not happened, just return null to let further message deal
+                log.error("job:" + job + "should not be finished status for device:" + job.getDeviceKey() + " when handle response:" + response.getMessageID());
+            }
+            if(job.isFinished()){
+                log.debug("after handle response:" + response.getMessageID() +", job:"+ job.getJobID() + " for device:" + job.getDeviceKey() + " has finished");
+                getJobManager().removeJob(job);
+            }
+            log.debug("after handle empty message for job:"+ job.getJobID() + ", get request:" + (result == null?"null":result.toSOAPString()));
+        }catch (Exception exp){
+            log.error("when handle response:" + response.getMessageID() + ",job:" + job.getJobID() + " failed for execution",exp);
+            job.failOnException(exp);
+            getJobManager().removeJob(job);
         }
-        return formatRequest(context, response, request);
+        return result;
     }
 
     //first find running job, the priority is:
@@ -104,34 +116,6 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
             result = getJobManager().findUserJob(deviceKey, jobID);
         }
         return result;
-    }
-
-    private IJobRequest handleRunningJob(IDeviceJob currentJob, ITR069MessageContext context, TR069Message response, String responseID)
-            throws TR069Fault{
-        IJobRequest request = null;
-        try{
-            log.debug("begin running job:" + currentJob.getJobID() + " with response:" + responseID);
-            request = currentJob.continueRunWithResponse(context, response);
-            if(currentJob.isFinished()){
-                log.debug("after handle response:" + responseID +", job:"+ currentJob.getJobID() + " has finished");
-                getJobManager().removeJob(currentJob);
-            }
-            log.debug("after handle response:" + responseID +"for job:"+ currentJob.getJobID() + ", get request:" + (request == null?"null":request.getTr069Request().toSOAPString()));
-        }catch (Exception exp){
-            log.error("when handle response:" + responseID + ",job:" + currentJob.getJobID() + " failed for execution",exp);
-            currentJob.failOnException(exp);
-            getJobManager().removeJob(currentJob);
-            throw new TR069Fault(true,
-                    TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
-                    FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_INTERNAL_ERROR),
-                    responseID);
-        }
-        return request;
-    }
-
-    //method subclass can override to format request
-    protected TR069Message formatRequest(ITR069MessageContext context, TR069Message response, IJobRequest request){
-        return request == null? null: request.getTr069Request();
     }
 
 }

@@ -3,7 +3,6 @@ package org.slstudio.acs.tr069.instruction;
 import org.slstudio.acs.tr069.instruction.context.InstructionContext;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
 import org.slstudio.acs.tr069.instruction.exception.JobFailException;
-import org.slstudio.acs.tr069.job.request.IJobRequest;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,8 +37,7 @@ public class TestInstruction implements IInstruction {
         return someValue;
     }
 
-    public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException {
+    public void execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException {
         cmdContext.getSymbolTable().put("test", someValue+"_test");
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

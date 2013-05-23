@@ -1,5 +1,7 @@
 package org.slstudio.acs.hms.messaging.bean;
 
+import org.slstudio.acs.util.JSONUtil;
+
 /**
  * Created with IntelliJ IDEA.
  * User: chandler
@@ -69,5 +71,10 @@ public class DeviceJobResultBean {
 
     public void setJobResult(Object jobResult) {
         this.jobResult = jobResult;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJsonString(this);
     }
 }

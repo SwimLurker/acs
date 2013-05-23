@@ -4,8 +4,7 @@ import org.slstudio.acs.tr069.instruction.context.InstructionContext;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
 import org.slstudio.acs.tr069.instruction.exception.JobCompleteException;
 import org.slstudio.acs.tr069.instruction.exception.JobFailException;
-import org.slstudio.acs.tr069.job.DeviceJobConstants;
-import org.slstudio.acs.tr069.job.request.IJobRequest;
+import org.slstudio.acs.tr069.util.InstructionUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,12 +14,12 @@ import org.slstudio.acs.tr069.job.request.IJobRequest;
  */
 public class AssignInstruction extends InstructionBase {
     private String variableName = null;
-    private String variableValue = null;
+    private String variableValueText = null;
 
-    public AssignInstruction(String instructionID, String variableName, String variableValue) {
+    public AssignInstruction(String instructionID, String variableName, String variableValueText) {
         super(instructionID);
         this.variableName = variableName;
-        this.variableValue = variableValue;
+        this.variableValueText = variableValueText;
     }
 
     public String getVariableName() {
@@ -31,12 +30,12 @@ public class AssignInstruction extends InstructionBase {
         this.variableName = variableName;
     }
 
-    public String getVariableValue() {
-        return variableValue;
+    public String getVariableValueText() {
+        return variableValueText;
     }
 
-    public void setVariableValue(String variableValue) {
-        this.variableValue = variableValue;
+    public void setVariableValueText(String variableValueText) {
+        this.variableValueText = variableValueText;
     }
 
     public String getInstructionName() {
@@ -44,16 +43,20 @@ public class AssignInstruction extends InstructionBase {
     }
 
     public String toString() {
-        return variableName +" = " + variableValue;
+        return variableName +" = " + variableValueText;
     }
 
-    public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException, JobCompleteException {
-        if(variableValue.startsWith(DeviceJobConstants.SYMBOLNAME_VARIABLE_PREFIX)){
-            Object value = cmdContext.getSymbolTable().get(variableValue);
-            cmdContext.getSymbolTable().put(variableName, value);
-        }else{
-            cmdContext.getSymbolTable().put(variableName, variableValue);
+    public void execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException, JobCompleteException {
+        String varialbeValue = null;
+        try {
+            varialbeValue = InstructionUtil.populateTextWithVariableValue(variableValueText, cmdContext.getSymbolTable());
+        } catch (Exception e) {
+            throw new JobFailException("job failed for evaluate variable value:" + e.getMessage());
         }
-        return null;
+
+        if(varialbeValue != null){
+            cmdContext.getSymbolTable().put(variableName, varialbeValue);
+        }
     }
+
 }

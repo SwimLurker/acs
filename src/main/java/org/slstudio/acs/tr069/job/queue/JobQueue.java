@@ -13,10 +13,10 @@ import java.util.Vector;
  */
 public class JobQueue<T extends IDeviceJob> {
     private Vector<T> queue = new Vector<T>();
-    public void push(T job){
+    public synchronized void push(T job){
         queue.add(job);
     }
-    public T pop(){
+    public synchronized T pop(){
         if(queue.size()>0){
             return queue.remove(0);
         }
@@ -29,7 +29,7 @@ public class JobQueue<T extends IDeviceJob> {
         }
         return null;
     }
-    public void remove(T job){
+    public synchronized void remove(T job){
         queue.remove(job);
     }
     public T find(String jobID){

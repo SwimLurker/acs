@@ -41,8 +41,10 @@ public class GetParameterNamesResponse extends TR069Message {
         result.append("<").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");
         result.append("<ParameterList xsi:type=\"SOAP-ENC:Array\" SOAP-ENC:arrayType=\"").append(TR069Constants.NAMESPACE_CWMP).append(":ParameterInfoStruct[").append(parameterList.size()).append("]\">");
         for(ParameterInfoStruct pis: parameterList) {
+            result.append("<ParameterInfoStruct>");
             result.append("<Name>").append(pis.getName()==null?"":pis.getName()).append("</Name>");
             result.append("<Writable>").append(ConverterUtil.convertToString(pis.isWritable())).append("</Writable>");
+            result.append("</ParameterInfoStruct>");
         }
         result.append("</ParameterList>");
         result.append("</").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");

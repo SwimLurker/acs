@@ -4,8 +4,7 @@ import org.slstudio.acs.tr069.instruction.context.InstructionContext;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
 import org.slstudio.acs.tr069.instruction.exception.JobCompleteException;
 import org.slstudio.acs.tr069.instruction.exception.JobFailException;
-import org.slstudio.acs.tr069.job.DeviceJobConstants;
-import org.slstudio.acs.tr069.job.request.IJobRequest;
+import org.slstudio.acs.tr069.util.InstructionUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,19 +13,19 @@ import org.slstudio.acs.tr069.job.request.IJobRequest;
  * Time: ÏÂÎç12:57
  */
 public class ReturnInstruction extends InstructionBase{
-    private String returnValue = null;
+    private String returnValueText = null;
 
-    public ReturnInstruction(String instructionID, String returnValue) {
+    public ReturnInstruction(String instructionID, String returnValueText) {
         super(instructionID);
-        this.returnValue = returnValue;
+        this.returnValueText = returnValueText;
     }
 
-    public String getReturnValue() {
-        return returnValue;
+    public String getReturnValueText() {
+        return returnValueText;
     }
 
-    public void setReturnValue(String returnValue) {
-        this.returnValue = returnValue;
+    public void setReturnValueText(String returnValueText) {
+        this.returnValueText = returnValueText;
     }
 
     public String getInstructionName() {
@@ -34,23 +33,25 @@ public class ReturnInstruction extends InstructionBase{
     }
 
     public String toString() {
-        return "return "+ (returnValue==null?"":returnValue);
+        return "return "+ (returnValueText ==null?"": returnValueText);
     }
 
-    public IJobRequest execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException ,JobCompleteException{
-        if(returnValue == null){
-            //set job return value to last instruction result;
+    public void execute(InstructionContext cmdContext) throws InstructionFailException, JobFailException ,JobCompleteException{
+        if(returnValueText == null){
+            //set job return value to last instruction resulthandler;
             int lastInstructionID = Integer.parseInt(getInstructionID())-1;
-            Object value = cmdContext.getSymbolTable().get(DeviceJobConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + Integer.toString(lastInstructionID));
-            cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_RETURNVALUE, value);
-        }else if(returnValue.startsWith(DeviceJobConstants.SYMBOLNAME_VARIABLE_PREFIX)){
-            Object value = cmdContext.getSymbolTable().get(returnValue);
-            if(value != null){
-                cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_RETURNVALUE, value);
-            }
+            Object value = cmdContext.getSymbolTable().get(InstructionConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + Integer.toString(lastInstructionID));
+            cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_RETURNVALUE, value);
         }else{
-            //value
-            cmdContext.getSymbolTable().put(DeviceJobConstants.SYMBOLNAME_RETURNVALUE, returnValue);
+            String resultText = null;
+            try {
+                resultText = InstructionUtil.populateTextWithVariableValue(returnValueText, cmdContext.getSymbolTable());
+            } catch (Exception e) {
+                throw new JobFailException("job failed for evaluate return value:" + e.getMessage());
+            }
+            if(resultText != null){
+                cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_RETURNVALUE, resultText);
+            }
         }
         //throw job complete exception to let job complete
         throw new JobCompleteException("returned");

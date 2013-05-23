@@ -7,7 +7,6 @@ import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.job.IDeviceJob;
-import org.slstudio.acs.tr069.job.request.IJobRequest;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
 import org.slstudio.acs.util.Tuple;
 import org.slstudio.acs.util.Tuple.Tuple2;
@@ -34,14 +33,14 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         //first handing running job
         IDeviceJob currentJob = findRunningJob(deviceKey);
 
-        IJobRequest jobRequest = null;
+        TR069Message jobRequest = null;
         //handle running job
         if(currentJob != null){
             jobRequest = handleRunningJob(context, currentJob);
         }
         //if get request then return it
         if(jobRequest != null){
-            return formatRequest(context,jobRequest);
+            return jobRequest;
         }
 
         //running job is waiting for some request(it is not finished and no request to send) then skip follow on checking
@@ -56,12 +55,12 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         //(notnull, null) means there is some job is running and waiting for some message(request) checking
         //(notnull, notnull) means there is some job is running and need send request for response
         //(null, notnull) means no job in dealing but has request to send, it is impossible
-        Tuple2<IDeviceJob, IJobRequest> result = fetchSystemJobAndExecute(context, deviceKey);
+        Tuple2<IDeviceJob, TR069Message> result = fetchSystemJobAndExecute(context, deviceKey);
         currentJob = result._1();
         jobRequest = result._2();
 
         if(jobRequest != null){
-            return formatRequest(context,jobRequest);
+            return jobRequest;
         }
         if(currentJob != null && currentJob.isRunning()){
             //currentJob is not isFinished, then do not need to beginRun next job;
@@ -73,12 +72,12 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         //(notnull, null) means there is some job is running and waiting for some message(request) checking
         //(notnull, notnull) means there is some job is running and need send request for response
         //(null, notnull) means no job in dealing but has request to send, it is impossible
-        Tuple2<IDeviceJob, IJobRequest> result2 = fetchUserJobAndExecute(context, deviceKey);
+        Tuple2<IDeviceJob, TR069Message> result2 = fetchUserJobAndExecute(context, deviceKey);
         currentJob = result2._1();
         jobRequest = result2._2();
 
         if(jobRequest != null){
-            return formatRequest(context,jobRequest);
+            return jobRequest;
         }
         if(currentJob != null && currentJob.isRunning()){
             //currentJob is not isFinished, then do not need to beginRun next job;
@@ -88,14 +87,14 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         return null;
     }
 
-    private Tuple2<IDeviceJob, IJobRequest> fetchSystemJobAndExecute(ITR069MessageContext context,String deviceKey) {
+    private Tuple2<IDeviceJob, TR069Message> fetchSystemJobAndExecute(ITR069MessageContext context,String deviceKey) {
         IDeviceJob currentJob = getJobManager().fetchSystemJob(deviceKey);
         //no job to exectue
         if(currentJob == null){
             return Tuple.tuple(null,null);
         }
         //handle job and get request
-        IJobRequest jobRequest = handleJob(currentJob, context, deviceKey);
+        TR069Message jobRequest = handleJob(currentJob, context, deviceKey);
 
         //has request, then return
         if(jobRequest != null){
@@ -113,14 +112,14 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         return fetchSystemJobAndExecute(context, deviceKey);
     }
 
-    private Tuple2<IDeviceJob, IJobRequest> fetchUserJobAndExecute(ITR069MessageContext context,String deviceKey) {
+    private Tuple2<IDeviceJob, TR069Message> fetchUserJobAndExecute(ITR069MessageContext context,String deviceKey) {
         IDeviceJob currentJob = getJobManager().fetchUserJob(deviceKey);
         //no job to exectue
         if(currentJob == null){
             return Tuple.tuple(null,null);
         }
         //handle job and get request
-        IJobRequest jobRequest = handleJob(currentJob, context, deviceKey);
+        TR069Message jobRequest = handleJob(currentJob, context, deviceKey);
 
         //has request, then return
         if(jobRequest != null){
@@ -138,8 +137,8 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         return fetchUserJobAndExecute(context, deviceKey);
     }
 
-    private IJobRequest handleJob(IDeviceJob currentJob, ITR069MessageContext context, String deviceKey) {
-        IJobRequest result = null;
+    private TR069Message handleJob(IDeviceJob currentJob, ITR069MessageContext context, String deviceKey) {
+        TR069Message result = null;
         try{
             if(currentJob.isReady()){
                 log.debug("job:" + currentJob.getJobID() + " for device:" + deviceKey + " is ready, begin run it");
@@ -151,7 +150,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
                 //impossible, should not happened
                 log.error("job:" + currentJob.getJobID() + "should not be finished status for device:" + deviceKey + " when handle empty message");
             }
-            log.debug("after handle empty message for job:"+ currentJob.getJobID() + ", get request:" + (result == null?"null":result.getTr069Request().toSOAPString()));
+            log.debug("after handle empty message for job:"+ currentJob.getJobID() + ", get request:" + (result == null?"null":result.toSOAPString()));
             if(currentJob.isFinished()){
                 log.debug("after handle empty message, job:" + currentJob.getJobID() + " has finished");
                 getJobManager().removeJob(currentJob);
@@ -165,8 +164,8 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
     }
 
     //handle running job , let it continue beginRun
-    private IJobRequest handleRunningJob(ITR069MessageContext context,IDeviceJob job) {
-        IJobRequest request = null;
+    private TR069Message handleRunningJob(ITR069MessageContext context,IDeviceJob job) {
+        TR069Message request = null;
         try{
             log.debug("continue running job:" + job.getJobID() + " with empty message");
             request = job.continueRun(context);
@@ -174,7 +173,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
                 log.debug("after continue running, job:"+ job.getJobID() + " has finished");
                 getJobManager().removeJob(job);
             }
-            log.debug("after handle empty message,job:"+ job.getJobID() + " get request:" + (request == null?"null":request.getTr069Request().toSOAPString()));
+            log.debug("after handle empty message,job:"+ job.getJobID() + " get request:" + (request == null?"null":request.toSOAPString()));
         }catch(Exception exp){
             log.error("when handle empty message,job:" + job.getJobID() + " failed for execution", exp);
             job.failOnException(exp);
@@ -206,9 +205,5 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
             //system job is running, no matter user job status
             return currentSystemJob;
         }
-    }
-
-    protected TR069Message formatRequest(ITR069MessageContext context, IJobRequest request){
-        return request == null?null:request.getTr069Request();
     }
 }

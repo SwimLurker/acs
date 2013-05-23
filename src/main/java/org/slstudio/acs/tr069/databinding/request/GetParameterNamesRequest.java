@@ -3,6 +3,7 @@ package org.slstudio.acs.tr069.databinding.request;
 import org.apache.axis2.databinding.utils.ConverterUtil;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
+import org.slstudio.acs.util.JSONUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,6 +44,14 @@ public class GetParameterNamesRequest extends TR069Message {
         result.append("<NextLevel>").append(ConverterUtil.convertToString(nextLevel)).append("</NextLevel>");
         result.append("</").append(TR069Constants.NAMESPACE_CWMP).append(":").append(getMessageName()).append(">");
         return result.toString();
+    }
+
+    public static void main(String[] args) {
+        GetParameterNamesRequest gpnr = new GetParameterNamesRequest();
+        gpnr.setParameterPath("InternetGateway.");
+        gpnr.setNextLevel(true);
+        System.out.println(JSONUtil.toJsonString(gpnr));
+        System.out.println(gpnr.toSOAPString());
     }
 }
 
