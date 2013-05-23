@@ -27,7 +27,7 @@ public class ParseMessagePipeline extends AbstractTR069Pipeline {
 
     @Override
     protected void process(ITR069MessageContext context) throws PipelineException {
-        InputStream is=(InputStream)context.getInputStream();
+        InputStream is = context.getInputStream();
         if(is==null){
             throw new ParseMessageException("Message inputstream can't be null");
         }
