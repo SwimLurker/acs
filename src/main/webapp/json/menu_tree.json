@@ -63,19 +63,19 @@
 		"id":51,
         "text":"View TR069 Logs",
         "attributes":{
-            "url":"/view_devices.html"
+            "url":"/pages/view_tr069_log.html"
         }
     },{
 		"id":52,
         "text":"View Messaging Logs",
         "attributes":{
-            "url":"/view_devices.html"
+            "url":"/pages/view_messaging_log.html"
         }
 	},{
 		"id":53,
-        "text":"View Session Logs",
+        "text":"View Pipeline Logs",
         "attributes":{
-            "url":"/view_devices.html"
+            "url":"/pages/view_pipeline_log.html"
         }
 	},{
 		"id":54,

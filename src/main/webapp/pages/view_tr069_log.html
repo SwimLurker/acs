@@ -1,0 +1,29 @@
+<div class="easyui-panel" id="lp_tr" title="View TR069 Logs" style="width:800px; height:500px;" >
+    <div style="padding:10px 0 10px 60px">
+        <textarea id="trlogcontent" style="width: 700px; height: 400px;"></textarea>
+    </div>
+</div>
+<script type="text/javascript" >
+    function updateTRLogContent() {
+        $.ajax({
+            url:"/webconsole/rest/log/?type=tr069message",
+            method: "GET",
+            success: function(result){
+                if(result.success){
+                    $('#trlogcontent').val(result.msg);
+                }else{
+                    $.messager.show({ // show error message
+                        title: 'Error',
+                        msg: data.msg
+                    });
+                }
+            }
+        });
+        if($('#maintabs').tabs('getTab','View TR069 Logs') != null){
+            setTimeout("updateTRLogContent()", 5000);
+        }
+    }
+    $(function(){
+        updateTRLogContent();
+    });
+</script>

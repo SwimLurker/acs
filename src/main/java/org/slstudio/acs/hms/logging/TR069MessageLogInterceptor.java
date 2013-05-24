@@ -57,7 +57,7 @@ public class TR069MessageLogInterceptor {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buf = new byte[1024];
             int readNum = -1;
-            while((readNum =is.read(buf))!=-1){
+            while((readNum =is.read(buf,0,1024))!=-1){
                 baos.write(buf, 0 ,readNum);
             }
             String result = baos.toString();

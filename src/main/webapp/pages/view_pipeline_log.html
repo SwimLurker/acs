@@ -1,0 +1,29 @@
+<div class="easyui-panel" id="lp_pipeline" title="View Pipeline Logs" style="width:800px; height:500px;" >
+    <div style="padding:10px 0 10px 60px">
+        <textarea id="pipelinelogcontent" style="width: 700px; height: 400px;"></textarea>
+    </div>
+</div>
+<script type="text/javascript" >
+    function updatePipelineLogContent() {
+        $.ajax({
+            url:"/webconsole/rest/log/?type=pipeline",
+            method: "GET",
+            success: function(result){
+                if(result.success){
+                    $('#pipelinelogcontent').val(result.msg);
+                }else{
+                    $.messager.show({ // show error message
+                        title: 'Error',
+                        msg: data.msg
+                    });
+                }
+            }
+        });
+        if($('#maintabs').tabs('getTab','View Pipeline Logs') != null){
+            setTimeout("updatePipelineLogContent()", 5000);
+        }
+    }
+    $(function(){
+        updatePipelineLogContent();
+    });
+</script>
