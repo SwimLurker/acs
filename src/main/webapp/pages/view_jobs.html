@@ -68,6 +68,14 @@
             <td><input name="completeTime" readonly> </td>
         </tr>
         <tr class="fitem">
+            <td style="width:150px;">Waiting Timeout:</td>
+            <td><input name="waitingTimeout" readonly> </td>
+        </tr>
+        <tr class="fitem">
+            <td style="width:150px;">Running Timeout:</td>
+            <td><input name="runningTimeout" readonly> </td>
+        </tr>
+        <tr class="fitem">
             <td style="width:150px;">Cached Request:</td>
             <td><textarea name="cachedRequest" readonly style="width:290px;height:80px;"> </textarea></td>
         </tr>
@@ -160,6 +168,8 @@
             createTime: row.createTime,
             beginTime: row.beginTime,
             completeTime: row.completeTime,
+            waitingTimeout: row.waitingTimeout,
+            runningTimeout: row.runningTimeout,
             cachedRequest: JSON.stringify(row.cachedRequest)});
         $('#pg_symboltable').propertygrid('loadData',{total:0,rows:[]});
         for(var item in row.symbolTable){
@@ -186,9 +196,11 @@
                 {field:'jobName',title:'Job Name',width:100, sortable:true},
                 {field:'deviceKey',title:'Device Key',width:100, sortable:true},
                 {field:'status',title:'Status',width:100, sortable:true},
-                {field:'createTime',title:'Create Time',width:200, sortable:true},
-                {field:'beginTime',title:'Begin Time',width:200, sortable:true},
-                {field:'completeTime',title:'Complete Time',width:200, sortable:true}
+                {field:'createTime',title:'Create Time',width:150, sortable:true},
+                {field:'beginTime',title:'Begin Time',width:150, sortable:true},
+                {field:'completeTime',title:'Complete Time',width:150, sortable:true},
+                {field:'waitingTimeout',title:'Waiting Timeout',width:100},
+                {field:'runningTimeout',title:'Running Timeout',width:100}
             ]],
             view: detailview,
             detailFormatter:function(index,row){
@@ -222,9 +234,11 @@
                 {field:'jobName',title:'Job Name',width:100, sortable:true},
                 {field:'deviceKey',title:'Device Key',width:100, sortable:true},
                 {field:'status',title:'Status',width:100, sortable:true},
-                {field:'createTime',title:'Create Time',width:200, sortable:true},
-                {field:'beginTime',title:'Begin Time',width:200, sortable:true},
-                {field:'completeTime',title:'Complete Time',width:200, sortable:true}
+                {field:'createTime',title:'Create Time',width:150, sortable:true},
+                {field:'beginTime',title:'Begin Time',width:150, sortable:true},
+                {field:'completeTime',title:'Complete Time',width:150, sortable:true},
+                {field:'waitingTimeout',title:'Waiting Timeout',width:100},
+                {field:'runningTimeout',title:'Running Timeout',width:100}
             ]],
             view: detailview,
             detailFormatter:function(index,row){

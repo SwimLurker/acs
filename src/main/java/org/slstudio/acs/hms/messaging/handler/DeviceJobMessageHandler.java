@@ -85,6 +85,8 @@ public class DeviceJobMessageHandler implements IMessageHandler{
         job.setJobID(jobBean.getJobID());
         job.setJobName(jobBean.getJobName());
         job.setCreateTime(new Date());
+        job.setWaitingTimeout(jobBean.getWaitingTimeout());
+        job.setRunningTimeout(jobBean.getRunningTimeout());
 
         List<IInstruction> instructionList = null;
         try{

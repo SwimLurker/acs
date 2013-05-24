@@ -25,7 +25,7 @@ public class ACSListener implements ServletContextListener {
 
         log.info("Start ACS Server...");
         //start acs server
-        ACSServer server= ACSServer.getInstance();
+        ACSServer server= (ACSServer) BeanLocator.getBean("acsServer");
         server.setAcsConfigFile(ACS_CONFIGFILE);
 
         server.start();
@@ -34,7 +34,7 @@ public class ACSListener implements ServletContextListener {
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         log.info("Stop ACS Server...");
-        ACSServer.getInstance().stop();
+        ((ACSServer) BeanLocator.getBean("acsServer")).stop();
         log.info("ACS Server Stopped!");
     }
 }

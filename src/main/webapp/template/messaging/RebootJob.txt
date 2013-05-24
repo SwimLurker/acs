@@ -1,1 +1,1 @@
-{"jobID":"1010","jobName":"reboot job","deviceKey":"FC1234567890","jobScript":"tr069 cmd reboot:{\"commandKey\":null}\r\nRET"}
+{"jobID":"1010","jobName":"reboot job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"tr069 cmd reboot:{\"commandKey\":null}\r\nRET"}

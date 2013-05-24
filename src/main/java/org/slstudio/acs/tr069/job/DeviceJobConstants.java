@@ -9,6 +9,9 @@ package org.slstudio.acs.tr069.job;
 public class DeviceJobConstants {
 
     public static final int ERRORCODE_NOERROR = 0;
-    public static final int ERRORCODE_MESSAGECHECKFAILED = -1;
-    public static final int ERRORCODE_MESSAGEIDERROR = -2;
+    public static final int ERRORCODE_UNKNOWNERROR = -1;
+    public static final int ERRORCODE_MESSAGECHECKFAILED = -2;
+    public static final int ERRORCODE_MESSAGEIDERROR = -3;
+    public static final int ERRORCODE_WAITINGTIMEOUT = -4;
+    public static final int ERRORCODE_RUNNINGTIMEOUT = -5;
 }

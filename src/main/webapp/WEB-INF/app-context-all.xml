@@ -32,6 +32,41 @@
         <property name="sessionManager" ref="sessionManager" />
         <property name="sessionIDManager" ref="sessionIDManager" />
     </bean>
-    <bean name="deviceManager" class="org.slstudio.acs.hms.device.MemoryDeviceManager" />
-    <bean name="jobManager" class="org.slstudio.acs.tr069.job.manager.MemoryJobManager" />
+    <bean id="deviceManager" class="org.slstudio.acs.hms.device.MemoryDeviceManager" />
+    <bean id="jobManager" class="org.slstudio.acs.tr069.job.manager.MemoryJobManager" />
+    <bean id="sessionMonitor" class="org.slstudio.acs.kernal.session.monitor.SessionMonitor">
+        <property name="sessionManager" ref="sessionManager" />
+        <property name="sessionIDManager" ref="sessionIDManager" />
+        <property name="sessionTimeout" value="60000" />
+        <property name="monitorInterval" value="20000" />
+    </bean>
+    <bean id="reservedDevices" class="java.util.HashSet">
+        <constructor-arg>
+            <set>
+                <value>FC1234567890</value>
+            </set>
+        </constructor-arg>
+    </bean>
+    <bean id="jobMonitor" class="org.slstudio.acs.tr069.job.monitor.JobMonitor">
+        <property name="jobManager" ref="jobManager" />
+        <property name="monitorInterval" value="60000" />
+        <property name="reservedDevices" ref="reservedDevices" />
+    </bean>
+    <!-- beans for acs server  -->
+    <bean id="messagingServiceServerListener" class="org.slstudio.acs.hms.lifecycle.MessagingServiceServerListener" />
+    <bean id="sessionMonitorServerListener" class="org.slstudio.acs.hms.lifecycle.SessionMonitorServerListener" />
+    <bean id="jobMonitorServerListener" class="org.slstudio.acs.hms.lifecycle.JobMonitorServerListener" />
+    <bean id="serverListenerList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="messagingServiceServerListener"/>
+                <ref bean="sessionMonitorServerListener" />
+                <ref bean="jobMonitorServerListener" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="acsServer" class="org.slstudio.acs.ACSServer" >
+        <property name="lifecycleListeners" ref="serverListenerList" />
+    </bean>
+
 </beans>

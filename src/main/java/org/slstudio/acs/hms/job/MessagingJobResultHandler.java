@@ -31,6 +31,7 @@ public class MessagingJobResultHandler implements IJobResultHandler {
         DeviceJobResultBean result = new DeviceJobResultBean();
         result.setJobID(job.getJobID());
         result.setJobName(job.getJobName());
+        result.setDeviceKey(job.getDeviceKey());
         result.setErrorCode(job.getErrorCode());
         result.setErrorMsg(job.getErrorMsg());
         try {
@@ -44,6 +45,7 @@ public class MessagingJobResultHandler implements IJobResultHandler {
         DeviceJobResultBean result = new DeviceJobResultBean();
         result.setJobID(job.getJobID());
         result.setJobName(job.getJobName());
+        result.setDeviceKey(job.getDeviceKey());
         result.setJobResult(job.getResult());
         try {
             sender.sendMessage(result);

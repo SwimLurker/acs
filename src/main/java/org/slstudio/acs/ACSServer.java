@@ -1,6 +1,5 @@
 package org.slstudio.acs;
 
-import org.slstudio.acs.hms.lifecycle.MessagingServiceServerListener;
 import org.slstudio.acs.kernal.lifecycle.ILifecycle;
 import org.slstudio.acs.kernal.lifecycle.ILifecycleListener;
 import org.slstudio.acs.kernal.lifecycle.LifecycleSupport;
@@ -25,16 +24,8 @@ public class ACSServer implements ILifecycle{
     private boolean bRunning = false;
     private LifecycleSupport lifecycle = null;
 
-    protected ACSServer(){
-        lifecycle =new LifecycleSupport(this);
-        addLifecycleListener(new MessagingServiceServerListener());
-    }
-
-    public static ACSServer getInstance(){
-        if(_instance == null){
-            _instance = new ACSServer();
-        }
-        return _instance;
+    public ACSServer() {
+        lifecycle = new LifecycleSupport(this);
     }
 
     public boolean isRunning() {
@@ -43,6 +34,14 @@ public class ACSServer implements ILifecycle{
 
     public void setAcsConfigFile(String acsConfigfile) {
 
+    }
+
+    public LifecycleSupport getLifecycle() {
+        return lifecycle;
+    }
+
+    public void setLifecycle(LifecycleSupport lifecycle) {
+        this.lifecycle = lifecycle;
     }
 
     public void addLifecycleListener(ILifecycleListener listener) {
@@ -57,6 +56,9 @@ public class ACSServer implements ILifecycle{
         return lifecycle.getLifecycleListeners();
     }
 
+    public void setLifecycleListeners( List<ILifecycleListener> listeners) {
+        lifecycle.setLifecycleListeners(listeners);
+    }
     public void start() {
         lifecycle.fireLifecycleEvent(BEFORE_START_EVENT, null);
         lifecycle.fireLifecycleEvent(START_EVENT, null);

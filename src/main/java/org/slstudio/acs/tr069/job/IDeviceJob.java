@@ -41,6 +41,14 @@ public interface IDeviceJob {
 
     public void setCompleteTime(Date completeTime);
 
+    public long getWaitingTimeout();
+
+    public void setWaitingTimeout(long waitingTimeout);
+
+    public long getRunningTimeout();
+
+    public void setRunningTimeout(long runningTimeout);
+
     public int getStatus();
 
     public void setStatus(int status);
@@ -74,6 +82,8 @@ public interface IDeviceJob {
     public void continueRunWithRequest(ITR069MessageContext context, TR069Message request) throws JobException;
 
     public void failOnException(Exception exp);
+
+    public void failOnTimeout(boolean bWaitingTimeout);
 
     public boolean isReady();
 

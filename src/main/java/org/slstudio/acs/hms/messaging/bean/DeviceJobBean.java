@@ -12,6 +12,8 @@ public class DeviceJobBean {
     private String jobID = null;
     private String jobName = null;
     private String deviceKey = null;
+    private long waitingTimeout = -1;
+    private long runningTimeout = -1;
     private String jobScript = null;
 
     public String getJobID() {
@@ -36,6 +38,22 @@ public class DeviceJobBean {
 
     public void setDeviceKey(String deviceKey) {
         this.deviceKey = deviceKey;
+    }
+
+    public long getWaitingTimeout() {
+        return waitingTimeout;
+    }
+
+    public void setWaitingTimeout(long waitingTimeout) {
+        this.waitingTimeout = waitingTimeout;
+    }
+
+    public long getRunningTimeout() {
+        return runningTimeout;
+    }
+
+    public void setRunningTimeout(long runningTimeout) {
+        this.runningTimeout = runningTimeout;
     }
 
     public String getJobScript() {

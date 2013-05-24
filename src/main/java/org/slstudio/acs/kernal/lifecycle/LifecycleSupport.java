@@ -46,4 +46,8 @@ public class LifecycleSupport {
     public List<ILifecycleListener> getLifecycleListeners() {
         return listeners;
     }
+
+    public void setLifecycleListeners(List<ILifecycleListener> listeners) {
+        this.listeners = listeners;
+    }
 }

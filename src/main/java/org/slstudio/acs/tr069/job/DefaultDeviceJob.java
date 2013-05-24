@@ -52,6 +52,10 @@ public class DefaultDeviceJob implements IDeviceJob {
     @JsonSerialize(using = CustomDateSerializer.class)
     @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date completeTime;
+
+    private long waitingTimeout = -1;
+    private long runningTimeout = -1;
+
     private int status = STATUS_READY;
 
     private List<IJobResultHandler> resultHandlerList = new ArrayList<IJobResultHandler>();
@@ -115,6 +119,22 @@ public class DefaultDeviceJob implements IDeviceJob {
 
     public void setCompleteTime(Date completeTime) {
         this.completeTime = completeTime;
+    }
+
+    public long getWaitingTimeout() {
+        return waitingTimeout;
+    }
+
+    public void setWaitingTimeout(long waitingTimeout) {
+        this.waitingTimeout = waitingTimeout;
+    }
+
+    public long getRunningTimeout() {
+        return runningTimeout;
+    }
+
+    public void setRunningTimeout(long runningTimeout) {
+        this.runningTimeout = runningTimeout;
     }
 
     public void addResultHandler(IJobResultHandler resultHandler) {
@@ -390,8 +410,21 @@ public class DefaultDeviceJob implements IDeviceJob {
 
     public void failOnException(Exception exp) {
         setStatus(STATUS_FAILED);
+        setErrorCode(DeviceJobConstants.ERRORCODE_UNKNOWNERROR);
+        setErrorMsg(exp.getMessage());
         setCompleteTime(new Date());
         log.error("job:"+ jobID + " has failed for exception", exp);
+        for(IJobResultHandler handler: resultHandlerList){
+            handler.onFailed(this);
+        }
+    }
+
+    public void failOnTimeout(boolean bWaitingTimeout) {
+        setStatus(STATUS_FAILED);
+        setErrorCode(bWaitingTimeout?DeviceJobConstants.ERRORCODE_WAITINGTIMEOUT:DeviceJobConstants.ERRORCODE_RUNNINGTIMEOUT);
+        setErrorMsg(bWaitingTimeout?"Waiting timeout for execution":"Running timeout");
+        setCompleteTime(new Date());
+        log.error("job:"+ jobID + " has failed for timeout:" + (bWaitingTimeout?"waiting timeout":"running timeout"));
         for(IJobResultHandler handler: resultHandlerList){
             handler.onFailed(this);
         }

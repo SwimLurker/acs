@@ -1,1 +1,1 @@
-{"jobID":"3001","jobName":"assignment job","deviceKey":"FC1234567890","jobScript":"set $A=123\r\nset $B={$A}\r\nRET {$B}"}
+{"jobID":"3001","jobName":"assignment job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $A=123\r\nset $B={$A}\r\nRET {$B}"}

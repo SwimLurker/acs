@@ -1,1 +1,1 @@
-{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","errorCode":0,"errorMsg":null,"jobResult":{"messageID":"1_3","parameterList":[{"name":"InternetGatewayDevice.ManagementServer.PeriodicInformInterval","value":160}]}}
+{"jobID":"1","jobName":"job name value","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"errorCode":0,"errorMsg":null,"jobResult":{"messageID":"1_3","parameterList":[{"name":"InternetGatewayDevice.ManagementServer.PeriodicInformInterval","value":160}]}}

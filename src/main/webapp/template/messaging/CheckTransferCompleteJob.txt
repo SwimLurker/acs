@@ -1,1 +1,1 @@
-{"jobID":"2002","jobName":"check transfer complete job","deviceKey":"FC1234567890","jobScript":"tr069 check type:TransferComplete\r\nRET"}
+{"jobID":"2002","jobName":"check transfer complete job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"tr069 check type:TransferComplete\r\nRET"}
