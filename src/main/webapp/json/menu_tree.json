@@ -79,9 +79,9 @@
         }
 	},{
 		"id":54,
-        "text":"View Job Logs",
+        "text":"View Session Logs",
         "attributes":{
-            "url":"/view_devices.html"
+            "url":"/pages/view_session_log.html"
         }
 	},{
 		"id":55,

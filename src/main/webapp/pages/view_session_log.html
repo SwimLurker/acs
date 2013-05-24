@@ -1,0 +1,29 @@
+<div class="easyui-panel" id="lp_pipeline" title="View Session Logs" style="width:800px; height:500px;" >
+    <div style="padding:10px 0 10px 60px">
+        <textarea id="sessionlogcontent" style="width: 700px; height: 400px;"></textarea>
+    </div>
+</div>
+<script type="text/javascript" >
+    function updateSessionLogContent() {
+        $.ajax({
+            url:"/webconsole/rest/log/?type=session",
+            method: "GET",
+            success: function(result){
+                if(result.success){
+                    $('#sessionlogcontent').val(result.msg);
+                }else{
+                    $.messager.show({ // show error message
+                        title: 'Error',
+                        msg: data.msg
+                    });
+                }
+            }
+        });
+        if($('#maintabs').tabs('getTab','View Session Logs') != null){
+            setTimeout("updateSessionLogContent()", 5000);
+        }
+    }
+    $(function(){
+        updateSessionLogContent();
+    });
+</script>
