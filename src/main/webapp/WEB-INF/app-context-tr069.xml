@@ -203,6 +203,7 @@
         <property name="pipelines" ref="testEnginePipelineList" />
     </bean>
 
+    <!-- beans for job runner -->
     <bean id="jmsJobResultHandler" class="org.slstudio.acs.hms.job.MessagingJobResultHandler">
         <property name="sender" ref="deviceJobResultSender" />
     </bean>
@@ -220,8 +221,30 @@
     <bean id="jobRunner" class="org.slstudio.acs.tr069.job.runner.JobRunner">
         <property name="resultHandlerList" ref="jobResultHandlerList"  />
     </bean>
-    <!-- beans for request message dealer -->
 
+    <!-- beans for alarm event listener -->
+    <bean id="alarmParameterSet" class="java.util.HashSet" >
+        <constructor-arg>
+            <set>
+                <value>ALARM_PARAMETER_NAME</value>
+            </set>
+        </constructor-arg>
+    </bean>
+    <bean id="alarmDictionary" class="org.slstudio.acs.hms.alarm.AlarmParameterDictionary">
+        <property name="alarmParameterSet" ref="alarmParameterSet" />
+    </bean>
+    <bean id="alarmReportEventListener" class="org.slstudio.acs.hms.event.AlarmReportListener">
+        <property name="alarmDictionary"  ref="alarmDictionary"/>
+        <property name="alarmSender" ref="eventSender" />
+    </bean>
+    <bean id="informEventListener" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="alarmReportEventListener" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <!-- beans for request message dealer -->
     <bean id="saveInformInfoPlugin" class="org.slstudio.acs.tr069.messagedealer.plugin.SaveInformInfoPlugin" />
     <bean id="checkDevicePlugin" class="org.slstudio.acs.hms.messagedealer.plugin.CheckDevicePlugin">
         <property name="deviceManager" ref="deviceManager" />
@@ -236,8 +259,9 @@
     </bean>
     <bean id="InformDealer" class="org.slstudio.acs.tr069.messagedealer.request.InformRequestDealer">
         <property name="jobManager" ref="jobManager" />
-        <property name="prePlugins" ref="informPrePluginList" />
         <property name="jobRunner" ref="jobRunner" />
+        <property name="prePlugins" ref="informPrePluginList" />
+        <property name="eventListeners" ref="informEventListener" />
     </bean>
     <bean id="TransferCompleteDealer" class="org.slstudio.acs.tr069.messagedealer.request.TransferCompleteRequestDealer">
         <property name="jobManager" ref="jobManager" />

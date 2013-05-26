@@ -18,6 +18,10 @@
 					<EventCode>0 BOOTSTRAP</EventCode>
 					<CommandKey></CommandKey>
 				</EventStruct>
+				<EventStruct>
+                    <EventCode>4 VALUE CHANGE</EventCode>
+                    <CommandKey></CommandKey>
+                </EventStruct>
 			</Event>
 			<MaxEnvelopes>1</MaxEnvelopes>
 			<CurrentTime>2012-08-15T01:43:47</CurrentTime>
@@ -47,6 +51,10 @@
 					<Name>InternetGatewayDevice.ManagementServer.ConnectionRequestURL</Name>
 					<Value xsi:type="xsd:string">http://192.168.1.115:9892/acscall</Value>
 				</ParameterValueStruct>
+				<ParameterValueStruct>
+                    <Name>ALARM_PARAMETER_NAME</Name>
+                    <Value xsi:type="xsd:string">test value</Value>
+                </ParameterValueStruct>
 			</ParameterList>
 		</cwmp:Inform>
 	</SOAP-ENV:Body>

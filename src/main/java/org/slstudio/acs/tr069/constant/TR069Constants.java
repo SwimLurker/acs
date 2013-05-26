@@ -180,4 +180,20 @@ public class TR069Constants {
     public static final String TR069_PARAM_CONNECTIONREQUEST_USERNAME = "InternetGatewayDevice.ManagementServer.ConnectionRequestUsername";
     public static final String TR069_PARAM_CONNECTIONREQUEST_PASSWORD = "InternetGatewayDevice.ManagementServer.ConnectionRequestPassword";
 
+    public static final String INFORM_EVENT_BOOTSTRAP="0 BOOTSTRAP";
+    public static final String INFORM_EVENT_BOOT="1 BOOT";
+    public static final String INFORM_EVENT_PERIODIC="2 PERIODIC";
+    public static final String INFORM_EVENT_SCHEDULED="3 SCHEDULED";
+    public static final String INFORM_EVENT_VALUE_CHANGE="4 VALUE CHANGE";
+    public static final String INFORM_EVENT_KICKED="5 KICKED";
+    public static final String INFORM_EVENT_CONNECTION_REQUEST="6 CONNECTION REQUEST";
+    public static final String INFORM_EVENT_TRANSFER_COMPLETE="7 TRANSFER COMPLETE";
+    public static final String INFORM_EVENT_DIAGNOSTICS_COMPLETE="8 DIAGNOSTICS COMPLETE";
+    public static final String INFORM_EVENT_REQUEST_DOWNLOAD ="9 REQUEST DOWNLOAD";
+    public static final String INFORM_EVENT_AUTONOMOUS_TRANSFER_COMPLETE ="10 AUTONOMOUS TRANSFER COMPLETE";
+
+    public static final String INFORM_EVENT_M_REBOOT = "M Reboot";
+    public static final String INFORM_EVENT_M_SCHEDULE_INFORM = "M ScheduleInform";
+    public static final String INFORM_EVENT_M_DOWNLOAD = "M Download";
+    public static final String INFORM_EVENT_UPLOAD = "M Upload";
 }

@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.tr069.constant.TR069Constants;
 import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.event.DefaultTR069Event;
-import org.slstudio.acs.tr069.event.IRequestEventListener;
+import org.slstudio.acs.tr069.event.IMessageEventListener;
 import org.slstudio.acs.tr069.event.ITR069Event;
 import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.fault.FaultUtil;
@@ -38,7 +38,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
 
     private List<IPreDealMessagePlugin> prePlugins = new ArrayList<IPreDealMessagePlugin>();
     private List<IPostDealMessagePlugin> postPlugins = new ArrayList<IPostDealMessagePlugin>();
-    private List<IRequestEventListener> listeners = new ArrayList<IRequestEventListener>();
+    private List<IMessageEventListener> eventListeners = new ArrayList<IMessageEventListener>();
 
     public IJobManager getJobManager() {
         return jobManager;
@@ -72,12 +72,12 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         this.postPlugins = postPlugins;
     }
 
-    public List<IRequestEventListener> getListeners() {
-        return listeners;
+    public List<IMessageEventListener> getEventListeners() {
+        return eventListeners;
     }
 
-    public void setListeners(List<IRequestEventListener> listeners) {
-        this.listeners = listeners;
+    public void setEventListeners(List<IMessageEventListener> eventListeners) {
+        this.eventListeners = eventListeners;
     }
 
     public void deal(ITR069MessageContext context, SOAPMessage message) throws TR069Fault{
@@ -101,7 +101,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         callPostDealMessagePlugins(context, message, tr069Message);
 
         //fire event
-        fireRequestEvent(context, tr069Message);
+        fireMessageEvent(context, tr069Message);
 
     }
 
@@ -135,10 +135,10 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
         }
     }
 
-    private void fireRequestEvent(ITR069MessageContext context, TR069Message message) {
-        for(IRequestEventListener listener: listeners){
+    private void fireMessageEvent(ITR069MessageContext context, TR069Message message) {
+        for(IMessageEventListener listener: eventListeners){
             ITR069Event event = createMessageEvent(context, message);
-            listener.onRequest(event);
+            listener.onEvent(event);
         }
     }
 
