@@ -1,7 +1,6 @@
 package org.slstudio.acs.tr069.instruction.extension;
 
 import edu.emory.mathcs.backport.java.util.Collections;
-import org.slstudio.acs.tr069.instruction.extension.func.FunctionInstructionExtension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,13 +12,17 @@ import java.util.Map;
  * Time: ÉÏÎç12:19
  */
 public class InstructionExtensionFactory {
-    private static Map<String, IInstructionExtension> extensionMap = Collections.synchronizedMap(new HashMap<String, IInstructionExtension>());
+    private Map<String, IInstructionExtension> extensionMap = Collections.synchronizedMap(new HashMap<String, IInstructionExtension>());
 
-    static {
-        extensionMap.put("FUNC", new FunctionInstructionExtension());
+    public Map<String, IInstructionExtension> getExtensionMap() {
+        return extensionMap;
     }
 
-    public static IInstructionExtension getExtension(String type) {
+    public void setExtensionMap(Map<String, IInstructionExtension> extensionMap) {
+        this.extensionMap = extensionMap;
+    }
+
+    public IInstructionExtension getExtension(String type) {
         return extensionMap.get(type.toUpperCase());
     }
 }

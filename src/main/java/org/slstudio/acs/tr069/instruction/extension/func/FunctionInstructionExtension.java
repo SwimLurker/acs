@@ -1,14 +1,10 @@
 package org.slstudio.acs.tr069.instruction.extension.func;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.slstudio.acs.tr069.exception.InstructionException;
 import org.slstudio.acs.tr069.instruction.IInstruction;
 import org.slstudio.acs.tr069.instruction.InstructionConstants;
 import org.slstudio.acs.tr069.instruction.extension.IInstructionExtension;
 import org.slstudio.acs.util.Tuple;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,11 +13,14 @@ import java.util.Map;
  * Time: ÉÏÎç3:07
  */
 public class FunctionInstructionExtension implements IInstructionExtension {
-    private static Map<String,IFunction> functionMap = Collections.synchronizedMap(new HashMap<String, IFunction>());
-    static {
-        functionMap.put("ADD", new AddFunction());
-        functionMap.put("MINUS", new MinusFunction());
-        functionMap.put("PRODUCT", new ProductFunction());
+    private FunctionFactory functionFactory = null;
+
+    public FunctionFactory getFunctionFactory() {
+        return functionFactory;
+    }
+
+    public void setFunctionFactory(FunctionFactory functionFactory) {
+        this.functionFactory = functionFactory;
     }
 
     public IInstruction createInstruction(String instructionString, int instructionID) throws InstructionException{
@@ -30,7 +29,7 @@ public class FunctionInstructionExtension implements IInstructionExtension {
             throw new InstructionException("unknown function expression");
         }
         String funcName = nameAndArgs._1();
-        IFunction func = functionMap.get(funcName.toUpperCase());
+        IFunction func = functionFactory.createFunction(funcName.toUpperCase());
         if(func == null){
             throw new InstructionException("unknown function name");
         }

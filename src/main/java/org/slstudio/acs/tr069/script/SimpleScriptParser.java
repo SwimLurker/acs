@@ -7,6 +7,7 @@ import org.slstudio.acs.tr069.instruction.checkrule.ITR069MessageCheckRule;
 import org.slstudio.acs.tr069.instruction.checkrule.TR069MessageCheckRuleFactory;
 import org.slstudio.acs.tr069.instruction.extension.IInstructionExtension;
 import org.slstudio.acs.tr069.instruction.extension.InstructionExtensionFactory;
+import org.slstudio.acs.util.BeanLocator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -187,7 +188,7 @@ public class SimpleScriptParser implements IScriptParser {
         String r[] = instructionText.split(" ", 2);
         String type = r[0];
         String args = r[1].trim();
-        IInstructionExtension extension = InstructionExtensionFactory.getExtension(type);
+        IInstructionExtension extension = ((InstructionExtensionFactory)BeanLocator.getBean("instructionExtensionFactory")).getExtension(type);
         if(extension == null){
             throw new ParseScriptException("Unknown exection Instruction");
         }

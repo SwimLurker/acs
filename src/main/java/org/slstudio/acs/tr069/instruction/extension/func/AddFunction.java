@@ -10,7 +10,7 @@ import org.slstudio.acs.tr069.util.InstructionUtil;
  * Date: 13-5-25
  * Time: ионГ3:26
  */
-public class AddFunction implements IFunction {
+public class AddFunction implements IFunction{
     private String arg1 = null;
     private String arg2 = null;
 
@@ -37,6 +37,10 @@ public class AddFunction implements IFunction {
 
     public String getName() {
         return "ADD";
+    }
+
+    public IFunction newInstance() {
+        return new AddFunction();
     }
 
     public String toString(){

@@ -10,7 +10,7 @@ import org.slstudio.acs.tr069.util.InstructionUtil;
  * Date: 13-5-25
  * Time: ионГ4:08
  */
-public class ProductFunction implements IFunction {
+public class ProductFunction implements IFunction , Cloneable{
     private String arg1 = null;
     private String arg2 = null;
 
@@ -37,6 +37,10 @@ public class ProductFunction implements IFunction {
 
     public String getName() {
         return "PRODUCT";
+    }
+
+    public IFunction newInstance() {
+        return new ProductFunction();
     }
 
     public String toString(){

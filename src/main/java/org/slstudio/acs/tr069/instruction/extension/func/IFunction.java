@@ -13,4 +13,5 @@ public interface IFunction {
     public void setArgs(String [] args) throws InstructionException;
     public String execute(InstructionContext context) throws InstructionException;
     public String getName();
+    public IFunction newInstance();
 }
