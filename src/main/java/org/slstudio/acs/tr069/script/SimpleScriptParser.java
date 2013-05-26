@@ -1,5 +1,6 @@
 package org.slstudio.acs.tr069.script;
 
+import org.slstudio.acs.tr069.exception.InstructionException;
 import org.slstudio.acs.tr069.exception.ParseScriptException;
 import org.slstudio.acs.tr069.instruction.*;
 import org.slstudio.acs.tr069.instruction.checkrule.ITR069MessageCheckRule;
@@ -190,7 +191,13 @@ public class SimpleScriptParser implements IScriptParser {
         if(extension == null){
             throw new ParseScriptException("Unknown exection Instruction");
         }
-        IInstruction result =  extension.createInstruction(args, currentInstructionID);
+        IInstruction result = null;
+        try {
+            result = extension.createInstruction(args, currentInstructionID);
+        } catch (InstructionException e) {
+            e.printStackTrace();
+            throw new ParseScriptException("uncorrect instruction format", e);
+        }
         currentInstructionID++;
         return result;
     }

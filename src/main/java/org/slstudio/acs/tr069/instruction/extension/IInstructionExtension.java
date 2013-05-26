@@ -1,5 +1,6 @@
 package org.slstudio.acs.tr069.instruction.extension;
 
+import org.slstudio.acs.tr069.exception.InstructionException;
 import org.slstudio.acs.tr069.instruction.IInstruction;
 
 /**
@@ -9,5 +10,5 @@ import org.slstudio.acs.tr069.instruction.IInstruction;
  * Time: ионГ12:18
  */
 public interface IInstructionExtension {
-    IInstruction createInstruction(String args, int commandID);
+    IInstruction createInstruction(String args, int instructionID) throws InstructionException;
 }

@@ -18,6 +18,15 @@ import org.slstudio.acs.tr069.soap.SOAPUtil;
  */
 public class FinalizePipeline extends AbstractTR069Pipeline {
     private ISessionManager sessionManager = null;
+
+    public ISessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(ISessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
     @Override
     protected void process(ITR069MessageContext context) throws PipelineException {
         ISessionContext sessionContext = context.getSessionContext();

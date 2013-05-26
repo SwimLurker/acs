@@ -15,6 +15,9 @@ import org.slstudio.acs.tr069.job.resulthandler.IJobResultHandler;
 public class MessagingJobResultHandler implements IJobResultHandler {
     private IMessageSender sender = null;
 
+    public MessagingJobResultHandler() {
+    }
+
     public MessagingJobResultHandler(IMessageSender sender) {
         this.sender = sender;
     }

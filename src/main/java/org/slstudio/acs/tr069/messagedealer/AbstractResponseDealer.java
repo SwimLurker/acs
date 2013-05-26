@@ -26,16 +26,12 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
         //get job id from response id
         String jobID = getJobIDByResponseID(responseID);
 
-        //find related job, first search system job then user job
-        IDeviceJob currentJob = findJob(deviceKey, jobID);
-        if(currentJob == null){
-            // no job is running or can not find job for some reason, then fetch a running job
-            currentJob = findRunningJob(deviceKey);
-            if(currentJob == null) {
-                log.debug("can not find job:" + jobID + ", for device:" + deviceKey + " when handle response:" + responseID);
-                return null;
-            }
+        IDeviceJob currentJob = findRunningJob(deviceKey);
+        if(currentJob == null) {
+            log.debug("can not find running job for device:" + deviceKey + " when handle response:" + responseID);
+            return null;
         }
+
         return handleJob(currentJob,context, response);
     }
 
@@ -44,7 +40,7 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
         try{
             if(job.isRunning()){
                 log.debug("job:" + job.getJobID() + "for device:" + job.getDeviceKey() + " continue run with response:" + response.getMessageID());
-                result = job.continueRunWithResponse(context, response);
+                result = getJobRunner().continueRunWithResponse(job, context, response);
             }else if(job.isReady()){
                 //impossible, should not happened, just return null to let further message deal
                 log.error("job:" + job.getJobID() + "should not be ready status for device:" + job.getDeviceKey() + " when handle response:" + response.getMessageID());
@@ -56,10 +52,10 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
                 log.debug("after handle response:" + response.getMessageID() +", job:"+ job.getJobID() + " for device:" + job.getDeviceKey() + " has finished");
                 getJobManager().removeJob(job);
             }
-            log.debug("after handle empty message for job:"+ job.getJobID() + ", get request:" + (result == null?"null":result.toSOAPString()));
+            log.debug("after handle response:" + response.getMessageID() + " for job:"+ job.getJobID() + ", get request:" + (result == null?"null":result.toSOAPString()));
         }catch (Exception exp){
             log.error("when handle response:" + response.getMessageID() + ",job:" + job.getJobID() + " failed for execution",exp);
-            job.failOnException(exp);
+            getJobRunner().failOnException(job, exp);
             getJobManager().removeJob(job);
         }
         return result;
@@ -104,18 +100,6 @@ public abstract class AbstractResponseDealer extends AbstractMessageDealer {
             return null;
         }
         return jobID;
-    }
-
-    private IDeviceJob findJob(String deviceKey, String jobID) {
-        if(jobID == null || deviceKey == null){
-            return null;
-        }
-        IDeviceJob result = null;
-        result = getJobManager().findSystemJob(deviceKey, jobID);
-        if(result == null){
-            result = getJobManager().findUserJob(deviceKey, jobID);
-        }
-        return result;
     }
 
 }

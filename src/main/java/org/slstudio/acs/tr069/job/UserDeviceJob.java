@@ -7,7 +7,5 @@ package org.slstudio.acs.tr069.job;
  * Time: обнГ12:17
  */
 public class UserDeviceJob extends DefaultDeviceJob implements IUserDeviceJob {
-    public UserDeviceJob(String deviceKey, String jobID) {
-        super(deviceKey, jobID);
-    }
+
 }

@@ -1,0 +1,1 @@
+{"jobID":"5002","jobName":"minus function job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $A=5\r\nset $B=2\r\nexec func MINUS({$A},{$B})\r\nRET"}

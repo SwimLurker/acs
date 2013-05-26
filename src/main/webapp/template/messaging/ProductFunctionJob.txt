@@ -1,0 +1,1 @@
+{"jobID":"5003","jobName":"product function job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $A=5\r\nset $B=2\r\nexec func PRODUCT({$A},{$B})\r\nRET"}

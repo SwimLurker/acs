@@ -2,6 +2,7 @@ package org.slstudio.acs.tr069.databinding;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.codehaus.jackson.type.TypeReference;
+import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.databinding.request.*;
 import org.slstudio.acs.tr069.databinding.response.*;
 import org.slstudio.acs.util.JSONUtil;

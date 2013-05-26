@@ -19,6 +19,10 @@ public class InstructionConstants {
     public static final String SYMBOLNAME_RETURNVALUE = "$$_RET";
     public static final String SYMBOLNAME_ERRORCODE = "$$_ERRORCODE";
     public static final String SYMBOLNAME_ERRORMSG = "$$_ERRORMSG";
+    public static final String SYMBOLNAME_FUNCARGS_PREFIX = "(";
+    public static final String SYMBOLNAME_FUNCARGS_POSTFIX = ")";
+    public static final String SYMBOLNAME_FUNCARGS_SEPERATOR = ",";
+
     public static final String INSTRUCTION_TYPE_RETURN = "RET";
     public static final String INSTRUCTION_TYPE_ASSIGN = "SET";
     public static final String INSTRUCTION_TYPE_TR069 = "TR069";

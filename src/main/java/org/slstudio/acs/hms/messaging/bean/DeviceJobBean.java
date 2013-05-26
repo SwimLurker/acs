@@ -1,5 +1,6 @@
 package org.slstudio.acs.hms.messaging.bean;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.slstudio.acs.util.JSONUtil;
 
 /**
@@ -8,7 +9,9 @@ import org.slstudio.acs.util.JSONUtil;
  * Date: 13-5-14
  * Time: ионГ2:42
  */
+@JsonAutoDetect
 public class DeviceJobBean {
+
     private String jobID = null;
     private String jobName = null;
     private String deviceKey = null;

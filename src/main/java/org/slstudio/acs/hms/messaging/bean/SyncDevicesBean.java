@@ -1,5 +1,6 @@
 package org.slstudio.acs.hms.messaging.bean;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.slstudio.acs.hms.device.DeviceInfo;
 import org.slstudio.acs.util.JSONUtil;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * Date: 13-5-10
  * Time: ионГ1:11
  */
+@JsonAutoDetect
 public class SyncDevicesBean {
     public static final int COMMAND_SYNC = 0;
     public static final int COMMAND_ADD = 1;
@@ -18,6 +20,7 @@ public class SyncDevicesBean {
     public static final int COMMAND_CLEAR = 3;
 
     private int command = COMMAND_SYNC;
+
     private List<DeviceInfo>  deviceList = null;
 
     public SyncDevicesBean() {

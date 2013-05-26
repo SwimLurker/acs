@@ -142,10 +142,10 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         try{
             if(currentJob.isReady()){
                 log.debug("job:" + currentJob.getJobID() + " for device:" + deviceKey + " is ready, begin run it");
-                result = currentJob.beginRun(context);
+                result = getJobRunner().beginRun(currentJob,context);
             }else if(currentJob.isRunning()){
                 log.debug("job:" + currentJob.getJobID() + " for device:" + deviceKey +" is running, continue run it");
-                result = currentJob.continueRun(context);
+                result = getJobRunner().continueRun(currentJob,context);
             } if(currentJob.isFinished()){
                 //impossible, should not happened
                 log.error("job:" + currentJob.getJobID() + "should not be finished status for device:" + deviceKey + " when handle empty message");
@@ -157,7 +157,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
             }
         }catch(Exception exp){
             log.error("when handle empty message,job:" + currentJob.getJobID() + " failed for execution",exp);
-            currentJob.failOnException(exp);
+            getJobRunner().failOnException(currentJob, exp);
             getJobManager().removeJob(currentJob);
         }
         return result;
@@ -168,7 +168,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
         TR069Message request = null;
         try{
             log.debug("continue running job:" + job.getJobID() + " with empty message");
-            request = job.continueRun(context);
+            request = getJobRunner().continueRun(job, context);
             if(job.isFinished()){
                 log.debug("after continue running, job:"+ job.getJobID() + " has finished");
                 getJobManager().removeJob(job);
@@ -176,7 +176,7 @@ public class EmptyMessageDealer extends AbstractMessageDealer {
             log.debug("after handle empty message,job:"+ job.getJobID() + " get request:" + (request == null?"null":request.toSOAPString()));
         }catch(Exception exp){
             log.error("when handle empty message,job:" + job.getJobID() + " failed for execution", exp);
-            job.failOnException(exp);
+            getJobRunner().failOnException(job, exp);
             getJobManager().removeJob(job);
         }
         return request;

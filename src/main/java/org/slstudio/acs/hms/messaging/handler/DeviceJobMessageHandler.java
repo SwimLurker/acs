@@ -5,16 +5,15 @@ import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.hms.device.DeviceInfo;
 import org.slstudio.acs.hms.device.IDeviceManager;
 import org.slstudio.acs.hms.exception.MessagingException;
-import org.slstudio.acs.hms.job.MessagingJobResultHandler;
 import org.slstudio.acs.hms.messaging.bean.DeviceJobBean;
 import org.slstudio.acs.hms.messaging.bean.DeviceJobResultBean;
 import org.slstudio.acs.hms.messaging.sender.IMessageSender;
 import org.slstudio.acs.tr069.exception.ParseScriptException;
 import org.slstudio.acs.tr069.instruction.IInstruction;
-import org.slstudio.acs.tr069.job.UserDeviceJob;
+import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.job.manager.IJobManager;
-import org.slstudio.acs.tr069.job.resulthandler.DebugJobResultHandler;
 import org.slstudio.acs.tr069.script.IScriptParser;
+import org.slstudio.acs.util.BeanLocator;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -80,8 +79,9 @@ public class DeviceJobMessageHandler implements IMessageHandler{
             return;
         }
 
-        UserDeviceJob job = new UserDeviceJob(deviceKey, jobBean.getJobID());
+        IDeviceJob job = (IDeviceJob)BeanLocator.getBean("deviceJob");
 
+        job.setDeviceKey(deviceKey);
         job.setJobID(jobBean.getJobID());
         job.setJobName(jobBean.getJobName());
         job.setCreateTime(new Date());
@@ -104,10 +104,8 @@ public class DeviceJobMessageHandler implements IMessageHandler{
             job.getInstructionQueue().push(instruction);
         }
 
-        job.addResultHandler(new MessagingJobResultHandler(jobResultSender));
-        job.addResultHandler(new DebugJobResultHandler());
-        jobManager.addUserJob(job);
-        log.debug("handle job message successfully");
+        jobManager.addJob(job);
+        log.debug("handle job message successfully, add job:" + job.getJobID());
     }
 
     private void sendJobFailResult(DeviceJobBean jobBean, int errorCode, String errorMsg) throws MessagingException{

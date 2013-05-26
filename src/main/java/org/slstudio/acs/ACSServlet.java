@@ -33,7 +33,8 @@ public class ACSServlet  extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        if(!ACSServer.getInstance().isRunning()){
+
+        if(!((ACSServer)BeanLocator.getBean("acsServer")).isRunning()){
             log.error("ACS Server is not running");
             throw new ServletException("ACS Server is not running");
         }

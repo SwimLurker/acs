@@ -6,6 +6,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.type.TypeReference;
 import org.slstudio.acs.hms.exception.MessagingException;
 
@@ -24,8 +25,11 @@ public abstract class JSONObjectMapperBase<T> implements IObjectMapper {
 
     public JSONObjectMapperBase() {
         mapper = new ObjectMapper();
-        mapper.setVisibility(JsonMethod.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.setVisibility(JsonMethod.GETTER, JsonAutoDetect.Visibility.ANY);
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, false);
+        mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+        mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+
     }
 
     @SuppressWarnings("unchecked")

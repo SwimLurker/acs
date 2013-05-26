@@ -40,7 +40,8 @@
             '{"value":"setpa","text":"SetParameterAttributes Job"},{"value":"download","text":"Download Job"},{"value":"upload","text":"Upload Job"},' +
             '{"value":"reboot","text":"Reboot Job"},{"value":"factoryreset","text":"FactoryReset Job"},{"value":"getmethod","text":"GetRPCMethods Job"},' +
             '{"value":"scheduleinform","text":"ScheduleInform Job"},{"value":"checkinform","text":"Check Inform Job"},{"value":"checktc","text":"Check TransferComplete Job"},' +
-            '{"value":"set","text":"Assignment Job"},{"value":"return","text":"Return Job"}]';
+            '{"value":"set","text":"Assignment Job"},{"value":"return","text":"Return Job"},{"value":"funcadd","text":"Add Function Job"},{"value":"funcminus","text":"Minus Function Job"},' +
+            '{"value":"funcproduct","text":"Product Function Job"}]';
     target_template_array["deviceJobResult"] = '[{"value":"getpvresult","text":"GetParameterValues Result Message","selected":true},{"value":"setpvresult","text":"SetParameterValues Result Message"}]';
     target_template_array["event"]='';
 
@@ -67,6 +68,9 @@
     template_url_array["checktc"]='./template/messaging/CheckTransferCompleteJob.txt';
     template_url_array["set"]='./template/messaging/AssignmentJob.txt';
     template_url_array["return"]='./template/messaging/ReturnJob.txt';
+    template_url_array["funcadd"]='./template/messaging/AddFunctionJob.txt';
+    template_url_array["funcminus"]='./template/messaging/MinusFunctionJob.txt';
+    template_url_array["funcproduct"]='./template/messaging/ProductFunctionJob.txt';
 
     template_url_array["getpvresult"]='./template/messaging/GetParametrValuesJobResult.txt';
     template_url_array["setpvresult"]='./template/messaging/SetParametrValuesJobResult.txt';

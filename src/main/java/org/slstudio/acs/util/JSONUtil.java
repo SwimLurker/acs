@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
@@ -18,8 +19,11 @@ public class JSONUtil {
     private static ObjectMapper mapper = null;
     static {
         mapper = new ObjectMapper();
+//        mapper.setVisibilityChecker(mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
         mapper.setVisibility(JsonMethod.GETTER, JsonAutoDetect.Visibility.ANY);
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, false);
+        mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+        mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
     }
     public static String toJsonString(Object obj){
         if(obj == null) return null;

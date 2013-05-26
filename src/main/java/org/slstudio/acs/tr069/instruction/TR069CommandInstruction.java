@@ -1,7 +1,6 @@
 package org.slstudio.acs.tr069.instruction;
 
 import org.slstudio.acs.tr069.databinding.TR069Message;
-import org.slstudio.acs.tr069.databinding.TR069MessageFactory;
 import org.slstudio.acs.tr069.databinding.response.FaultResponse;
 import org.slstudio.acs.tr069.instruction.context.InstructionContext;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
@@ -9,6 +8,7 @@ import org.slstudio.acs.tr069.instruction.exception.JobFailException;
 import org.slstudio.acs.tr069.job.DeviceJobConstants;
 import org.slstudio.acs.tr069.util.InstructionUtil;
 import org.slstudio.acs.util.JSONUtil;
+import org.slstudio.acs.tr069.databinding.TR069MessageFactory;
 
 import java.io.IOException;
 

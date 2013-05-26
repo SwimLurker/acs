@@ -6,6 +6,7 @@ package org.slstudio.acs.web.util;
  * Date: 13-5-9
  * Time: обнГ7:10
  */
+
 public class Result {
     private boolean success = true;
     private String msg = null;

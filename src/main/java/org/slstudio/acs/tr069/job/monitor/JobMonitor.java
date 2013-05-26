@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.job.manager.IJobManager;
+import org.slstudio.acs.tr069.job.runner.IJobRunner;
 
 import java.util.*;
 
@@ -22,7 +23,7 @@ public class JobMonitor  implements Runnable {
     private Set<String> reservedDevices = Collections.synchronizedSet(new HashSet<String>());
 
     private IJobManager jobManager = null;
-
+    private IJobRunner jobRunner = null;
 
     public void addReservedDevice(String deviceID) {
         reservedDevices.add(deviceID);
@@ -54,6 +55,14 @@ public class JobMonitor  implements Runnable {
 
     public void setJobManager(IJobManager jobManager) {
         this.jobManager = jobManager;
+    }
+
+    public IJobRunner getJobRunner() {
+        return jobRunner;
+    }
+
+    public void setJobRunner(IJobRunner jobRunner) {
+        this.jobRunner = jobRunner;
     }
 
     public void stopMonitor() {
@@ -107,7 +116,7 @@ public class JobMonitor  implements Runnable {
                             //wait time out,fail job and remove it from queue
                             log.info("Remove wait timeout job");
                             try {
-                                job.failOnTimeout(true);
+                                jobRunner.failOnTimeout(job, true);
                             } catch (Exception exp) {
                                 exp.printStackTrace();
                                 log.error("fail job exception", exp);
@@ -122,7 +131,7 @@ public class JobMonitor  implements Runnable {
                             //wait time out,fail job and remove it from queue
                             log.info("Remove running timeout job");
                             try {
-                                job.failOnTimeout(false);
+                                jobRunner.failOnTimeout(job, false);
                             } catch (Exception exp) {
                                 exp.printStackTrace();
                                 log.error("fail job exception", exp);

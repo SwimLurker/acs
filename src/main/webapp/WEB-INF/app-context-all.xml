@@ -18,7 +18,7 @@
     <import resource="app-context-logging.xml"/>
     <import resource="app-context-tr069.xml"/>
     <import resource="app-context-messaging.xml"/>
-
+    <import resource="app-context-monitor.xml"/>
 
     <bean id="sessionIDManager" class="org.slstudio.acs.tr069.session.idmanager.MemorySessionIDManager" >
     </bean>
@@ -34,24 +34,8 @@
     </bean>
     <bean id="deviceManager" class="org.slstudio.acs.hms.device.MemoryDeviceManager" />
     <bean id="jobManager" class="org.slstudio.acs.tr069.job.manager.MemoryJobManager" />
-    <bean id="sessionMonitor" class="org.slstudio.acs.kernal.session.monitor.SessionMonitor">
-        <property name="sessionManager" ref="sessionManager" />
-        <property name="sessionIDManager" ref="sessionIDManager" />
-        <property name="sessionTimeout" value="60000" />
-        <property name="monitorInterval" value="20000" />
-    </bean>
-    <bean id="reservedDevices" class="java.util.HashSet">
-        <constructor-arg>
-            <set>
-                <value>FC1234567890</value>
-            </set>
-        </constructor-arg>
-    </bean>
-    <bean id="jobMonitor" class="org.slstudio.acs.tr069.job.monitor.JobMonitor">
-        <property name="jobManager" ref="jobManager" />
-        <property name="monitorInterval" value="60000" />
-        <property name="reservedDevices" ref="reservedDevices" />
-    </bean>
+
+
     <!-- beans for acs server  -->
     <bean id="messagingServiceServerListener" class="org.slstudio.acs.hms.lifecycle.MessagingServiceServerListener" />
     <bean id="sessionMonitorServerListener" class="org.slstudio.acs.hms.lifecycle.SessionMonitorServerListener" />
@@ -68,5 +52,7 @@
     <bean id="acsServer" class="org.slstudio.acs.ACSServer" >
         <property name="lifecycleListeners" ref="serverListenerList" />
     </bean>
+
+    <bean id="deviceJob" class="org.slstudio.acs.tr069.job.UserDeviceJob" scope="prototype" />
 
 </beans>

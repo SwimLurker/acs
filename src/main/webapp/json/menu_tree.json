@@ -28,66 +28,38 @@
             "url":"/pages/view_jobs.html"
         }
     }]
-},{   
-    "id":4,   
-    "text":"Messaging Management",    
-    "children":[{   
-		"id":41,
-        "text":"View Command Queue",
-        "attributes":{
-            "url":"/view_devices.html"
-        }
-    },{
-		"id":42,
-        "text":"View CommandResult Queue",
-        "attributes":{
-            "url":"/view_devices.html"
-        }
-	},{
-        "id":43,
-        "text":"View Device Queue",
-        "attributes":{
-            "url":"/view_devices.html"
-        }
-    },{
-        "id":44,
-        "text":"View Event Queue",
-        "attributes":{
-            "url":"/view_devices.html"
-        }
-    }]
-},{   
-    "id":5,   
+},{
+    "id":4,
     "text":"Log Management",    
     "children":[{   
-		"id":51,
+		"id":41,
         "text":"View TR069 Logs",
         "attributes":{
             "url":"/pages/view_tr069_log.html"
         }
     },{
-		"id":52,
+		"id":42,
         "text":"View Messaging Logs",
         "attributes":{
             "url":"/pages/view_messaging_log.html"
         }
 	},{
-		"id":53,
+		"id":43,
         "text":"View Pipeline Logs",
         "attributes":{
             "url":"/pages/view_pipeline_log.html"
         }
 	},{
-		"id":54,
+		"id":44,
         "text":"View Session Logs",
         "attributes":{
             "url":"/pages/view_session_log.html"
         }
 	},{
-		"id":55,
-        "text":"View Instruction Logs",
+		"id":45,
+        "text":"View Job Logs",
         "attributes":{
-            "url":"/view_devices.html"
+            "url":"/pages/view_job_log.html"
         }
 	}]   
 }]  

@@ -12,6 +12,7 @@ import org.slstudio.acs.tr069.exception.TR069Exception;
 import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.job.manager.IJobManager;
+import org.slstudio.acs.tr069.job.runner.IJobRunner;
 import org.slstudio.acs.tr069.messagedealer.plugin.IPostDealMessagePlugin;
 import org.slstudio.acs.tr069.messagedealer.plugin.IPreDealMessagePlugin;
 import org.slstudio.acs.tr069.session.context.ITR069MessageContext;
@@ -32,6 +33,7 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
     private static final Log log = LogFactory.getLog(AbstractMessageDealer.class);
 
     private static IJobManager jobManager = null;
+    private IJobRunner jobRunner = null;
 
 
     private List<IPreDealMessagePlugin> prePlugins = new ArrayList<IPreDealMessagePlugin>();
@@ -44,6 +46,14 @@ public abstract class AbstractMessageDealer implements ITR069MethodDealer{
 
     public void setJobManager(IJobManager jobManager) {
         this.jobManager = jobManager;
+    }
+
+    public IJobRunner getJobRunner() {
+        return jobRunner;
+    }
+
+    public void setJobRunner(IJobRunner jobRunner) {
+        this.jobRunner = jobRunner;
     }
 
     public List<IPreDealMessagePlugin> getPrePlugins() {

@@ -28,10 +28,19 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
         //first find a job for that device
         IDeviceJob currentJob = fetchDeviceJob(deviceKey);
 
-        if(currentJob != null){
+        while(currentJob != null){
             log.debug("when handle request:" + requestID + ", fetch an job:" + currentJob.getJobID());
             handleJob(currentJob, context, request);
-        }else{
+            if(currentJob.isFinished()){
+                //if current job is finished, then fetch next and run
+                currentJob = fetchDeviceJob(deviceKey);
+            }else{
+                //if current job is not finished(still running), then return
+                log.debug("job:" + currentJob.getJobID() +" for device:" + deviceKey + " is still running after handle request:" + requestID);
+                break;
+            }
+        }
+        if(currentJob == null){
             // no job is running or can not find job for some reason, then will use default response
             log.debug("can not fetch job for device:" + deviceKey + " when handle request:" + requestID);
         }
@@ -47,14 +56,14 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
                 // Sometime it will produce job request which cached in that job, which will then be send when message dealer(often the empty message dealer)
                 // call that job's continueRun or continueRunWithRequest or continueRunWithResponse method.
                 log.debug("job:" + job.getJobID() + "for device:" + job.getDeviceKey() + " continue run with request:" + request.getMessageID());
-                job.continueRunWithRequest(context, request);
+                getJobRunner().continueRunWithRequest(job, context, request);
             }else if(job.isReady()){
                 // handle ready job, call job's beginRunWithRequest job method
                 // The beginRunWithRequest method let job begin running
                 // Sometime it will produce job request which cached in that job, which will then be send when message dealer(often the empty message dealer)
                 // call that job's continueRun or continueRunWithRequest or continueRunWithResponse method.
                 log.debug("job:" + job.getJobID() + "for device:" + job.getDeviceKey() + " begin run with request:" + request.getMessageID());
-                job.beginRunWithRequest(context, request);
+                getJobRunner().beginRunWithRequest(job, context, request);
             }else if(job.isFinished()){
                 //impossible, should not happen
                 log.error("job:" + job.getJobID() + "should not be finished status for device:" + job.getDeviceKey() + " when handle request:" + request.getMessageID());
@@ -66,7 +75,7 @@ public abstract class AbstractRequestDealer extends AbstractMessageDealer{
             }
         }catch(Exception exp){
             log.error("when handle request,job:" + job.getJobID() + " failed for execution",exp);
-            job.failOnException(exp);
+            getJobRunner().failOnException(job, exp);
             getJobManager().removeJob(job);
         }
     }

@@ -1,0 +1,29 @@
+<div class="easyui-panel" id="lp_job" title="View Job Logs" style="width:800px; height:500px;" >
+    <div style="padding:10px 0 10px 60px">
+        <textarea id="joblogcontent" style="width: 700px; height: 400px;"></textarea>
+    </div>
+</div>
+<script type="text/javascript" >
+    function updateJobLogContent() {
+        $.ajax({
+            url:"/webconsole/rest/log/?type=job",
+            method: "GET",
+            success: function(result){
+                if(result.success){
+                    $('#joblogcontent').val(result.msg);
+                }else{
+                    $.messager.show({ // show error message
+                        title: 'Error',
+                        msg: data.msg
+                    });
+                }
+            }
+        });
+        if($('#maintabs').tabs('getTab','View Job Logs') != null){
+            setTimeout("updateJobLogContent()", 5000);
+        }
+    }
+    $(function(){
+        updateJobLogContent();
+    });
+</script>
