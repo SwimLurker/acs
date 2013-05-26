@@ -1,0 +1,1 @@
+{"jobID":"6001","jobName":"call java class job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $Name=test\r\nexec java org.slstudio.acs.tr069.instruction.extension.java.TestClass testFunc hello {$Name} world\r\nRET"}

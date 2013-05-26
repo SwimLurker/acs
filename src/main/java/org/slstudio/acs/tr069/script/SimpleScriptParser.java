@@ -205,7 +205,7 @@ public class SimpleScriptParser implements IScriptParser {
 
     public static void main(String[] args) throws ParseScriptException {
         StringBuilder text = new StringBuilder();
-        text.append("SET $a = \"bbb\"").append("\r\n").append("SET $c = {$a}").append("\r\n").
+        text.append("   SET $a = \"bbb\"").append("\r\n").append("SET $c = {$a}").append("\r\n").
                 append("tr069 cmd getpv:{\"messageID\":\"1_1235\",\"parameterNames\":[\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\"]}").append("\r\n").append("RET");
         SimpleScriptParser parser  = new SimpleScriptParser();
         Map<String, Object> map = new HashMap<String, Object>();

@@ -36,13 +36,18 @@
     <bean id="functionInstructionExtension" class="org.slstudio.acs.tr069.instruction.extension.func.FunctionInstructionExtension">
         <property name="functionFactory" ref="functionFactory" />
     </bean>
-
+    <bean id="javaCallInstructionExtension" class="org.slstudio.acs.tr069.instruction.extension.java.JavaCallInstructionExtension">
+    </bean>
     <bean id="instructionExtensionMap" class="java.util.HashMap">
         <constructor-arg>
             <map>
                 <entry>
                     <key><value>FUNC</value></key>
                     <ref bean="functionInstructionExtension" />
+                </entry>
+                <entry>
+                    <key><value>JAVA</value></key>
+                    <ref bean="javaCallInstructionExtension" />
                 </entry>
             </map>
         </constructor-arg>
