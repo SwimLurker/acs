@@ -1,0 +1,1 @@
+{"jobID":"7005","jobName":"sql call procedure job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $ID = 5\r\nset $MSG=testmsg\r\nexec sql call add_msg({$ID},'{$MSG}')\r\nRET"}

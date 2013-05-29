@@ -10,6 +10,7 @@ import org.slstudio.acs.hms.messaging.bean.DeviceJobResultBean;
 import org.slstudio.acs.hms.messaging.sender.IMessageSender;
 import org.slstudio.acs.tr069.exception.ParseScriptException;
 import org.slstudio.acs.tr069.instruction.IInstruction;
+import org.slstudio.acs.tr069.job.DeviceJobConstants;
 import org.slstudio.acs.tr069.job.IDeviceJob;
 import org.slstudio.acs.tr069.job.manager.IJobManager;
 import org.slstudio.acs.tr069.script.IScriptParser;
@@ -75,8 +76,18 @@ public class DeviceJobMessageHandler implements IMessageHandler{
         String deviceKey =  jobBean.getDeviceKey();
         DeviceInfo device = deviceManager.findDevice(deviceKey);
         if(device == null){
-            sendJobFailResult(jobBean, -1, "unknown device");
+            sendJobFailResult(jobBean, DeviceJobConstants.ERRORCODE_INVALIDDEVICE, "unknown device");
             return;
+        }
+        String jobID = jobBean.getJobID();
+        if(jobID == null){
+            //TODO: maybe change to use auto generated id
+            throw new MessagingException("device job message error: job id is null");
+        }
+
+        IDeviceJob findJob = jobManager.findJob(jobID);
+        if(findJob != null){
+            throw new MessagingException("device job message error: job:" + jobID + " has already existed");
         }
 
         IDeviceJob job = (IDeviceJob)BeanLocator.getBean("deviceJob");
@@ -96,7 +107,7 @@ public class DeviceJobMessageHandler implements IMessageHandler{
             context.put("deviceKey", jobBean.getDeviceKey());
             instructionList = scriptParser.newInstance().parse(jobBean.getJobScript(), context);
         }catch(ParseScriptException pse){
-            sendJobFailResult(jobBean, -2, "can not understanding job instruction");
+            sendJobFailResult(jobBean, DeviceJobConstants.ERRORCODE_PARSEJOBSCRIPT, "can not understanding job instruction");
             pse.printStackTrace();
             return;
         }

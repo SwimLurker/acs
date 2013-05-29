@@ -7,6 +7,7 @@ import org.slstudio.acs.tr069.instruction.context.InstructionContext;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
 import org.slstudio.acs.tr069.instruction.exception.JobCompleteException;
 import org.slstudio.acs.tr069.instruction.exception.JobFailException;
+import org.slstudio.acs.tr069.job.DeviceJobConstants;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,6 +39,8 @@ public class FunctionInstruction extends InstructionBase {
             String result = function.execute(cmdContext);
             cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_INSTRUCTION_RESULT_PREFIX + getInstructionID(), result);
         } catch (InstructionException e) {
+            cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_ERRORCODE, DeviceJobConstants.ERRORCODE_INSTRUCTIONEXECUTIONEXCEPTION);
+            cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_ERRORMSG, "function execution exception:" + e.getMessage());
             throw new JobFailException("job failed when execute function:" + function.getName(), e);
         }
     }

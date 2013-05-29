@@ -1,0 +1,1 @@
+{"jobID":"7002","jobName":"sql insert job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $MSG=abc\r\nexec sql insert into msg_log(msg) values(?);{$MSG}\r\nRET"}

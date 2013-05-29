@@ -12,7 +12,7 @@
                 </tr>
                 <tr>
                     <td>Message Template:</td>
-                    <td><select class="easyui-combobox" id="message_template" style="width: 250px" data-options="panelHeight:'auto',onSelect:function(rec){onChangeTemplate(rec)}" >
+                    <td><select class="easyui-combobox" id="message_template" style="width: 250px" data-options="onSelect:function(rec){onChangeTemplate(rec)}" >
                         <option value="sync" selected="selected">Sync Devices Message</option>
                         <option value="add" >Add Device(s) Message</option>
                         <option value="delete" >Delete Device(s) Message</option>
@@ -41,7 +41,9 @@
             '{"value":"reboot","text":"Reboot Job"},{"value":"factoryreset","text":"FactoryReset Job"},{"value":"getmethod","text":"GetRPCMethods Job"},' +
             '{"value":"scheduleinform","text":"ScheduleInform Job"},{"value":"checkinform","text":"Check Inform Job"},{"value":"checktc","text":"Check TransferComplete Job"},' +
             '{"value":"set","text":"Assignment Job"},{"value":"return","text":"Return Job"},{"value":"funcadd","text":"Add Function Job"},{"value":"funcminus","text":"Minus Function Job"},' +
-            '{"value":"funcproduct","text":"Product Function Job"},{"value":"javacall","text":"Call Java Class Job"}]';
+            '{"value":"funcproduct","text":"Product Function Job"},{"value":"javacall","text":"Call Java Class Job"},{"value":"sqlquery","text":"SQL Query Job"},' +
+            '{"value":"sqlinsert","text":"SQL Insert Job"},{"value":"sqlupdate","text":"SQL Update Job"},{"value":"sqldelete","text":"SQL Delete Job"},' +
+            '{"value":"sqlcall","text":"SQL Call Procedure Job"}]';
     target_template_array["deviceJobResult"] = '[{"value":"getpvresult","text":"GetParameterValues Result Message","selected":true},{"value":"setpvresult","text":"SetParameterValues Result Message"}]';
     target_template_array["event"]='';
 
@@ -72,6 +74,12 @@
     template_url_array["funcminus"]='./template/messaging/MinusFunctionJob.txt';
     template_url_array["funcproduct"]='./template/messaging/ProductFunctionJob.txt';
     template_url_array["javacall"]='./template/messaging/JavaCallJob.txt';
+    template_url_array["sqlquery"]='./template/messaging/SQLQueryJob.txt';
+    template_url_array["sqlinsert"]='./template/messaging/SQLInsertJob.txt';
+    template_url_array["sqlupdate"]='./template/messaging/SQLUpdateJob.txt';
+    template_url_array["sqldelete"]='./template/messaging/SQLDeleteJob.txt';
+    template_url_array["sqlcall"]='./template/messaging/SQLCallJob.txt';
+
 
     template_url_array["getpvresult"]='./template/messaging/GetParametrValuesJobResult.txt';
     template_url_array["setpvresult"]='./template/messaging/SetParametrValuesJobResult.txt';

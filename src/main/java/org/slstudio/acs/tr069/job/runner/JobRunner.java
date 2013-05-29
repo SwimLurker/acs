@@ -233,10 +233,14 @@ public class JobRunner implements IJobRunner{
         }
     }
 
-    private void fail(IDeviceJob job, ITR069MessageContext context) {
+    private void fail(IDeviceJob job, ITR069MessageContext context, int errorCode, String errorMsg) {
         job.setStatus(DeviceJobConstants.STATUS_FAILED);
         job.setCompleteTime(new Date());
         job.setCurrentInstruction(null);
+        if(job.getErrorCode() == DeviceJobConstants.ERRORCODE_NOERROR){
+            job.setErrorCode(errorCode);
+            job.setErrorMsg(errorMsg);
+        }
         log.info("job:" + job.getJobID() + " failed");
         for(IJobResultHandler handler: resultHandlerList){
             handler.onFailed(job);
@@ -278,7 +282,7 @@ public class JobRunner implements IJobRunner{
                 log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() +") instruction execute failed, but can go on next instruction", ifExp);
             }catch(JobFailException jfExp){
                 log.warn("(job:" + jobID + ",instruction:" + currentInstruction.getInstructionID() + ") instruction execute failed, make job fail", jfExp);
-                fail(job, context);
+                fail(job, context, DeviceJobConstants.ERRORCODE_INSTRUCTIONEXECUTIONEXCEPTION, jfExp.getMessage());
                 //job failed, should return no request
                 return null;
             }catch(JobCompleteException jcExp){
@@ -383,10 +387,10 @@ public class JobRunner implements IJobRunner{
             log.warn("(Job:" + job.getJobID() + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle response:" +
                     (response == null? "empty message":response.getMessageName()) + " failed, but can go on next instruction", cneExp);
             return true;
-        }catch(JobFailException cfeExp){
+        }catch(JobFailException jfExp){
             log.warn("(Job:" + job.getJobID() + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle response:" +
-                    (response == null? "empty message":response.getMessageName()) + " failed with fatal error, makes job failed", cfeExp);
-            fail(job, context);
+                    (response == null? "empty message":response.getMessageName()) + " failed with fatal error, makes job failed", jfExp);
+            fail(job, context, DeviceJobConstants.ERRORCODE_INSTRUCTIONEXECUTIONEXCEPTION, jfExp.getMessage());
             return true;
         }
     }
@@ -403,7 +407,7 @@ public class JobRunner implements IJobRunner{
         }catch(JobFailException jfExp){
             log.warn("(Job:" + job.getJobID() + ",Instruction:" + instruction.getInstructionID() + "): current instruction handle request:" +
                     (request == null? "empty message":request.getMessageName()) + " failed with fatal error, makes job failed", jfExp);
-            fail(job, context);
+            fail(job, context, DeviceJobConstants.ERRORCODE_INSTRUCTIONEXECUTIONEXCEPTION, jfExp.getMessage());
             return true;
         }
     }

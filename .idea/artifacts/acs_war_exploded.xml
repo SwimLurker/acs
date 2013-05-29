@@ -22,6 +22,7 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-web:3.2.2.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:3.2.2.RELEASE" />
           <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.7.2" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:3.2.2.RELEASE" />
           <element id="library" level="project" name="Maven: cglib:cglib-nodep:3.0" />
           <element id="library" level="project" name="Maven: stax:stax:1.2.0" />
           <element id="library" level="project" name="Maven: stax:stax-api:1.0.1" />
@@ -59,6 +60,8 @@
           <element id="library" level="project" name="Maven: org.apache.geronimo.specs:geronimo-j2ee-management_1.0_spec:1.0" />
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.12" />
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.12" />
+          <element id="library" level="project" name="Maven: c3p0:c3p0:0.9.1.2" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.25" />
         </element>
       </element>
     </root>

@@ -14,6 +14,9 @@ public class DeviceJobConstants {
     public static final int ERRORCODE_MESSAGEIDERROR = -3;
     public static final int ERRORCODE_WAITINGTIMEOUT = -4;
     public static final int ERRORCODE_RUNNINGTIMEOUT = -5;
+    public static final int ERRORCODE_INVALIDDEVICE = -6;
+    public static final int ERRORCODE_PARSEJOBSCRIPT = -7;
+    public static final int ERRORCODE_INSTRUCTIONEXECUTIONEXCEPTION = -8;
 
     public static final int STATUS_READY = 0;
     public static final int STATUS_RUNNING = 1;

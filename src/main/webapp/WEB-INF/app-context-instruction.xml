@@ -38,6 +38,9 @@
     </bean>
     <bean id="javaCallInstructionExtension" class="org.slstudio.acs.tr069.instruction.extension.java.JavaCallInstructionExtension">
     </bean>
+    <bean id="sqlInstructionExtension" class="org.slstudio.acs.tr069.instruction.extension.sql.SQLInstructionExtension">
+        <property name="template" ref="jdbcTemplate" />
+    </bean>
     <bean id="instructionExtensionMap" class="java.util.HashMap">
         <constructor-arg>
             <map>
@@ -48,6 +51,10 @@
                 <entry>
                     <key><value>JAVA</value></key>
                     <ref bean="javaCallInstructionExtension" />
+                </entry>
+                <entry>
+                    <key><value>SQL</value></key>
+                    <ref bean="sqlInstructionExtension" />
                 </entry>
             </map>
         </constructor-arg>

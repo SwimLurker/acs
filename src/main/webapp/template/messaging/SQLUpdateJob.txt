@@ -1,0 +1,1 @@
+{"jobID":"7003","jobName":"sql update job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $ID = 2\r\nset $MSG = updatemsg\r\nexec sql update msg_log set msg=? where log_id=?;{$MSG};{$ID}\r\nRET"}

@@ -20,6 +20,7 @@
     <import resource="app-context-messaging.xml"/>
     <import resource="app-context-monitor.xml"/>
     <import resource="app-context-instruction.xml"/>
+    <import resource="app-context-db.xml"/>
 
     <bean id="sessionIDManager" class="org.slstudio.acs.tr069.session.idmanager.MemorySessionIDManager" >
     </bean>

@@ -8,6 +8,7 @@ import org.slstudio.acs.tr069.instruction.context.InstructionContext;
 import org.slstudio.acs.tr069.instruction.exception.InstructionFailException;
 import org.slstudio.acs.tr069.instruction.exception.JobCompleteException;
 import org.slstudio.acs.tr069.instruction.exception.JobFailException;
+import org.slstudio.acs.tr069.job.DeviceJobConstants;
 import org.slstudio.acs.tr069.util.InstructionUtil;
 import org.slstudio.acs.util.JSONUtil;
 
@@ -89,6 +90,8 @@ public class JavaCallInstruction extends InstructionBase {
             }
         }catch (Exception exp){
             log.error("job failed of java call instruction(" + getInstructionID()+"):" + exp.getMessage());
+            cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_ERRORCODE, DeviceJobConstants.ERRORCODE_INSTRUCTIONEXECUTIONEXCEPTION);
+            cmdContext.getSymbolTable().put(InstructionConstants.SYMBOLNAME_ERRORMSG, "java method execution exception:" + exp.getMessage());
             throw new JobFailException("job failed when call class(" + className +")'s method(" + methodName +")", exp);
         }
     }

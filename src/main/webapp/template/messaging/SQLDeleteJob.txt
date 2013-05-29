@@ -1,0 +1,1 @@
+{"jobID":"7004","jobName":"sql delete job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $ID = 2\r\nexec sql delete from msg_log where log_id=?;{$ID}\r\nRET"}
