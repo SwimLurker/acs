@@ -1,0 +1,1 @@
+{"jobID":"8003","jobName":"call python function job","deviceKey":"FC1234567890","waitingTimeout":-1,"runningTimeout":-1,"jobScript":"set $A=1\r\nset $B=2\r\nset $C=3\r\nexec python /org/slstudio/acs/tr069/instruction/extension/python/test.py add list#[int#{$A},int#{$B}] list#[int#{$C}] \r\nRET"}

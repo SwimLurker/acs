@@ -41,6 +41,8 @@
     <bean id="sqlInstructionExtension" class="org.slstudio.acs.tr069.instruction.extension.sql.SQLInstructionExtension">
         <property name="template" ref="jdbcTemplate" />
     </bean>
+    <bean id="pythonInstructionExtension" class="org.slstudio.acs.tr069.instruction.extension.python.PythonInstructionExtension">
+    </bean>
     <bean id="instructionExtensionMap" class="java.util.HashMap">
         <constructor-arg>
             <map>
@@ -55,6 +57,10 @@
                 <entry>
                     <key><value>SQL</value></key>
                     <ref bean="sqlInstructionExtension" />
+                </entry>
+                <entry>
+                    <key><value>PYTHON</value></key>
+                    <ref bean="pythonInstructionExtension" />
                 </entry>
             </map>
         </constructor-arg>

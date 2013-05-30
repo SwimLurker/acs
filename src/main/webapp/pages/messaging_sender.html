@@ -43,46 +43,50 @@
             '{"value":"set","text":"Assignment Job"},{"value":"return","text":"Return Job"},{"value":"funcadd","text":"Add Function Job"},{"value":"funcminus","text":"Minus Function Job"},' +
             '{"value":"funcproduct","text":"Product Function Job"},{"value":"javacall","text":"Call Java Class Job"},{"value":"sqlquery","text":"SQL Query Job"},' +
             '{"value":"sqlinsert","text":"SQL Insert Job"},{"value":"sqlupdate","text":"SQL Update Job"},{"value":"sqldelete","text":"SQL Delete Job"},' +
-            '{"value":"sqlcall","text":"SQL Call Procedure Job"}]';
+            '{"value":"sqlcall","text":"SQL Call Procedure Job"},{"value":"python","text":"Python Int Add Function Job"},{"value":"python2","text":"Python String Add Function Job"},' +
+            '{"value":"python3","text":"Python List Add Function Job"}]';
     target_template_array["deviceJobResult"] = '[{"value":"getpvresult","text":"GetParameterValues Result Message","selected":true},{"value":"setpvresult","text":"SetParameterValues Result Message"}]';
     target_template_array["event"]='';
 
     var template_url_array = new Array();
-    template_url_array["sync"]='./template/messaging/SyncDevices.txt';
-    template_url_array["add"]='./template/messaging/AddDevice.txt';
-    template_url_array["delete"]='./template/messaging/DeleteDevice.txt';
-    template_url_array["clear"]='./template/messaging/ClearDevices.txt';
+    template_url_array["sync"]='./template/messaging/device/SyncDevices.txt';
+    template_url_array["add"]='./template/messaging/device/AddDevice.txt';
+    template_url_array["delete"]='./template/messaging/device/DeleteDevice.txt';
+    template_url_array["clear"]='./template/messaging/device/ClearDevices.txt';
 
-    template_url_array["addobj"]='./template/messaging/AddObjectJob.txt';
-    template_url_array["deleteobj"]='./template/messaging/DeleteObjectJob.txt';
-    template_url_array["getpn"]='./template/messaging/GetParameterNamesJob.txt';
-    template_url_array["getpv"]='./template/messaging/GetParameterValuesJob.txt';
-    template_url_array["setpv"]='./template/messaging/SetParameterValuesJob.txt';
-    template_url_array["getpa"]='./template/messaging/GetParameterAttributesJob.txt';
-    template_url_array["setpa"]='./template/messaging/SetParameterAttributesJob.txt';
-    template_url_array["download"]='./template/messaging/DownloadJob.txt';
-    template_url_array["upload"]='./template/messaging/UploadJob.txt';
-    template_url_array["reboot"]='./template/messaging/RebootJob.txt';
-    template_url_array["factoryreset"]='./template/messaging/FactoryResetJob.txt';
-    template_url_array["getmethod"]='./template/messaging/GetRPCMethodsJob.txt';
-    template_url_array["scheduleinform"]='./template/messaging/ScheduleInformJob.txt';
-    template_url_array["checkinform"]='./template/messaging/CheckInformJob.txt';
-    template_url_array["checktc"]='./template/messaging/CheckTransferCompleteJob.txt';
-    template_url_array["set"]='./template/messaging/AssignmentJob.txt';
-    template_url_array["return"]='./template/messaging/ReturnJob.txt';
-    template_url_array["funcadd"]='./template/messaging/AddFunctionJob.txt';
-    template_url_array["funcminus"]='./template/messaging/MinusFunctionJob.txt';
-    template_url_array["funcproduct"]='./template/messaging/ProductFunctionJob.txt';
-    template_url_array["javacall"]='./template/messaging/JavaCallJob.txt';
-    template_url_array["sqlquery"]='./template/messaging/SQLQueryJob.txt';
-    template_url_array["sqlinsert"]='./template/messaging/SQLInsertJob.txt';
-    template_url_array["sqlupdate"]='./template/messaging/SQLUpdateJob.txt';
-    template_url_array["sqldelete"]='./template/messaging/SQLDeleteJob.txt';
-    template_url_array["sqlcall"]='./template/messaging/SQLCallJob.txt';
+    template_url_array["addobj"]='./template/messaging/tr069/AddObjectJob.txt';
+    template_url_array["deleteobj"]='./template/messaging/tr069/DeleteObjectJob.txt';
+    template_url_array["getpn"]='./template/messaging/tr069/GetParameterNamesJob.txt';
+    template_url_array["getpv"]='./template/messaging/tr069/GetParameterValuesJob.txt';
+    template_url_array["setpv"]='./template/messaging/tr069/SetParameterValuesJob.txt';
+    template_url_array["getpa"]='./template/messaging/tr069/GetParameterAttributesJob.txt';
+    template_url_array["setpa"]='./template/messaging/tr069/SetParameterAttributesJob.txt';
+    template_url_array["download"]='./template/messaging/tr069/DownloadJob.txt';
+    template_url_array["upload"]='./template/messaging/tr069/UploadJob.txt';
+    template_url_array["reboot"]='./template/messaging/tr069/RebootJob.txt';
+    template_url_array["factoryreset"]='./template/messaging/tr069/FactoryResetJob.txt';
+    template_url_array["getmethod"]='./template/messaging/tr069/GetRPCMethodsJob.txt';
+    template_url_array["scheduleinform"]='./template/messaging/tr069/ScheduleInformJob.txt';
+    template_url_array["checkinform"]='./template/messaging/tr069/CheckInformJob.txt';
+    template_url_array["checktc"]='./template/messaging/tr069/CheckTransferCompleteJob.txt';
+    template_url_array["set"]='./template/messaging/set/AssignmentJob.txt';
+    template_url_array["return"]='./template/messaging/ret/ReturnJob.txt';
+    template_url_array["funcadd"]='./template/messaging/func/AddFunctionJob.txt';
+    template_url_array["funcminus"]='./template/messaging/func/MinusFunctionJob.txt';
+    template_url_array["funcproduct"]='./template/messaging/func/ProductFunctionJob.txt';
+    template_url_array["javacall"]='./template/messaging/java/JavaCallJob.txt';
+    template_url_array["sqlquery"]='./template/messaging/sql/SQLQueryJob.txt';
+    template_url_array["sqlinsert"]='./template/messaging/sql/SQLInsertJob.txt';
+    template_url_array["sqlupdate"]='./template/messaging/sql/SQLUpdateJob.txt';
+    template_url_array["sqldelete"]='./template/messaging/sql/SQLDeleteJob.txt';
+    template_url_array["sqlcall"]='./template/messaging/sql/SQLCallJob.txt';
+    template_url_array["python"]='./template/messaging/python/PythonJob.txt';
+    template_url_array["python2"]='./template/messaging/python/PythonJob2.txt';
+    template_url_array["python3"]='./template/messaging/python/PythonJob3.txt';
 
 
-    template_url_array["getpvresult"]='./template/messaging/GetParametrValuesJobResult.txt';
-    template_url_array["setpvresult"]='./template/messaging/SetParametrValuesJobResult.txt';
+    template_url_array["getpvresult"]='./template/messaging/tr069/GetParametrValuesJobResult.txt';
+    template_url_array["setpvresult"]='./template/messaging/tr069/SetParametrValuesJobResult.txt';
     template_url_array["event"]='./template/messaging/Event.txt';
 
 
