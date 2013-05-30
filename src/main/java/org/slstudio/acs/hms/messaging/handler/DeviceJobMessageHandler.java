@@ -30,10 +30,10 @@ import java.util.Map;
 public class DeviceJobMessageHandler implements IMessageHandler{
     private static final Log log = LogFactory.getLog(DeviceJobMessageHandler.class);
 
-    IScriptParser scriptParser = null;
-    IJobManager jobManager = null;
-    IDeviceManager deviceManager = null;
-    IMessageSender jobResultSender = null;
+    private IScriptParser scriptParser = null;
+    private IJobManager jobManager = null;
+    private IDeviceManager deviceManager = null;
+    private IMessageSender jobResultSender = null;
 
 
     public IScriptParser getScriptParser() {

@@ -237,6 +237,8 @@
         <property name="alarmDictionary"  ref="alarmDictionary"/>
         <property name="alarmSender" ref="eventSender" />
     </bean>
+
+
     <bean id="informEventListener" class="java.util.ArrayList">
         <constructor-arg>
             <list>
@@ -249,11 +251,18 @@
     <bean id="checkDevicePlugin" class="org.slstudio.acs.hms.messagedealer.plugin.CheckDevicePlugin">
         <property name="deviceManager" ref="deviceManager" />
     </bean>
+    <!-- beans for bootstrap plugin -->
+    <bean id="bootStrapPlugin" class="org.slstudio.acs.hms.event.BootStrapPlugin">
+        <property name="deviceManager"  ref="deviceManager"/>
+        <property name="jobManager" ref="jobManager" />
+        <property name="bootstrapStrategy" ref="bootstrapStrategy" />
+    </bean>
     <bean id="informPrePluginList" class="java.util.ArrayList">
         <constructor-arg>
             <list>
                 <ref bean="saveInformInfoPlugin" />
                 <ref bean="checkDevicePlugin" />
+                <ref bean="bootStrapPlugin" />
             </list>
         </constructor-arg>
     </bean>

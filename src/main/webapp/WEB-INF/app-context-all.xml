@@ -56,5 +56,8 @@
     </bean>
 
     <bean id="deviceJob" class="org.slstudio.acs.tr069.job.UserDeviceJob" scope="prototype" />
+    <bean id="systemJob" class="org.slstudio.acs.tr069.job.SystemDeviceJob" scope="prototype" />
+
+    <bean id="bootstrapStrategy" class="org.slstudio.acs.hms.bootstrap.DefaultBootstrapStrategy"  />
 
 </beans>
