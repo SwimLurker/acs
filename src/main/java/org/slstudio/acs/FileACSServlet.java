@@ -28,7 +28,7 @@ import java.util.List;
 public class FileACSServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(FileACSServlet.class);
     private List<IProtocolEngine> engineList = new ArrayList<IProtocolEngine>();
-
+    private static final String ROOT_PATH="C:\\Users\\apple\\git\\acs\\src\\test\\resources\\file_endpoint\\";
     @Override
     public void init() throws ServletException {
         engineList.add((IProtocolEngine)BeanLocator.getBean("tr069Engine"));
@@ -54,15 +54,15 @@ public class FileACSServlet extends HttpServlet {
             }
         }
         try{
-            File inputDir = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\input\\");
+            File inputDir = new File(ROOT_PATH+"input\\");
             if((!inputDir.exists())||(!inputDir.isDirectory())){
                 throw new ACSException("File store input dir not found");
             }
-            File propertiesFile = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\test.properties");
+            File propertiesFile = new File(ROOT_PATH+"test.properties");
             if((!propertiesFile.exists())||(propertiesFile.isDirectory())){
                 throw new ACSException("File store properties file not found");
             }
-            File outputDir = new File("d:\\workspace\\acs\\src\\test\\resources\\file_endpoint\\output\\");
+            File outputDir = new File(ROOT_PATH+"output\\");
             if((!outputDir.exists())||(!outputDir.isDirectory())){
                 outputDir.mkdirs();
             }
