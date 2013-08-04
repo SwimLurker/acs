@@ -30,6 +30,7 @@ public class SchemaLocator {
     private Map<String, Schema> schemaMap = null;
 
     public SchemaLocator(){
+    	
         SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
         factory.setErrorHandler(new MySchemaErrorHandler());
         schemaMap = Collections.synchronizedMap(new HashMap<String, Schema>());
@@ -37,7 +38,7 @@ public class SchemaLocator {
         try {
             am1Schema = factory.newSchema(this.getClass().getResource("/schema/"+ TR069Constants.SCHEMA_TR069_AM1+".xsd"));
             schemaMap.put(TR069Constants.SCHEMA_TR069_AM1, am1Schema);
-        } catch (SAXException e) {
+        } catch (SAXException e) {  
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         Schema am2Schema = null;
