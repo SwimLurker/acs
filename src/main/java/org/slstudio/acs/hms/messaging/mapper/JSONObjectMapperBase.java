@@ -34,11 +34,9 @@ public abstract class JSONObjectMapperBase<T> implements IObjectMapper {
 
     @SuppressWarnings("unchecked")
     public T toObject(String str) throws MessagingException {
-        T obj = null;
         try {
-            TypeReference tr = getTypeReference();
-            obj = mapper.readValue(str, tr);
-            return obj;
+           
+            return  (T)mapper.readValue(str, getTypeReference());
         } catch ( Exception exp){
             log.error("convert string:" + str + " to object type error", exp);
             throw new MessagingException("convert string to object error", exp);
