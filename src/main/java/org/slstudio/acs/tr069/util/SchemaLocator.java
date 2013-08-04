@@ -30,7 +30,7 @@ public class SchemaLocator {
     private Map<String, Schema> schemaMap = null;
 
     public SchemaLocator(){
-        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
         factory.setErrorHandler(new MySchemaErrorHandler());
         schemaMap = Collections.synchronizedMap(new HashMap<String, Schema>());
         Schema am1Schema = null;

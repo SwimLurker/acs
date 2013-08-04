@@ -6,7 +6,7 @@ package org.slstudio.acs.hms.bootstrap.bean;
  * Date: 13-5-31
  * Time: ионГ1:37
  */
-public class BootstrapBean {
+public class BootStrapBean {
     private String servingACSURL = null;
     private String servingACSUsername = null;
     private String servingACSPassword = null;

@@ -1,6 +1,6 @@
 package org.slstudio.acs.hms.bootstrap;
 
-import org.slstudio.acs.hms.bootstrap.bean.BootstrapBean;
+import org.slstudio.acs.hms.bootstrap.bean.BootStrapBean;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,9 +8,9 @@ import org.slstudio.acs.hms.bootstrap.bean.BootstrapBean;
  * Date: 13-5-31
  * Time: ÉÏÎç1:39
  */
-public class DefaultBootstrapStrategy implements IBootstrapStrategy {
-    public BootstrapBean getBootstrapConfig(String deviceKey){
-        BootstrapBean bsb = new BootstrapBean();
+public class DefaultBootStrapStrategy implements IBootStrapStrategy {
+    public BootStrapBean getBootstrapConfig(String deviceKey){
+    	BootStrapBean bsb = new BootStrapBean();
         bsb.setServingACSURL("http://localhost/acs/tr069am2");
         bsb.setServingACSUsername("testing");
         bsb.setServingACSPassword("testing");

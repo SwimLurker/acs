@@ -1,6 +1,6 @@
 package org.slstudio.acs.hms.bootstrap;
 
-import org.slstudio.acs.hms.bootstrap.bean.BootstrapBean;
+import org.slstudio.acs.hms.bootstrap.bean.BootStrapBean;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,6 +8,6 @@ import org.slstudio.acs.hms.bootstrap.bean.BootstrapBean;
  * Date: 13-5-31
  * Time: ионГ2:33
  */
-public interface IBootstrapStrategy {
-    public BootstrapBean getBootstrapConfig(String deviceKey);
+public interface IBootStrapStrategy {
+    public BootStrapBean getBootstrapConfig(String deviceKey);
 }
