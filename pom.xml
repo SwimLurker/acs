@@ -130,11 +130,11 @@
 					
 					<source>1.6</source>
 					<target>1.6</target>
-                    <encoding>GBK</encoding>
-					  <compilerArguments>
-                     <verbose />
-                      <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
-                </compilerArguments> 
+                    <compilerArguments>
+                        <verbose />
+                        <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
+                        <encoding>GBK</encoding>
+                    </compilerArguments>
 				</configuration>
 			</plugin>
             <plugin>
