@@ -37,8 +37,8 @@ import java.util.List;
  * Date: 13-5-31
  * Time: ионГ1:12
  */
-public class BootStrapPlugin implements IPreDealMessagePlugin {
-    private static final Log log = LogFactory.getLog(BootStrapPlugin.class);
+public class BootStrapMessagePlugin implements IPreDealMessagePlugin {
+    private static final Log log = LogFactory.getLog(BootStrapMessagePlugin.class);
 
     private IJobManager jobManager = null;
     private IDeviceManager deviceManager = null;

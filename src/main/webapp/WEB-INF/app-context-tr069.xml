@@ -252,7 +252,7 @@
         <property name="deviceManager" ref="deviceManager" />
     </bean>
     <!-- beans for bootstrap plugin -->
-    <bean id="bootStrapPlugin" class="org.slstudio.acs.hms.event.BootStrapPlugin">
+    <bean id="bootStrapPlugin" class="org.slstudio.acs.hms.event.BootStrapMessagePlugin">
         <property name="deviceManager"  ref="deviceManager"/>
         <property name="jobManager" ref="jobManager" />
         <property name="bootstrapStrategy" ref="bootstrapStrategy" />
