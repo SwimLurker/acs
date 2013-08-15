@@ -35,7 +35,7 @@ import java.util.List;
  * Created with IntelliJ IDEA.
  * User: chandler
  * Date: 13-5-31
- * Time: ÉÏÎç1:12
+ * Time: ï¿½ï¿½ï¿½ï¿½1:12
  */
 public class BootStrapPlugin implements IPreDealMessagePlugin {
     private static final Log log = LogFactory.getLog(BootStrapPlugin.class);
@@ -74,11 +74,11 @@ public class BootStrapPlugin implements IPreDealMessagePlugin {
         for(EventStruct e: events){
             String eventCode = e.getEventCode();
             if(TR069Constants.INFORM_EVENT_BOOTSTRAP.equalsIgnoreCase(eventCode)){
-                generateBootStrapJob(context.getTR069SessionContext().getDeviceKey());
+                generateBootStrapJob(context.getTR069SessionContext().getDeviceKey(),context.getTR069SessionContext().getClientIP());
             }
         }
     }
-    private void generateBootStrapJob(String deviceKey) {
+    private void generateBootStrapJob(String deviceKey,String ip) {
 
         DeviceInfo device = deviceManager.findDevice(deviceKey);
         if(device == null){
@@ -86,7 +86,7 @@ public class BootStrapPlugin implements IPreDealMessagePlugin {
             return;
         }
 
-        BootStrapBean bsb = bootstrapStrategy.getBootstrapConfig(deviceKey);
+        BootStrapBean bsb = bootstrapStrategy.getBootstrapConfig(deviceKey,ip);
         if(bsb == null){
             log.error("generate bootstrap job failed: can not get bootstrap settings");
             return;
@@ -112,20 +112,59 @@ public class BootStrapPlugin implements IPreDealMessagePlugin {
 
         List<ParameterValueStruct> pvsList = new ArrayList<ParameterValueStruct>();
         ParameterValueStruct pvs1 = new ParameterValueStruct();
-        pvs1.setName(TR069Constants.TR069_PARAM_ACSURL);
-        pvs1.setValue(bsb.getServingACSURL());
+        pvs1.setName(TR069Constants.TR069_PARAM_CONNECTIONREQUESTURL);
+        pvs1.setValue(bsb.getAcsAddress());
         pvsList.add(pvs1);
 
         ParameterValueStruct pvs2 = new ParameterValueStruct();
         pvs2.setName(TR069Constants.TR069_PARAM_ACSUSERNAME);
-        pvs2.setValue(bsb.getServingACSUsername());
+        pvs2.setValue(bsb.getAcsAccount());
         pvsList.add(pvs2);
 
         ParameterValueStruct pvs3 = new ParameterValueStruct();
         pvs3.setName(TR069Constants.TR069_PARAM_ACSPASSWORD);
-        pvs3.setValue(bsb.getServingACSPassword());
+        pvs3.setValue(bsb.getAcsPassword());
         pvsList.add(pvs3);
 
+        
+        pvs3 = new ParameterValueStruct();
+        pvs3.setName(TR069Constants.TR069_PARAM_SECGW1);
+        pvs3.setValue(bsb.getSafeGateway1());
+        pvsList.add(pvs3);
+        
+        pvs3 = new ParameterValueStruct();
+        pvs3.setName(TR069Constants.TR069_PARAM_SECGW2);
+        pvs3.setValue(bsb.getSafeGateway2());
+        pvsList.add(pvs3);
+        
+        
+        pvs3 = new ParameterValueStruct();
+        pvs3.setName(TR069Constants.TR069_PARAM_SECGW3);
+        pvs3.setValue(bsb.getSafeGateway3());
+        pvsList.add(pvs3);
+        
+        
+        pvs3 = new ParameterValueStruct();
+        pvs3.setName(TR069Constants.TR069_PARAM_FAPGW1);
+        pvs3.setValue(bsb.getGateway1());
+        pvsList.add(pvs3);
+        
+        
+        pvs3 = new ParameterValueStruct();
+        pvs3.setName(TR069Constants.TR069_PARAM_FAPGW2);
+        pvs3.setValue(bsb.getGateway2());
+        pvsList.add(pvs3);
+        
+        pvs3 = new ParameterValueStruct();
+        pvs3.setName(TR069Constants.TR069_PARAM_FAPGW3);
+        pvs3.setValue(bsb.getGateway3());
+        pvsList.add(pvs3);
+        
+        pvs3 = new ParameterValueStruct();
+        pvs3.setName(TR069Constants.TR069_PARAM_FAPGW_PORT);
+        pvs3.setValue(bsb.getGatewayPort());
+        pvsList.add(pvs3);
+        
         spvr.setParameterList(pvsList);
 
         String bootStrapScript = TR069MessageFactory.MESSAGE_TYPE_SETPARAMETERVALUES +":" + JSONUtil.toJsonString(spvr);

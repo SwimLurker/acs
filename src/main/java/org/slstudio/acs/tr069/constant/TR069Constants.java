@@ -4,7 +4,7 @@ package org.slstudio.acs.tr069.constant;
  * Created with IntelliJ IDEA.
  * User: chandler
  * Date: 13-4-24
- * Time: ÉÏÎç12:04
+ * Time: ï¿½ï¿½ï¿½ï¿½12:04
  */
 public class TR069Constants {
     //session context key for TR069
@@ -180,6 +180,29 @@ public class TR069Constants {
     public static final String TR069_PARAM_CONNECTIONREQUEST_USERNAME = "InternetGatewayDevice.ManagementServer.ConnectionRequestUsername";
     public static final String TR069_PARAM_CONNECTIONREQUEST_PASSWORD = "InternetGatewayDevice.ManagementServer.ConnectionRequestPassword";
 
+    
+    
+    
+    
+    public static final String TR069_PARAM_SECGW1 = "InternetGatewayDevice.Services.FAPService.1.FAPControl.UMTS.Gateway.SecGWServer1";
+    public static final String TR069_PARAM_SECGW2 = "InternetGatewayDevice.Services.FAPService.1.FAPControl.UMTS.Gateway.SecGWServer2";
+    public static final String TR069_PARAM_SECGW3 = "InternetGatewayDevice.Services.FAPService.1.FAPControl.UMTS.Gateway.SecGWServer3";
+    public static final String TR069_PARAM_FAPGW1 = "InternetGatewayDevice.Services.FAPService.1.FAPControl.UMTS.Gateway.FAPGWServer1";
+    public static final String TR069_PARAM_FAPGW2 = "InternetGatewayDevice.Services.FAPService.1.FAPControl.UMTS.Gateway.FAPGWServer2";
+    public static final String TR069_PARAM_FAPGW3 = "InternetGatewayDevice.Services.FAPService.1.FAPControl.UMTS.Gateway.FAPGWServer3";
+    public static final String TR069_PARAM_FAPGW_PORT = "InternetGatewayDevice.Services.FAPService.1.FAPControl.UMTS.Gateway.FAPGWPort";
+    
+    
+    
+    
+
+    
+
+    
+
+    
+    
+    
     public static final String INFORM_EVENT_BOOTSTRAP="0 BOOTSTRAP";
     public static final String INFORM_EVENT_BOOT="1 BOOT";
     public static final String INFORM_EVENT_PERIODIC="2 PERIODIC";
