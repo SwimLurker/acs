@@ -219,4 +219,6 @@ public class TR069Constants {
     public static final String INFORM_EVENT_M_SCHEDULE_INFORM = "M ScheduleInform";
     public static final String INFORM_EVENT_M_DOWNLOAD = "M Download";
     public static final String INFORM_EVENT_UPLOAD = "M Upload";
+    
+    public static final String INFORM_PARAMETER_EXTERNAL_IP_ADDRESS = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.ExternalIPAddress";
 }

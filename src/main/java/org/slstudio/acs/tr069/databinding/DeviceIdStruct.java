@@ -14,13 +14,14 @@ import java.util.Iterator;
  * Created with IntelliJ IDEA.
  * User: chandler
  * Date: 13-5-1
- * Time: ÉÏÎç2:56
+ * Time: ï¿½ï¿½ï¿½ï¿½2:56
  */
 public class DeviceIdStruct implements Serializable {
     private String manufacturer ;
     private String OUI ;
     private String productClass ;
     private String serialNumber ;
+    private String softwareVersion;
 
     public DeviceIdStruct() {
     }
@@ -56,7 +57,13 @@ public class DeviceIdStruct implements Serializable {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
+    public String getSoftwareVersion() {
+		return softwareVersion;
+	}
 
+	public void setSoftwareVersion(String softwareVersion) {
+		this.softwareVersion = softwareVersion;
+	}
     public static DeviceIdStruct fromOMElement(OMElement element) throws DataBindingException {
         DeviceIdStruct idStruct = new DeviceIdStruct();
 
@@ -83,11 +90,21 @@ public class DeviceIdStruct implements Serializable {
             throw new DataBindingException(TR069Constants.ERROR_DATA_BINDING,"SerialNumber is null");
         }
         idStruct.setSerialNumber(((OMElement)sIt.next()).getText());
+        
+        Iterator svIt=element.getChildrenWithName(new QName("SoftwareVersion"));
+        if(svIt==null||!svIt.hasNext()){
+            throw new DataBindingException(TR069Constants.ERROR_DATA_BINDING,"SoftwareVersion is null");
+        }
+        idStruct.setSoftwareVersion(((OMElement)svIt.next()).getText());
+        
+
 
         return idStruct;
     }
 
-    public static DeviceIdStruct fromXMLStreamReader(XMLStreamReader reader) throws DataBindingException{
+
+
+	public static DeviceIdStruct fromXMLStreamReader(XMLStreamReader reader) throws DataBindingException{
         DeviceIdStruct object = new DeviceIdStruct();
         try {
             int event = reader.getEventType();
