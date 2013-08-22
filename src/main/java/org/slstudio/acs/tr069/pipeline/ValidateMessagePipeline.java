@@ -17,7 +17,7 @@ import java.util.List;
  * Created with IntelliJ IDEA.
  * User: chandler
  * Date: 13-4-27
- * Time: ÏÂÎç11:36
+ * Time: ï¿½ï¿½ï¿½ï¿½11:36
  */
 public class ValidateMessagePipeline extends AbstractTR069Pipeline {
     @Override
@@ -43,10 +43,10 @@ public class ValidateMessagePipeline extends AbstractTR069Pipeline {
             throw new ValidateMessageException("Message format invalid:soap namespace error");
         }
         //check encoding style attribute
-        String encodingStyle=envelope.getAttributeValue(new QName(TR069Constants.SOAP_NAMESPACE,"encodingStyle"));
-        if(encodingStyle==null||!encodingStyle.equals(TR069Constants.SOAP_ENCODING)){
-            throw new ValidateMessageException("Message format invalid:envelope attribute:encodingStyle error");
-        }
+//        String encodingStyle=envelope.getAttributeValue(new QName(TR069Constants.SOAP_NAMESPACE,"encodingStyle"));
+//        if(encodingStyle==null||!encodingStyle.equals(TR069Constants.SOAP_ENCODING)){
+//            throw new ValidateMessageException("Message format invalid:envelope attribute:encodingStyle error");
+//        }
         //check cwmp namespace
         SOAPBody body=envelope.getBody();
         if(body==null){
