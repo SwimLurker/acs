@@ -21,7 +21,6 @@ public class DeviceIdStruct implements Serializable {
     private String OUI ;
     private String productClass ;
     private String serialNumber ;
-    private String softwareVersion;
 
     public DeviceIdStruct() {
     }
@@ -57,13 +56,7 @@ public class DeviceIdStruct implements Serializable {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
-    public String getSoftwareVersion() {
-		return softwareVersion;
-	}
 
-	public void setSoftwareVersion(String softwareVersion) {
-		this.softwareVersion = softwareVersion;
-	}
     public static DeviceIdStruct fromOMElement(OMElement element) throws DataBindingException {
         DeviceIdStruct idStruct = new DeviceIdStruct();
 
@@ -91,11 +84,7 @@ public class DeviceIdStruct implements Serializable {
         }
         idStruct.setSerialNumber(((OMElement)sIt.next()).getText());
         
-        Iterator svIt=element.getChildrenWithName(new QName("SoftwareVersion"));
-        if(svIt==null||!svIt.hasNext()){
-            throw new DataBindingException(TR069Constants.ERROR_DATA_BINDING,"SoftwareVersion is null");
-        }
-        idStruct.setSoftwareVersion(((OMElement)svIt.next()).getText());
+
         
 
 
