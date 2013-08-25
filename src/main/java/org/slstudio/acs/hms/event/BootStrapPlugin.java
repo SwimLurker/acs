@@ -18,6 +18,7 @@ import org.slstudio.acs.tr069.databinding.TR069Message;
 import org.slstudio.acs.tr069.databinding.TR069MessageFactory;
 import org.slstudio.acs.tr069.databinding.request.InformRequest;
 import org.slstudio.acs.tr069.databinding.request.SetParameterValuesRequest;
+import org.slstudio.acs.tr069.fault.FaultUtil;
 import org.slstudio.acs.tr069.fault.TR069Fault;
 import org.slstudio.acs.tr069.instruction.IInstruction;
 import org.slstudio.acs.tr069.instruction.InstructionConstants;
@@ -74,8 +75,8 @@ public class BootStrapPlugin implements IPreDealMessagePlugin {
 		List<EventStruct> events = inform.getEventList();
 		for (EventStruct e : events) {
 			String eventCode = e.getEventCode();
-			if (TR069Constants.INFORM_EVENT_BOOTSTRAP.equalsIgnoreCase(eventCode)) {
-				generateBootStrapJob(inform.getDeviceId(), getClientWanIP(inform));
+			if (TR069Constants.INFORM_EVENT_BOOTSTRAP.equalsIgnoreCase(eventCode)||TR069Constants.INFORM_EVENT_BOOT.equalsIgnoreCase(eventCode)) {
+				generateBootStrapJob(tr069Message.getMessageID(), inform.getDeviceId(), getClientWanIP(inform));
 			}
 		}
 	}
@@ -90,26 +91,24 @@ public class BootStrapPlugin implements IPreDealMessagePlugin {
 		return null;
 	}
 
-	private void generateBootStrapJob(DeviceIdStruct deviceId, String ip) {
+	private void generateBootStrapJob(String requestID, DeviceIdStruct deviceId, String ip) throws  TR069Fault{
 
-		DeviceInfo device = deviceManager.findDevice(deviceId.getSerialNumber());
-		if (device == null) {
-			log.error("generate bootstrap job failed: unknown device");
-			return;
-		}
 
 		BootStrapBean bsb = bootstrapStrategy.getBootstrapConfig(deviceId.getSerialNumber(), ip);
 		if (bsb == null) {
-			log
-					.error("generate bootstrap job failed: can not get bootstrap settings");
-			return;
+			   throw new TR069Fault(true,
+	                    TR069Constants.SERVER_FAULT_REQUEST_DENIED,
+	                    FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_REQUEST_DENIED),
+	                    requestID);
 		}
 
 		String jobID = IDGenerator.getNewID();
 		IDeviceJob findJob = jobManager.findJob(jobID);
 		if (findJob != null) {
-			log.error("generate bootstrap job failed: job existed");
-			return;
+			throw new TR069Fault(true,
+                    TR069Constants.SERVER_FAULT_INTERNAL_ERROR,
+                    FaultUtil.findServerFaultMessage(TR069Constants.SERVER_FAULT_INTERNAL_ERROR),
+                    requestID);
 		}
 
 		IDeviceJob job = (IDeviceJob) BeanLocator.getBean("systemJob");
